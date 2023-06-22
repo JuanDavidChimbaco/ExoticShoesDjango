@@ -14,9 +14,28 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from rest_framework import routers
+from appExoticShoes import views
+
+router = routers.DefaultRouter()
+router.register(r'roles', views.RolesViewSet)
+router.register(r'usuarios', views.UsuariosViewSet)
+router.register(r'categorias', views.CategoriasViewSet)
+router.register(r'productos', views.ProductosViewSet)
+router.register(r'pedidos', views.PedidosViewSet)
+router.register(r'detallePedidos', views.DetallePedidoViewSet)
+router.register(r'pago', views.PagoViewSet)
+router.register(r'envio', views.EnvioViewSet)
+router.register(r'devoluciones', views.DevolucionesViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static (settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
