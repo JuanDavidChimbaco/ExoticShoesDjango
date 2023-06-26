@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Roles, Usuarios, Categorias, Productos, Pedidos, DetallePedido, Pago, Envio, Devoluciones
 
+# Definir los serializadores 
 class RolesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Roles
@@ -46,4 +47,3 @@ class DevolucionesSerializer(serializers.ModelSerializer):
         model = Devoluciones
         fields = '__all__'
         
-# Define los serializadores para los demás modelos de la misma manera
