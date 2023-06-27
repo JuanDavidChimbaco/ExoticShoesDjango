@@ -41,3 +41,5 @@ class DevolucionesViewSet(viewsets.ModelViewSet):
     serializer_class = DevolucionesSerializer
 
 
+def inicio(request):
+    return render (request,"index.html",{})
