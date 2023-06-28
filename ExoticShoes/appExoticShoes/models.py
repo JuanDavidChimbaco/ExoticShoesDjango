@@ -36,6 +36,8 @@ class Productos(models.Model):
     descripcion = models.CharField(max_length=45)
     precio = models.FloatField()
     cantidadEnInventario = models.IntegerField()
+    foto = models.ImageField(upload_to='productos/', blank=True, null=True)
+    estado = models.BooleanField(default=True)
     categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE)
 
     def __str__(self):

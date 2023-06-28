@@ -1,0 +1,38 @@
+{% extends 'index.html'%}
+
+{% block contenido %}
+    {% load static %}
+    <script src="{% static '../static/js/app.js' %}"></script>
+    <div class="row">
+        <h1 class="text-center"> Roles </h1>
+    </div>
+    <div class="row d-grid justify-content-center">
+        <form>
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            {% csrf_token %}
+            <div class="col mb-3">
+                <label for="txtNombre" class="form-label">Nombre Rol:</label>
+                <input type="text" class="form-control" id="txtNombre" name="txtNombre" placeholder="Nombre Rol">
+              </div>
+              <div class="mb-3 d-flex justify-content-center">
+                <button type="button" class="btn btn-primary mx-1" onclick="agregarRoles()">Agregar</button>
+                <button type="button" class="btn btn-primary mx-1" onclick="modificarRoles()">Modificar</button>
+                <button type="button" class="btn btn-primary mx-1" onclick="eliminarRoles()">Eliminar</button>
+                <button type="reset" class="btn btn-primary mx-1" onclick="limpiar()">Limpiar</button>
+              </div>
+        </form>
+    </div>
+    <div class="row">
+        <table class="table table-dark">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Nombre Rol</th>
+                <th>Opciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla"></tbody>
+          </table>
+    </div>
+    
+{% endblock %}

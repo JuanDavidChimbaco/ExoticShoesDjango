@@ -42,4 +42,10 @@ class DevolucionesViewSet(viewsets.ModelViewSet):
 
 
 def inicio(request):
-    return render (request,"index.html",{})
+    return render (request,"inicio.html",{})
+
+def roles(request):
+    return render (request, "frmRoles.html",{})
+
+def productos(request):
+    return render (request,'frmProductos.html',{})

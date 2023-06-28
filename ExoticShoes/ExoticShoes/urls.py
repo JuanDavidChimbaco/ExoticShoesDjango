@@ -20,7 +20,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 from appExoticShoes import views
-from appExoticShoes.views import inicio
+from appExoticShoes.views import inicio,roles,productos
 
 router = routers.DefaultRouter()
 router.register(r'roles', views.RolesViewSet)
@@ -36,6 +36,8 @@ router.register(r'devoluciones', views.DevolucionesViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('inicio/', inicio),
+    path('frmRoles/', roles),
+    path('frmProductos/', productos),
     path('api/', include(router.urls)),
 ]
 

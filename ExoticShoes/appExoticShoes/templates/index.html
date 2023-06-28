@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,48 +23,31 @@
     <!--font awesome-->
     <script src="https://kit.fontawesome.com/6bf421ec3d.js" crossorigin="anonymous"></script>
 
-    <!--DataTables-->
-    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"> </script>
-    <script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"> </script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-    <!--datatables buttons-->
-    <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+    <!-- axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    {% load static%}
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
-    <script src="{% static '../static/js/app.js' %}"></script>
-    <script src="{% static '../static/js/dataTable.js' %}"></script>
+
+    
+
     <title>SISTEMA DE GESTIÓN INVENTARIO Tienda - Palermo</title>
 </head>
 
 <body>
     <div class="container-fluid">
         <header class="row">
-            {% block encabezado %}
-
-            {% endblock %}
+            <marquee behavior="" direction=""><h1> GESTION INVENTARIO TIENDA EXOTIC SHOES</h1></marquee>
         </header>
         <div class="row sticky-top">
-            {% block menu %}
-
-            {% endblock %}
+            {% include 'menu.html' %}
         </div>
-        <section class="row d-flex justify-content-center" style="min-height:60vh">
+        <section class="row d-flex justify-content-center">
             {% block contenido %}
 
             {% endblock %}
         </section>
-        <footer class="row">
-            {% block piePagina %}
-            
-            {% endblock %}
+        <footer class="row sticky-bottom ">
+            {% include 'piePagina.html' %}
         </footer>
     </div>
 </body>
