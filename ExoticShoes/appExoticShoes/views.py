@@ -1,12 +1,7 @@
 from django.shortcuts import render
-
 from rest_framework import viewsets
-from .models import Roles, Usuarios, Categorias, Productos, Pedidos, DetallePedido, Pago, Envio, Devoluciones
-from .serializers import RolesSerializer, UsuariosSerializer, CategoriasSerializer, ProductosSerializer, PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer, DevolucionesSerializer
-
-class RolesViewSet(viewsets.ModelViewSet):
-    queryset = Roles.objects.all()
-    serializer_class = RolesSerializer
+from .models import Usuarios, Categorias, Productos, Pedidos, DetallePedido, Pago, Envio, Devoluciones
+from .serializers import UsuariosSerializer, CategoriasSerializer, ProductosSerializer, PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer, DevolucionesSerializer
 
 class UsuariosViewSet(viewsets.ModelViewSet):
     queryset = Usuarios.objects.all()
@@ -42,10 +37,11 @@ class DevolucionesViewSet(viewsets.ModelViewSet):
 
 
 def inicio(request):
-    return render (request,"inicio.html",{})
+    return render (request,"dashboard.html",{})
 
-def roles(request):
-    return render (request, "frmRoles.html",{})
+def categorias(request):
+    return render (request, "frmCategorias.html",{})
 
 def productos(request):
     return render (request,'frmProductos.html',{})
+

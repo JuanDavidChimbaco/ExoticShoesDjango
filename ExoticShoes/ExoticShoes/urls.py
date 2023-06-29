@@ -14,16 +14,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 from appExoticShoes import views
-from appExoticShoes.views import inicio,roles,productos
+from appExoticShoes.views import inicio,categorias,productos
+
 
 router = routers.DefaultRouter()
-router.register(r'roles', views.RolesViewSet)
 router.register(r'usuarios', views.UsuariosViewSet)
 router.register(r'categorias', views.CategoriasViewSet)
 router.register(r'productos', views.ProductosViewSet)
@@ -36,7 +36,8 @@ router.register(r'devoluciones', views.DevolucionesViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('inicio/', inicio),
-    path('frmRoles/', roles),
+    
+    path('frmCategorias/', categorias),
     path('frmProductos/', productos),
     path('api/', include(router.urls)),
 ]

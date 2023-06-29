@@ -1,0 +1,45 @@
+{% extends 'index.html' %} {% block contenido %}
+<div>
+    <h2 class="d-flex mt-3 bg-dark text-white justify-content-center align-content-center">
+        Panel de control
+    </h2>
+</div>
+<div class="row">
+    <div class="col-md-6 col-lg-3 mb-4">
+        <a href="/frmCategorias" class="card text-center text-decoration-none">
+            <div class="card-body shadow">
+                <i class="fas fa-solid fa-list fa-5x"></i>
+                <h5 class="card-title mt-3">Categorias</h5>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6 col-lg-3 mb-4">
+        <a href="/frmProductos" class="card text-center text-decoration-none">
+            <div class="card-body shadow">
+                <i class="fas fa-box-open fa-5x"></i>
+                <h5 class="card-title mt-3">Productos</h5>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6 col-lg-3 mb-4">
+        <a href="/frmPedidos" class="card text-center text-decoration-none">
+            <div class="card-body shadow">
+                <i class="fa-solid fa-bag-shopping fa-5x"></i>
+                <h5 class="card-title mt-3">Pedidos</h5>
+            </div>
+        </a>
+    </div>
+
+    <div class="col-md-6 col-lg-3 mb-4">
+        <a href="/frmEnvios" class="card text-center text-decoration-none">
+            <div class="card-body shadow">
+                <i class="fas fa-sharp fa-solid fa-truck-fast fa-5x"></i>
+                <h5 class="card-title mt-3">Envios</h5>
+            </div>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

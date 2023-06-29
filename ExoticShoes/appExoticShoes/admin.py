@@ -1,13 +1,9 @@
 from django.contrib import admin
-from .models import Roles, Usuarios, Categorias, Productos, Pedidos, DetallePedido, Pago, Envio, Devoluciones
-
-@admin.register(Roles)
-class RolesAdmin(admin.ModelAdmin):
-    list_display = ('nombre',)
+from .models import  Usuarios, Categorias, Productos, Pedidos, DetallePedido, Pago, Envio, Devoluciones
 
 @admin.register(Usuarios)
 class UsuariosAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellido', 'correo', 'telefono', 'direccion', 'rol')
+    list_display = ('telefono','FechaNacimiento','direccion')
 
 @admin.register(Categorias)
 class CategoriasAdmin(admin.ModelAdmin):

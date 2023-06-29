@@ -1,35 +1,21 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
-
-class Roles(models.Model):
-    nombre = models.CharField(max_length=45)
-
-    def __str__(self):
-        return self.nombre
+from django.contrib.auth.models import User, Group
 
 
-class Usuarios(models.Model):
-    nombre = models.CharField(max_length=45)
-    apellido = models.CharField(max_length=45)
-    correo = models.CharField(max_length=45,unique=True)
-    contraseña = models.CharField(max_length=45)
+class Usuarios(User):
     telefono = models.CharField(max_length=45)
-    FechaNacimiento = models.DateField(null=True)
+    FechaNacimiento = models.DateField()
     direccion = models.CharField(max_length=45)
-    rol = models.ForeignKey(Roles, on_delete=models.SET_NULL, null=True)
-
+    grupos = models.ManyToManyField(Group)
+     
     def __str__(self):
-        return self.nombre
-
+        return self.username
 
 class Categorias(models.Model):
     nombre = models.CharField(max_length=45,unique=True)
 
     def __str__(self):
         return self.nombre
-
 
 class Productos(models.Model):
     nombre = models.CharField(max_length=45)
