@@ -20,7 +20,7 @@ from django.conf.urls.static import static
 from django.urls import include, path
 from rest_framework import routers
 from appExoticShoes import views
-from appExoticShoes.views import inicio,categorias,productos
+from appExoticShoes.views import inicio,categorias,productos,pedidos
 
 
 router = routers.DefaultRouter()
@@ -36,9 +36,9 @@ router.register(r'devoluciones', views.DevolucionesViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('inicio/', inicio),
-    
     path('frmCategorias/', categorias),
     path('frmProductos/', productos),
+    path('frmPedidos/', pedidos),
     path('api/', include(router.urls)),
 ]
 

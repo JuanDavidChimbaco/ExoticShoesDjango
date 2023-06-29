@@ -45,3 +45,6 @@ def categorias(request):
 def productos(request):
     return render (request,'frmProductos.html',{})
 
+def pedidos(request):
+    return render (request,'frmPedidos.html',{})
+

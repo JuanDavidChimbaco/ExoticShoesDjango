@@ -2,13 +2,13 @@
 
 {% block contenido %}
 {% load static %}
-<script src="{% static '../static/js/productos.js' %}"></script>
+<script src="{% static '../static/js/pedidos.js' %}"></script>
 <div class="row">
-  <h1 class="text-center"> Productos </h1>
+  <h1 class="text-center"> Pedidos </h1>
 </div>
-<hr>
+<hr class="shadow bg-white">
 <form>
-  <div class="row justify-content-center">
+  <!-- <div class="row justify-content-center">
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     {% csrf_token %}
     <div class="col-5 mb-3">
@@ -39,7 +39,6 @@
       <div class="mb-3 col-lg-12">
         <div class="text-center">
 
-          <!-- Button trigger modal -->
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <i class="fa-solid fa-image"></i> Vista Previa Imagen
           </button>
@@ -47,6 +46,7 @@
         </div>
       </div>
     </div>
+
     <div class="mb-3 d-flex justify-content-center">
       <button type="button" class="btn btn-primary mx-1" onclick="agregarPro()"><i class="fa-solid fa-plus"></i>
         Agregar</button>
@@ -59,6 +59,7 @@
     </div>
   </div>
 </form>
+ -->
 <hr class="shadow bg-white">
 <div class="row d-flex justify-content-center">
   <div class="col">
