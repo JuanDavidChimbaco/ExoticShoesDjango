@@ -173,6 +173,7 @@ function eliminarPro() {
     }
 }
 function limpiar() {
+    vistaPreviaFoto.src=""
     txtNombre.value = ""
     txtDescripcion.value = ""
     txtPrecio.value = ""
