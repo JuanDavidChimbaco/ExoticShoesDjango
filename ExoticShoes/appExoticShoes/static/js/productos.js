@@ -1,23 +1,4 @@
 // ----------------------------Productos-----------------------------------
-// function mostrarImagen(evento) {
-//     const archivos = evento.target.files
-//     const archivo = archivos[0]
-//     const url = URL.createObjectURL(archivo)
-//     $("#imagenMostrar").attr("src", url)
-// }
-// function mostrarImagenPreseleccionada(input) {
-//     if (input.files && input.files[0]) {
-//         var reader = new FileReader();
-
-//         reader.onload = function (e) {
-//             var imagen = document.getElementById('imagenPreseleccionada');
-//             imagen.src = e.target.result;
-//         }
-
-//         reader.readAsDataURL(input.files[0]);
-//     }
-// }
-
 function mostrarVistaPrevia() {
     var fileInput = document.getElementById('fileFoto');
     var imagenMostrar = document.getElementById('vistaPreviaFoto');

@@ -3,64 +3,11 @@
 {% block contenido %}
 {% load static %}
 <script src="{% static '../static/js/pedidos.js' %}"></script>
-<div class="row">
-  <h1 class="text-center"> Pedidos </h1>
-</div>
-<hr class="shadow bg-white">
-<form>
-  <!-- <div class="row justify-content-center">
-    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-    {% csrf_token %}
-    <div class="col-5 mb-3">
-      <label for="txtNombre" class="form-label">Nombre del Producto:</label>
-      <input type="text" class="form-control" id="txtNombre" name="txtNombre" placeholder="Nombre del Producto"
-        required>
-      <label for="txtDescripcion" class="form-label">Descripcion del Producto:</label>
-      <input type="text" class="form-control" id="txtDescripcion" name="txtDescripcion"
-        placeholder="Descripcion del Producto" required>
-    </div>
-    <div class="col-5 mb-3">
-      <label for="txtPrecio" class="form-label">Precio del Producto:</label>
-      <input type="number" class="form-control" id="txtPrecio" name="txtPrecio" placeholder="Precio del Producto"
-        required>
-      <label for="txtCantidad" class="form-label">Cantidad del Producto:</label>
-      <input type="number" class="form-control" id="txtCantidad" name="txtCantidad" placeholder="Cantidad al Stock"
-        required>
-    </div>
-    <div class="col-6 mb-3">
-      <label for="cbCategoria" class="form-label">Categoría del Producto:</label>
-      <select name="cbCategoria" id="cbCategoria" class="form-select">
-
-      </select>
-      <label for="fileFoto" class="form-label">Cargar Foto:</label>
-      <input type="file" name="fileFoto" id="fileFoto" class="form-control" onchange=" mostrarVistaPrevia()">
-    </div>
-    <div class="form-group row">
-      <div class="mb-3 col-lg-12">
-        <div class="text-center">
-
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <i class="fa-solid fa-image"></i> Vista Previa Imagen
-          </button>
-
-        </div>
-      </div>
-    </div>
-
-    <div class="mb-3 d-flex justify-content-center">
-      <button type="button" class="btn btn-primary mx-1" onclick="agregarPro()"><i class="fa-solid fa-plus"></i>
-        Agregar</button>
-      <button type="button" class="btn btn-primary mx-1" onclick="modificarPro()"><i
-          class="fa-solid fa-pen-to-square"></i> Modificar</button>
-      <button type="button" class="btn btn-primary mx-1" onclick="eliminarPro()"><i class="fa-solid fa-trash"></i>
-        Eliminar</button>
-      <button type="reset" class="btn btn-primary mx-1" onclick="limpiar()"><i class="fa-solid fa-broom"></i></i>
-        Limpiar</button>
-    </div>
+<div class="row" style="height: 10px;">
+  <div class="col">
+    <h1 class="text-center">Pedidos</h1>
   </div>
-</form>
- -->
-<hr class="shadow bg-white">
+</div>
 <div class="row d-flex justify-content-center">
   <div class="col">
     <table class="table table-dark overflow-auto">
@@ -80,7 +27,6 @@
     </table>
   </div>
 </div>
-
 
 
 <!-- Modal -->
