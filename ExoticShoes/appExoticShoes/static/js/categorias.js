@@ -5,7 +5,7 @@ function obtenerCat() {
     var rows = [];
 
     axios
-        .get('/api/categorias/')
+        .get('/api/v1.0/categorias/')
         .then(function (response) {
             console.log(response);
             response.data.forEach((element, index) => {
@@ -39,7 +39,7 @@ function agregarCat() {
 
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
     axios
-        .post('/api/categorias/', {
+        .post('/api/v1.0/categorias/', {
             nombre: txtNombre.value,
         },
             {
@@ -62,7 +62,7 @@ function agregarCat() {
 function modificarCat() {
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
     console.log(this.id);
-    axios.put(`/api/categorias/${this.id}/`, {
+    axios.put(`/api/v1.0/categorias/${this.id}/`, {
         id: this.id,
         nombre: txtNombre.value,
     },
@@ -84,7 +84,7 @@ function eliminarCat() {
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
     let rest = confirm("Seguro de eliminar el Rol? ")
     if (rest) {
-        axios.delete(`/api/categorias/${this.id}/`, {
+        axios.delete(`/api/v1.0/categorias/${this.id}/`, {
             headers: {
                 'X-CSRFToken': csrfToken
             }

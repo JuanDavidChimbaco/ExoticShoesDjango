@@ -39,7 +39,7 @@ urlpatterns = [
     path('frmCategorias/', categorias),
     path('frmProductos/', productos),
     path('frmPedidos/', pedidos),
-    path('api/', include(router.urls)),
+    path('api/v1.0/', include(router.urls)),
 ]
 
 if settings.DEBUG:

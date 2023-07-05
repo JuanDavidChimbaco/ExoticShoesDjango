@@ -13,28 +13,13 @@ function mostrarVistaPrevia() {
       lector.readAsDataURL(archivo);
     }
   }
-
-function NombreCat() {
-
-    axios
-        .get('/api/categorias/')
-        .then(function (response) {
-            console.log(response.data);
-            localStorage.categoria = JSON.stringify(response.data)
-            var opcion = `<option value="0">Seleccione Categoría</option>`
-            response.data.forEach(categoria => {
-                opcion += `<option value="${categoria.id}">${categoria.nombre}</option>`
-            })
-            cbCategoria.innerHTML = opcion;
-        })
-}
 var id = 0;
-function obtenerProductos() {
+function obtenerPed() {
     var tabla = document.getElementById('tablaPro');
     var rows = [];
     var NombreCat = ""
     axios
-        .get('/api/productos/')
+        .get('/api/v1.0/pedidos/')
         .then(function (response) {
             console.log(response);
             response.data.forEach((element, index) => {
@@ -73,7 +58,7 @@ function load(element) {
     txtCantidad.value = element.cantidadEnInventario;
     cbCategoria.value = element.categoria;
 }
-function agregarPro() {
+function agregarPed() {
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
     var fileInput = document.getElementById('fileFoto');
     var file = fileInput.files[0];
@@ -87,7 +72,7 @@ function agregarPro() {
     formData.append('foto', file);
 
     axios
-        .post('/api/productos/', formData,
+        .post('/api/v1.0/pedidos/', formData,
             {
                 headers: {
                     'X-CSRFToken': csrfToken,
@@ -103,7 +88,7 @@ function agregarPro() {
             console.error('Error al agregar ', error);
         });
 };
-function modificarPro() {
+function modificarPed() {
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
     var fileInput = document.getElementById('fileFoto');
     var file = fileInput.files[0];
@@ -117,7 +102,7 @@ function modificarPro() {
     formData.append('categoria', cbCategoria.value);
     formData.append('foto', file);
 
-    axios.put(`/api/productos/${this.id}/`, formData,
+    axios.put(`/api/v1.0/pedidos/${this.id}/`, formData,
         {
             headers: {
                 'X-CSRFToken': csrfToken,
@@ -133,11 +118,11 @@ function modificarPro() {
             console.log(error);
         })
 }
-function eliminarPro() {
+function eliminarPed() {
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
     let rest = confirm("Seguro de eliminar el Producto? ")
     if (rest) {
-        axios.delete(`/api/productos/${this.id}/`, {
+        axios.delete(`/api/v1.0/pedidos/${this.id}/`, {
             headers: {
                 'X-CSRFToken': csrfToken
             }

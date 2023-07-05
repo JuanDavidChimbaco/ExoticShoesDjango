@@ -1,23 +1,3 @@
-// ----------------------------Productos-----------------------------------
-// function mostrarImagen(evento) {
-//     const archivos = evento.target.files
-//     const archivo = archivos[0]
-//     const url = URL.createObjectURL(archivo)
-//     $("#imagenMostrar").attr("src", url)
-// }
-// function mostrarImagenPreseleccionada(input) {
-//     if (input.files && input.files[0]) {
-//         var reader = new FileReader();
-
-//         reader.onload = function (e) {
-//             var imagen = document.getElementById('imagenPreseleccionada');
-//             imagen.src = e.target.result;
-//         }
-
-//         reader.readAsDataURL(input.files[0]);
-//     }
-// }
-
 function mostrarVistaPrevia() {
     var fileInput = document.getElementById('fileFoto');
     var imagenMostrar = document.getElementById('vistaPreviaFoto');
@@ -37,7 +17,7 @@ function mostrarVistaPrevia() {
 function NombreCat() {
 
     axios
-        .get('/api/categorias/')
+        .get('/api/v1.0/categorias/')
         .then(function (response) {
             console.log(response.data);
             localStorage.categoria = JSON.stringify(response.data)
@@ -54,7 +34,7 @@ function obtenerProductos() {
     var rows = [];
     var NombreCat = ""
     axios
-        .get('/api/productos/')
+        .get('/api/v1.0/productos/')
         .then(function (response) {
             console.log(response);
             response.data.forEach((element, index) => {
@@ -107,7 +87,7 @@ function agregarPro() {
     formData.append('foto', file);
 
     axios
-        .post('/api/productos/', formData,
+        .post('/api/v1.0/productos/', formData,
             {
                 headers: {
                     'X-CSRFToken': csrfToken,
@@ -137,7 +117,7 @@ function modificarPro() {
     formData.append('categoria', cbCategoria.value);
     formData.append('foto', file);
 
-    axios.put(`/api/productos/${this.id}/`, formData,
+    axios.put(`/api/v1.0/productos/${this.id}/`, formData,
         {
             headers: {
                 'X-CSRFToken': csrfToken,
@@ -157,7 +137,7 @@ function eliminarPro() {
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
     let rest = confirm("Seguro de eliminar el Producto? ")
     if (rest) {
-        axios.delete(`/api/productos/${this.id}/`, {
+        axios.delete(`/api/v1.0/productos/${this.id}/`, {
             headers: {
                 'X-CSRFToken': csrfToken
             }
