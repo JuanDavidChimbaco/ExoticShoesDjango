@@ -48,3 +48,6 @@ def productos(request):
 def pedidos(request):
     return render (request,'frmPedidos.html',{})
 
+def envios(request):
+    return render (request,'frmEnvios.html',{})
+
