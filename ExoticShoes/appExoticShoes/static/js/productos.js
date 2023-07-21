@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 // ----------------------------Productos-----------------------------------
->>>>>>> 7bc8c683a7af380aa115677c66c41756e3f66656
 function mostrarVistaPrevia() {
     var fileInput = document.getElementById('fileFoto');
     var imagenMostrar = document.getElementById('vistaPreviaFoto');
