@@ -35,7 +35,9 @@ router.register(r'devoluciones', views.DevolucionesViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('inicio/', inicio),
+    path('', views.custom_login, name='login'),
+    path('logout/', views.custom_logout, name='logout'),
+    path('inicio/', inicio, name='inicio'),
     path('frmCategorias/', categorias),
     path('frmProductos/', productos),
     path('frmPedidos/', pedidos),

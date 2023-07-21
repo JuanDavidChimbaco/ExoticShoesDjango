@@ -4,7 +4,7 @@
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-fixed-top navbar-brand" href="/inicio"><i class="fa-solid fa-house"></i> Dashboard</a>
+      <a class="navbar-fixed-top navbar-brand" href="/inicio"><i class="fa-solid fa-house fa-2x"></i> Dashboard</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -13,29 +13,29 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fa fa-duotone fa-boxes-packing"></i> Productos
+              <i class="fa fa-duotone fa-boxes-packing fa-2x"></i> Productos
             </a>
             <ul class="dropdown-menu">
               <li>
                 <a class="dropdown-item" href="/frmCategorias">Categorias &nbsp &nbsp &nbsp<i
-                    class="fa-sharp fa-solid fa-bars"></i></a>
+                    class="fa-sharp fa-solid fa-bars fa-2x"></i></a>
               </li>
               <li>
                 <a class="dropdown-item" href="/frmProductos">Productos &nbsp &nbsp &nbsp<i
-                    class="fa-sharp fa-solid fa-shirt"></i></a>
+                    class="fa-sharp fa-solid fa-shirt fa-2x"></i></a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/frmPedidos"><i class="fa-sharp fa-solid fa-bag-shopping"></i> Pedidos</a>
+            <a class="nav-link" href="/frmPedidos"><i class="fa-sharp fa-solid fa-bag-shopping fa-2x"></i> Pedidos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/frmEnvios"><i class="fas fa-sharp fa-solid fa-truck-fast"></i></i> Envios</a>
+            <a class="nav-link" href="/frmEnvios"><i class="fas fa-sharp fa-solid fa-truck-fast fa-2x"></i></i> Envios</a>
           </li>
         </ul>
         <ul class="navbar-nav mb-2 mb-lg-0 mx-2">
           <li class="nav-item">
-            <a href="#" class="btn btn-primary"><i class="fa-solid fa-right-from-bracket"></i></a>
+            <a href="{% url 'logout' %}" class="btn btn-secondary"><i class="fa-solid fa-right-from-bracket"></i></a>
           </li>
         </ul>
       </div>

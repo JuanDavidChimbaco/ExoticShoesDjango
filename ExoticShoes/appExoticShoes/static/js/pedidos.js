@@ -1,44 +1,19 @@
-function mostrarVistaPrevia() {
-    var fileInput = document.getElementById('fileFoto');
-    var imagenMostrar = document.getElementById('vistaPreviaFoto');
-  
-    var archivo = fileInput.files[0];
-    var lector = new FileReader();
-  
-    lector.onload = function(e) {
-      imagenMostrar.src = e.target.result;
-    };
-  
-    if (archivo) {
-      lector.readAsDataURL(archivo);
-    }
-  }
 var id = 0;
 function obtenerPed() {
     var tabla = document.getElementById('tablaPro');
     var rows = [];
-    var NombreCat = ""
     axios
         .get('/api/v1.0/pedidos/')
         .then(function (response) {
             console.log(response);
             response.data.forEach((element, index) => {
-                let categorias = JSON.parse(localStorage.categoria)
-                categorias.forEach(cat => {
-                    if (cat.id === element.categoria) {
-                        NombreCat = cat.nombre;
-                    }
-                })
                 var row = `<tr>
                        <th scope="row">${index + 1}</th>
-                       <td>${element.nombre}</td>
-                       <td>${element.descripcion}</td>
-                       <td>${element.precio}</td>
-                       <td>${element.cantidadEnInventario}</td>
-                       <td>${NombreCat}</td>
-                       <td><a href=""><img src="${element.foto}" alt="Imagen" height="100" width="100"></a></td>
+                       <td>COD000${element.id}</td>
+                       <td>${element.fechaPedido}</td>
+                       <td>${usuario}</td>
                        <td>
-                         <input type="radio" name="checkOpcion" id="checkOpcion" onclick='load(${JSON.stringify(element)})'>
+                         <input type="button" name="detalles" id="detalles" onclick='load(${JSON.stringify(element)})'>
                        </td>
                      </tr>`;
                 rows.push(row);
@@ -137,21 +112,7 @@ function eliminarPed() {
             })
     }
 }
-function limpiar() {
-    txtNombre.value = ""
-    txtDescripcion.value = ""
-    txtPrecio.value = ""
-    txtCantidad.value = ""
-    cbCategoria.value = 0
-    fileFoto.value = ""
-    var radioButtons = document.getElementsByName('checkOpcion');
-
-    radioButtons.forEach(function (radioButton) {
-        radioButton.checked = false;
-    });
-}
 window.onload = function () {
-    obtenerProductos();
-    NombreCat();
+    obtenerPed();
 };
 

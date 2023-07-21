@@ -3,24 +3,22 @@
 {% block contenido %}
 {% load static %}
 <script src="{% static '../static/js/pedidos.js' %}"></script>
-<div class="row" style="height: 10px;">
-  <div class="col">
+<div class="row">
+  <div class="col d-flex align-items-center justify-content-center ">
     <h1 class="text-center">Pedidos</h1>
   </div>
 </div>
-<div class="row d-flex justify-content-center">
+<hr>
+<div class="row d-flex justify-content-center w-50">
   <div class="col">
     <table class="table table-dark overflow-auto">
       <thead>
         <tr>
           <th>#</th>
-          <th>Nombre</th>
-          <th>Descripcion</th>
-          <th>Precio</th>
-          <th>Cantidad</th>
-          <th>Categoria</th>
-          <th>Foto</th>
-          <th>Opciones</th>
+          <th>Codigo</th>
+          <th>Fecha del Pedido</th>
+          <th>Cliente</th>
+          <th>detalles</th>
         </tr>
       </thead>
       <tbody id="tablaPro"></tbody>
@@ -34,11 +32,13 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Vista Previa</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Detalles del Pedido</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <img alt="" id="vistaPreviaFoto" width="100%">
+
+        <!-- aqui va los detalles del pedido dinamicamente -->
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
