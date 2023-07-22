@@ -15,21 +15,23 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Volcando estructura de base de datos para nombredb
-CREATE DATABASE IF NOT EXISTS `nombredb` /*!40100 DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `nombredb`;
+-- Volcando estructura de base de datos para tiendaexoticshoes
+CREATE DATABASE IF NOT EXISTS `tiendaexoticshoes` /*!40100 DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `tiendaexoticshoes`;
 
--- Volcando estructura para tabla nombredb.appexoticshoes_categorias
+-- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_categorias
 CREATE TABLE IF NOT EXISTS `appexoticshoes_categorias` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) COLLATE utf8mb3_spanish_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.appexoticshoes_categorias: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_categorias: ~0 rows (aproximadamente)
+REPLACE INTO `appexoticshoes_categorias` (`id`, `nombre`) VALUES
+	(1, 'Tenis');
 
--- Volcando estructura para tabla nombredb.appexoticshoes_detallepedido
+-- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_detallepedido
 CREATE TABLE IF NOT EXISTS `appexoticshoes_detallepedido` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `cantidad` int NOT NULL,
@@ -43,9 +45,9 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_detallepedido` (
   CONSTRAINT `appExoticShoes_detal_producto_id_29dfa03e_fk_appExotic` FOREIGN KEY (`producto_id`) REFERENCES `appexoticshoes_productos` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.appexoticshoes_detallepedido: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_detallepedido: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.appexoticshoes_devoluciones
+-- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_devoluciones
 CREATE TABLE IF NOT EXISTS `appexoticshoes_devoluciones` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `fechaDevolucion` datetime(6) DEFAULT NULL,
@@ -61,9 +63,9 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_devoluciones` (
   CONSTRAINT `appExoticShoes_devol_pago_id_566dc979_fk_appExotic` FOREIGN KEY (`pago_id`) REFERENCES `appexoticshoes_pago` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.appexoticshoes_devoluciones: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_devoluciones: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.appexoticshoes_envio
+-- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_envio
 CREATE TABLE IF NOT EXISTS `appexoticshoes_envio` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `servicioEnvio` varchar(45) COLLATE utf8mb3_spanish_ci NOT NULL,
@@ -77,9 +79,9 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_envio` (
   CONSTRAINT `appExoticShoes_envio_estadoPago_id_b142f800_fk_appExotic` FOREIGN KEY (`estadoPago_id`) REFERENCES `appexoticshoes_pago` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.appexoticshoes_envio: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_envio: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.appexoticshoes_pago
+-- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_pago
 CREATE TABLE IF NOT EXISTS `appexoticshoes_pago` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `metodo` varchar(45) COLLATE utf8mb3_spanish_ci NOT NULL,
@@ -92,9 +94,9 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_pago` (
   CONSTRAINT `appExoticShoes_pago_pedidos_id_18f1d6da_fk_appExotic` FOREIGN KEY (`pedidos_id`) REFERENCES `appexoticshoes_pedidos` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.appexoticshoes_pago: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_pago: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.appexoticshoes_pedidos
+-- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_pedidos
 CREATE TABLE IF NOT EXISTS `appexoticshoes_pedidos` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `fechaPedido` date NOT NULL,
@@ -104,14 +106,14 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_pedidos` (
   CONSTRAINT `appExoticShoes_pedid_usuario_id_4c709d32_fk_appExotic` FOREIGN KEY (`usuario_id`) REFERENCES `appexoticshoes_usuarios` (`user_ptr_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.appexoticshoes_pedidos: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_pedidos: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.appexoticshoes_productos
+-- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_productos
 CREATE TABLE IF NOT EXISTS `appexoticshoes_productos` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) COLLATE utf8mb3_spanish_ci NOT NULL,
   `descripcion` varchar(45) COLLATE utf8mb3_spanish_ci NOT NULL,
-  `precio` double NOT NULL,
+  `precio` decimal(10,2) NOT NULL,
   `cantidadEnInventario` int NOT NULL,
   `foto` varchar(100) COLLATE utf8mb3_spanish_ci DEFAULT NULL,
   `estado` tinyint(1) NOT NULL,
@@ -119,11 +121,14 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_productos` (
   PRIMARY KEY (`id`),
   KEY `appExoticShoes_produ_categoria_id_00b87b98_fk_appExotic` (`categoria_id`),
   CONSTRAINT `appExoticShoes_produ_categoria_id_00b87b98_fk_appExotic` FOREIGN KEY (`categoria_id`) REFERENCES `appexoticshoes_categorias` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.appexoticshoes_productos: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_productos: ~2 rows (aproximadamente)
+REPLACE INTO `appexoticshoes_productos` (`id`, `nombre`, `descripcion`, `precio`, `cantidadEnInventario`, `foto`, `estado`, `categoria_id`) VALUES
+	(1, 'Nike', 'tenis Air Mag "Back to the Future"', 264000.00, 10, 'productos/Nike_mag_flight_club.jpg', 1, 1),
+	(2, 'SKECHERS', 'Tenis Skechers Hombre Moda Summits', 244990.00, 15, 'productos/tenis.jpg', 0, 1);
 
--- Volcando estructura para tabla nombredb.appexoticshoes_usuarios
+-- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_usuarios
 CREATE TABLE IF NOT EXISTS `appexoticshoes_usuarios` (
   `user_ptr_id` int NOT NULL,
   `telefono` varchar(45) COLLATE utf8mb3_spanish_ci NOT NULL,
@@ -133,11 +138,9 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_usuarios` (
   CONSTRAINT `appExoticShoes_usuarios_user_ptr_id_7861db0c_fk_auth_user_id` FOREIGN KEY (`user_ptr_id`) REFERENCES `auth_user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.appexoticshoes_usuarios: ~0 rows (aproximadamente)
-REPLACE INTO `appexoticshoes_usuarios` (`user_ptr_id`, `telefono`, `FechaNacimiento`, `direccion`) VALUES
-	(2, '3172917178', '1998-03-18', 'carrera 9a # 4 - 17');
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_usuarios: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.appexoticshoes_usuarios_grupos
+-- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_usuarios_grupos
 CREATE TABLE IF NOT EXISTS `appexoticshoes_usuarios_grupos` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `usuarios_id` int NOT NULL,
@@ -147,26 +150,21 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_usuarios_grupos` (
   KEY `appExoticShoes_usuar_group_id_1191b4ab_fk_auth_grou` (`group_id`),
   CONSTRAINT `appExoticShoes_usuar_group_id_1191b4ab_fk_auth_grou` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
   CONSTRAINT `appExoticShoes_usuar_usuarios_id_ec589e3b_fk_appExotic` FOREIGN KEY (`usuarios_id`) REFERENCES `appexoticshoes_usuarios` (`user_ptr_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.appexoticshoes_usuarios_grupos: ~0 rows (aproximadamente)
-REPLACE INTO `appexoticshoes_usuarios_grupos` (`id`, `usuarios_id`, `group_id`) VALUES
-	(1, 2, 1);
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_usuarios_grupos: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.auth_group
+-- Volcando estructura para tabla tiendaexoticshoes.auth_group
 CREATE TABLE IF NOT EXISTS `auth_group` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(150) COLLATE utf8mb3_spanish_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.auth_group: ~0 rows (aproximadamente)
-REPLACE INTO `auth_group` (`id`, `name`) VALUES
-	(1, 'Administrador'),
-	(2, 'Cliente');
+-- Volcando datos para la tabla tiendaexoticshoes.auth_group: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.auth_group_permissions
+-- Volcando estructura para tabla tiendaexoticshoes.auth_group_permissions
 CREATE TABLE IF NOT EXISTS `auth_group_permissions` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `group_id` int NOT NULL,
@@ -176,72 +174,11 @@ CREATE TABLE IF NOT EXISTS `auth_group_permissions` (
   KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`),
   CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
   CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.auth_group_permissions: ~0 rows (aproximadamente)
-REPLACE INTO `auth_group_permissions` (`id`, `group_id`, `permission_id`) VALUES
-	(1, 1, 5),
-	(2, 1, 6),
-	(3, 1, 7),
-	(4, 1, 8),
-	(5, 1, 9),
-	(6, 1, 10),
-	(7, 1, 11),
-	(8, 1, 12),
-	(9, 1, 13),
-	(10, 1, 14),
-	(11, 1, 15),
-	(12, 1, 16),
-	(13, 1, 25),
-	(14, 1, 26),
-	(15, 1, 27),
-	(16, 1, 28),
-	(17, 1, 29),
-	(18, 1, 30),
-	(19, 1, 31),
-	(20, 1, 32),
-	(21, 1, 33),
-	(22, 1, 34),
-	(23, 1, 35),
-	(24, 1, 36),
-	(25, 1, 37),
-	(26, 1, 38),
-	(27, 1, 39),
-	(28, 1, 40),
-	(29, 1, 41),
-	(30, 1, 42),
-	(31, 1, 43),
-	(32, 1, 44),
-	(33, 1, 45),
-	(34, 1, 46),
-	(35, 1, 47),
-	(36, 1, 48),
-	(37, 1, 49),
-	(38, 1, 50),
-	(39, 1, 51),
-	(40, 1, 52),
-	(41, 1, 53),
-	(42, 1, 54),
-	(43, 1, 55),
-	(44, 1, 56),
-	(58, 2, 29),
-	(59, 2, 30),
-	(60, 2, 31),
-	(45, 2, 32),
-	(46, 2, 37),
-	(47, 2, 38),
-	(48, 2, 39),
-	(49, 2, 40),
-	(50, 2, 41),
-	(51, 2, 44),
-	(52, 2, 49),
-	(53, 2, 52),
-	(54, 2, 53),
-	(55, 2, 54),
-	(56, 2, 55),
-	(57, 2, 56);
+-- Volcando datos para la tabla tiendaexoticshoes.auth_group_permissions: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.auth_permission
+-- Volcando estructura para tabla tiendaexoticshoes.auth_permission
 CREATE TABLE IF NOT EXISTS `auth_permission` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb3_spanish_ci NOT NULL,
@@ -252,7 +189,7 @@ CREATE TABLE IF NOT EXISTS `auth_permission` (
   CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.auth_permission: ~56 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.auth_permission: ~56 rows (aproximadamente)
 REPLACE INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALUES
 	(1, 'Can add log entry', 1, 'add_logentry'),
 	(2, 'Can change log entry', 1, 'change_logentry'),
@@ -311,7 +248,7 @@ REPLACE INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VAL
 	(55, 'Can delete detalle pedido', 14, 'delete_detallepedido'),
 	(56, 'Can view detalle pedido', 14, 'view_detallepedido');
 
--- Volcando estructura para tabla nombredb.auth_user
+-- Volcando estructura para tabla tiendaexoticshoes.auth_user
 CREATE TABLE IF NOT EXISTS `auth_user` (
   `id` int NOT NULL AUTO_INCREMENT,
   `password` varchar(128) COLLATE utf8mb3_spanish_ci NOT NULL,
@@ -326,14 +263,13 @@ CREATE TABLE IF NOT EXISTS `auth_user` (
   `date_joined` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.auth_user: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.auth_user: ~1 rows (aproximadamente)
 REPLACE INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-	(1, 'pbkdf2_sha256$600000$nNrhsppeBZsNbIVnpWeiM2$h2dfxnAa8rhgfGju4nLfS6ox6ofPR5SQXU1vGSkdEqA=', '2023-06-28 17:31:21.844149', 1, 'dajun', '', '', 'dajun318@gmail.com', 1, 1, '2023-06-28 17:07:42.266144'),
-	(2, '1234', NULL, 0, 'user', 'Juan David', 'Chimbaco Herrera', 'dajun318@gmail.com', 0, 1, '2023-06-28 17:19:22.487142');
+	(1, 'pbkdf2_sha256$600000$j6vdn897Mwqp23Xbe0IGZu$S8UGu03lxyAWxo0T3GrkodvHBak+RihPxb5bPTMW8d4=', '2023-07-22 21:48:55.552893', 1, 'admin', '', '', 'dajun318@gmail.com', 1, 1, '2023-07-22 21:48:31.519058');
 
--- Volcando estructura para tabla nombredb.auth_user_groups
+-- Volcando estructura para tabla tiendaexoticshoes.auth_user_groups
 CREATE TABLE IF NOT EXISTS `auth_user_groups` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
@@ -343,13 +279,11 @@ CREATE TABLE IF NOT EXISTS `auth_user_groups` (
   KEY `auth_user_groups_group_id_97559544_fk_auth_group_id` (`group_id`),
   CONSTRAINT `auth_user_groups_group_id_97559544_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
   CONSTRAINT `auth_user_groups_user_id_6a12ed8b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.auth_user_groups: ~0 rows (aproximadamente)
-REPLACE INTO `auth_user_groups` (`id`, `user_id`, `group_id`) VALUES
-	(1, 2, 1);
+-- Volcando datos para la tabla tiendaexoticshoes.auth_user_groups: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.auth_user_user_permissions
+-- Volcando estructura para tabla tiendaexoticshoes.auth_user_user_permissions
 CREATE TABLE IF NOT EXISTS `auth_user_user_permissions` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
@@ -359,44 +293,11 @@ CREATE TABLE IF NOT EXISTS `auth_user_user_permissions` (
   KEY `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` (`permission_id`),
   CONSTRAINT `auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
   CONSTRAINT `auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.auth_user_user_permissions: ~0 rows (aproximadamente)
-REPLACE INTO `auth_user_user_permissions` (`id`, `user_id`, `permission_id`) VALUES
-	(1, 2, 25),
-	(2, 2, 26),
-	(3, 2, 27),
-	(4, 2, 28),
-	(5, 2, 29),
-	(6, 2, 30),
-	(7, 2, 31),
-	(8, 2, 32),
-	(9, 2, 33),
-	(10, 2, 34),
-	(11, 2, 35),
-	(12, 2, 36),
-	(13, 2, 37),
-	(14, 2, 38),
-	(15, 2, 39),
-	(16, 2, 40),
-	(17, 2, 41),
-	(18, 2, 42),
-	(19, 2, 43),
-	(20, 2, 44),
-	(21, 2, 45),
-	(22, 2, 46),
-	(23, 2, 47),
-	(24, 2, 48),
-	(25, 2, 49),
-	(26, 2, 50),
-	(27, 2, 51),
-	(28, 2, 52),
-	(29, 2, 53),
-	(30, 2, 54),
-	(31, 2, 55),
-	(32, 2, 56);
+-- Volcando datos para la tabla tiendaexoticshoes.auth_user_user_permissions: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.django_admin_log
+-- Volcando estructura para tabla tiendaexoticshoes.django_admin_log
 CREATE TABLE IF NOT EXISTS `django_admin_log` (
   `id` int NOT NULL AUTO_INCREMENT,
   `action_time` datetime(6) NOT NULL,
@@ -412,14 +313,11 @@ CREATE TABLE IF NOT EXISTS `django_admin_log` (
   CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.django_admin_log: ~0 rows (aproximadamente)
-REPLACE INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
-	(1, '2023-06-28 17:13:58.982142', '1', 'Administrador', 1, '[{"added": {}}]', 3, 1),
-	(2, '2023-06-28 17:16:09.421147', '2', 'Cliente', 1, '[{"added": {}}]', 3, 1);
+-- Volcando datos para la tabla tiendaexoticshoes.django_admin_log: ~0 rows (aproximadamente)
 
--- Volcando estructura para tabla nombredb.django_content_type
+-- Volcando estructura para tabla tiendaexoticshoes.django_content_type
 CREATE TABLE IF NOT EXISTS `django_content_type` (
   `id` int NOT NULL AUTO_INCREMENT,
   `app_label` varchar(100) COLLATE utf8mb3_spanish_ci NOT NULL,
@@ -428,7 +326,7 @@ CREATE TABLE IF NOT EXISTS `django_content_type` (
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.django_content_type: ~14 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.django_content_type: ~14 rows (aproximadamente)
 REPLACE INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 	(1, 'admin', 'logentry'),
 	(7, 'appExoticShoes', 'categorias'),
@@ -445,39 +343,40 @@ REPLACE INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 	(5, 'contenttypes', 'contenttype'),
 	(6, 'sessions', 'session');
 
--- Volcando estructura para tabla nombredb.django_migrations
+-- Volcando estructura para tabla tiendaexoticshoes.django_migrations
 CREATE TABLE IF NOT EXISTS `django_migrations` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `app` varchar(255) COLLATE utf8mb3_spanish_ci NOT NULL,
   `name` varchar(255) COLLATE utf8mb3_spanish_ci NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.django_migrations: ~5 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.django_migrations: ~5 rows (aproximadamente)
 REPLACE INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
-	(1, 'contenttypes', '0001_initial', '2023-06-28 17:02:18.423142'),
-	(2, 'auth', '0001_initial', '2023-06-28 17:02:20.641146'),
-	(3, 'admin', '0001_initial', '2023-06-28 17:02:21.127146'),
-	(4, 'admin', '0002_logentry_remove_auto_add', '2023-06-28 17:02:21.147145'),
-	(5, 'admin', '0003_logentry_add_action_flag_choices', '2023-06-28 17:02:21.170144'),
-	(6, 'contenttypes', '0002_remove_content_type_name', '2023-06-28 17:02:21.516140'),
-	(7, 'auth', '0002_alter_permission_name_max_length', '2023-06-28 17:02:21.779148'),
-	(8, 'auth', '0003_alter_user_email_max_length', '2023-06-28 17:02:21.949142'),
-	(9, 'auth', '0004_alter_user_username_opts', '2023-06-28 17:02:21.964143'),
-	(10, 'auth', '0005_alter_user_last_login_null', '2023-06-28 17:02:22.141145'),
-	(11, 'auth', '0006_require_contenttypes_0002', '2023-06-28 17:02:22.148147'),
-	(12, 'auth', '0007_alter_validators_add_error_messages', '2023-06-28 17:02:22.168141'),
-	(13, 'auth', '0008_alter_user_username_max_length', '2023-06-28 17:02:22.460147'),
-	(14, 'auth', '0009_alter_user_last_name_max_length', '2023-06-28 17:02:22.627146'),
-	(15, 'auth', '0010_alter_group_name_max_length', '2023-06-28 17:02:22.770148'),
-	(16, 'auth', '0011_update_proxy_permissions', '2023-06-28 17:02:22.789143'),
-	(17, 'auth', '0012_alter_user_first_name_max_length', '2023-06-28 17:02:22.972146'),
-	(18, 'appExoticShoes', '0001_initial', '2023-06-28 17:02:24.055145'),
-	(19, 'sessions', '0001_initial', '2023-06-28 17:02:24.126146'),
-	(20, 'appExoticShoes', '0002_usuarios_grupos', '2023-06-28 17:03:54.049141');
+	(1, 'contenttypes', '0001_initial', '2023-07-22 21:47:40.307552'),
+	(2, 'auth', '0001_initial', '2023-07-22 21:47:40.977341'),
+	(3, 'admin', '0001_initial', '2023-07-22 21:47:41.141964'),
+	(4, 'admin', '0002_logentry_remove_auto_add', '2023-07-22 21:47:41.156255'),
+	(5, 'admin', '0003_logentry_add_action_flag_choices', '2023-07-22 21:47:41.172246'),
+	(6, 'contenttypes', '0002_remove_content_type_name', '2023-07-22 21:47:41.289731'),
+	(7, 'auth', '0002_alter_permission_name_max_length', '2023-07-22 21:47:41.416672'),
+	(8, 'auth', '0003_alter_user_email_max_length', '2023-07-22 21:47:41.544592'),
+	(9, 'auth', '0004_alter_user_username_opts', '2023-07-22 21:47:41.561582'),
+	(10, 'auth', '0005_alter_user_last_login_null', '2023-07-22 21:47:41.660521'),
+	(11, 'auth', '0006_require_contenttypes_0002', '2023-07-22 21:47:41.666518'),
+	(12, 'auth', '0007_alter_validators_add_error_messages', '2023-07-22 21:47:41.682508'),
+	(13, 'auth', '0008_alter_user_username_max_length', '2023-07-22 21:47:41.774185'),
+	(14, 'auth', '0009_alter_user_last_name_max_length', '2023-07-22 21:47:41.907103'),
+	(15, 'auth', '0010_alter_group_name_max_length', '2023-07-22 21:47:41.996048'),
+	(16, 'auth', '0011_update_proxy_permissions', '2023-07-22 21:47:42.014037'),
+	(17, 'auth', '0012_alter_user_first_name_max_length', '2023-07-22 21:47:42.144956'),
+	(18, 'appExoticShoes', '0001_initial', '2023-07-22 21:47:42.882863'),
+	(19, 'appExoticShoes', '0002_usuarios_grupos', '2023-07-22 21:47:43.066118'),
+	(20, 'appExoticShoes', '0003_alter_productos_estado_alter_productos_precio', '2023-07-22 21:47:43.146528'),
+	(21, 'sessions', '0001_initial', '2023-07-22 21:47:43.197074');
 
--- Volcando estructura para tabla nombredb.django_session
+-- Volcando estructura para tabla tiendaexoticshoes.django_session
 CREATE TABLE IF NOT EXISTS `django_session` (
   `session_key` varchar(40) COLLATE utf8mb3_spanish_ci NOT NULL,
   `session_data` longtext COLLATE utf8mb3_spanish_ci NOT NULL,
@@ -486,7 +385,9 @@ CREATE TABLE IF NOT EXISTS `django_session` (
   KEY `django_session_expire_date_a5c62663` (`expire_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla nombredb.django_session: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.django_session: ~0 rows (aproximadamente)
+REPLACE INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+	('tj51fp1fxs2k01b15d645ssqkfhsfhmx', '.eJxVjMsOwiAURH9FWRvCow9x6Vr_wIRc4NKiFZJSEhPjv0uTLnQzizkz5000lGXUJeOsgyMnwsnhtzNgHxhX4O4Qh0RtisscDF0ndKOZXpPD6bxt_wQj5LG-jeo8eCFa0fS9b5lkQjhADkevOomdckJKb2vRMOMFd41E4Nyi8EpJ8FU6pSFEnYu1mLN-1oABq_pWGAN-WekOX2FJOe3J5wvB0EjP:1qNKT9:hFsPblvBSS29Yj-zU4Y90GQgHXtkzAqaVW5b-5M6VE4', '2023-08-05 21:48:55.558031');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
