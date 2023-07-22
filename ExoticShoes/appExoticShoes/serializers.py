@@ -42,4 +42,4 @@ class DevolucionesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Devoluciones
         fields = '__all__'
-        
+

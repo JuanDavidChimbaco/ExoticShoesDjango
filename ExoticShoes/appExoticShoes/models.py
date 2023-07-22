@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 
+ESTADO_CHOICES = (
+    (True, 'Activo'),
+    (False, 'Borrado'),
+)
 
 class Usuarios(User):
     telefono = models.CharField(max_length=45)
@@ -20,10 +24,10 @@ class Categorias(models.Model):
 class Productos(models.Model):
     nombre = models.CharField(max_length=45)
     descripcion = models.CharField(max_length=45)
-    precio = models.FloatField()
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
     cantidadEnInventario = models.IntegerField()
     foto = models.ImageField(upload_to='productos/', blank=True, null=True)
-    estado = models.BooleanField(default=True)
+    estado = models.BooleanField(choices=ESTADO_CHOICES, default=True)
     categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE)
 
     def __str__(self):

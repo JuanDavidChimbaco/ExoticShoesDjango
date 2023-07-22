@@ -1,60 +1,103 @@
-</html>
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
+  <head>
+    <link rel="icon" href="../../media/exoticshoes.jpg" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap 5.3 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>    
-    
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- archivos locales estaticos -->
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+    <script src="{% static '../static/js/login.js' %}"></script>
     <title>Iniciar sesión</title>
-    <style>
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: rgb(156, 152, 152);
-        }
-        .card{
-            box-shadow: 10px 10px 10px rgb(77, 77, 77);
-        }
-    </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="text-center">Iniciar sesión</h4>
-                    </div>
-                    <div class="card-body">
-                        <form method="post">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="id_username">Usuario</label>
-                                <input type="text" class="form-control" id="id_username" name="username" maxlength="150"
-                                    placeholder="Ingresa tu Usuario" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="id_password">Contraseña</label>
-                                <input type="password" class="form-control" id="id_password" name="password"
-                                    placeholder="Ingresa tu contraseña" required>
-                            </div>
-                            <div class="col mt-3 text-center">
-                                <input type="submit" class="btn btn-primary btn-block" value="Iniciar sesión">
-                            </div>
-                        </form>
-                    </div>
-                </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="text-center">Iniciar sesión</h4>
             </div>
+            <div class="card-body">
+              <form id="login-form" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="id_username">Usuario</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="id_username"
+                    name="username"
+                    maxlength="150"
+                    placeholder="Ingresa tu Usuario"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="id_password">Contraseña</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="id_password"
+                    name="password"
+                    placeholder="Ingresa tu contraseña"
+                    required
+                  />
+                </div>
+                <div class="col mt-3 text-center">
+                  <input
+                    type="submit"
+                    class="btn btn-primary btn-block"
+                    value="Iniciar sesión"
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
 
-</body>
-
+    {% if error_message %}
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ error_message }}',
+            })
+        </script>
+    {% endif %}
+    
+    {% if login_success_message %}
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Exito!',
+                text: '{{ login_success_message }}',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'inicio' %}";
+                }
+            })
+        </script>
+    {% endif %}
+  </body>
 </html>
