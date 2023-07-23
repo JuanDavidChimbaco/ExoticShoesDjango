@@ -95,7 +95,7 @@ def custom_login(request):
     return render(request, 'inicio_sesion.html')
 
 
-@login_required(login_url="/")
+@login_required(login_url="login")
 def inicio(request):
     return render(request, "dashboard.html", {})
 

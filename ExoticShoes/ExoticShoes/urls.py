@@ -39,10 +39,10 @@ urlpatterns = [
     path('login/', views.custom_login, name='login'),
     path('logout/', views.custom_logout, name='logout'),
     path('inicio/', inicio, name='inicio'),
-    path('frmCategorias/', categorias),
-    path('frmProductos/', productos),
-    path('frmPedidos/', pedidos),
-    path('frmEnvios/', envios),
+    path('frmCategorias/', categorias, name='categorias'),
+    path('frmProductos/', productos, name='productos'),
+    path('frmPedidos/', pedidos, name='pedidos'),
+    path('frmEnvios/', envios, name='envios'),
     path('api/v1.0/', include(router.urls)),
 ]
 
