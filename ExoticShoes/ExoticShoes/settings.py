@@ -45,15 +45,14 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # custom
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'ExoticShoes.urls'
@@ -122,13 +121,10 @@ USE_I18N = True
 USE_TZ = True
 
 
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = os.path.join(BASE_DIR,'/static/')
-
 
 #para guardar archivos de multimedia 
 
@@ -138,14 +134,16 @@ MEDIA_ROOT= os.path.join(BASE_DIR,'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#  permitir solicitudes solo desde un origen específico
+# permitir solicitudes solo desde un origen específico
 # permitir todas las solicitudes de origen cruzado
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ORIGIN_WHITELIST = []
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://192.168.100.9:8080"
+]
 
 LOGIN_URL = '/login/'

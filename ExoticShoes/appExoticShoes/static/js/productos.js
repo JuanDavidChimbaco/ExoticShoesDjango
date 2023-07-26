@@ -186,7 +186,7 @@ function eliminarPro() {
   var csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
   Swal.fire({
     title: "Desea Eliminar el Producto?",
-    text: "Si lo haces no se podra Rvertir!",
+    text: "Si lo haces no se podra Revertir!",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
