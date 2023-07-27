@@ -1,4 +1,11 @@
 var id = 0;
+document.addEventListener("DOMContentLoaded", function() {
+  new DataTable('#tablaPro', {
+    dom: 'Bfrtip',
+    buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+    // Aquí puedes añadir más opciones si lo deseas
+  });
+});
 function obtenerPed() {
   var tabla = document.getElementById("tablaPro");
   var rows = [];
@@ -6,6 +13,9 @@ function obtenerPed() {
     .get("/api/v1.0/pedidos/")
     .then(function (response) {
       console.log(response);
+      if (response.data.length === 0) {
+        tabla.innerHTML = "<tr><td colspan='5'>No se encontraron pedidos.</td></tr>";
+      } else {
       response.data.forEach((element, index) => {
         var row = `<tr>
                        <th scope="row">${index + 1}</th>
@@ -20,80 +30,14 @@ function obtenerPed() {
                      </tr>`;
         rows.push(row);
       });
+    }
       tabla.innerHTML = rows.join("");
     })
     .catch(function (error) {
       console.error(error);
     });
 }
-function load(element) {
-  console.log(element);
-  this.id = element.id;
-  txtNombre.value = element.nombre;
-  txtDescripcion.value = element.descripcion;
-  txtPrecio.value = element.precio;
-  txtCantidad.value = element.cantidadEnInventario;
-  cbCategoria.value = element.categoria;
-}
-function agregarPed() {
-  var csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-  var fileInput = document.getElementById("fileFoto");
-  var file = fileInput.files[0];
 
-  var formData = new FormData();
-  formData.append("nombre", txtNombre.value);
-  formData.append("descripcion", txtDescripcion.value);
-  formData.append("precio", txtPrecio.value);
-  formData.append("cantidadEnInventario", txtCantidad.value);
-  formData.append("categoria", cbCategoria.value);
-  formData.append("foto", file);
-
-  axios
-    .post("/api/v1.0/pedidos/", formData, {
-      headers: {
-        "X-CSRFToken": csrfToken,
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then(function (response) {
-      console.log("Producto agregado con éxito " + response);
-      obtenerProductos();
-      limpiar();
-    })
-    .catch(function (error) {
-      console.error("Error al agregar ", error);
-    });
-}
-function modificarPed() {
-  var csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-  var fileInput = document.getElementById("fileFoto");
-  var file = fileInput.files[0];
-
-  var formData = new FormData();
-  formData.append("id", this.id);
-  formData.append("nombre", txtNombre.value);
-  formData.append("descripcion", txtDescripcion.value);
-  formData.append("precio", txtPrecio.value);
-  formData.append("cantidadEnInventario", txtCantidad.value);
-  formData.append("categoria", cbCategoria.value);
-  formData.append("foto", file);
-
-  axios
-    .put(`/api/v1.0/pedidos/${this.id}/`, formData, {
-      headers: {
-        "X-CSRFToken": csrfToken,
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then(function (response) {
-      console.log(response);
-      obtenerProductos();
-      limpiar();
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-}
 function eliminarPed() {
   var csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
   let rest = confirm("Seguro de eliminar el Producto? ");
