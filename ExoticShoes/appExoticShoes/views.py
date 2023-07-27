@@ -1,5 +1,5 @@
 from pyexpat.errors import messages
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework import viewsets
 from .models import (
     Usuarios,
@@ -55,8 +55,8 @@ class PedidosViewSet(viewsets.ModelViewSet):
 
 
 class DetallePedidoViewSet(viewsets.ModelViewSet):
-    queryset = DetallePedido.objects.all()
     serializer_class = DetallePedidoSerializer
+    queryset = DetallePedido.objects.all()
 
 
 class PagoViewSet(viewsets.ModelViewSet):

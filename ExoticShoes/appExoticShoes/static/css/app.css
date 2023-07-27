@@ -1,7 +1,14 @@
 body{
     background-color: rgb(226, 226, 226);
 }
+
 section{
     min-height: l00vh;
     max-height: l00vh;
+}
+
+.centrado-vertical{
+    align-items: center !important;
+    vertical-align: middle !important;
+    font-size: larger;
 }

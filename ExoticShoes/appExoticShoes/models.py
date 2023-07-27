@@ -47,6 +47,12 @@ class DetallePedido(models.Model):
     producto = models.ForeignKey(Productos, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     subtotal = models.FloatField()
+    def save(self, *args, **kwargs):
+        # Calcular el subtotal antes de guardar el objeto
+        if self.producto and self.cantidad:
+            self.subtotal = self.producto.precio * self.cantidad
+
+        super(DetallePedido, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"Detalle de pedido {self.id}"

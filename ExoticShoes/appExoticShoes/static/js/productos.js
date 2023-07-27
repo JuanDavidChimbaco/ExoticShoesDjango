@@ -16,8 +16,9 @@ function mostrarVistaPrevia() {
 }
 
 // trae el nombre de las categorias para mostrar en el select
-function NombreCat() {
-  axios.get("/api/v1.0/categorias/").then(function (response) {
+async function NombreCat() {
+  try {
+    const response = await axios.get("/api/v1.0/categorias/");
     console.log(response.data);
     localStorage.categoria = JSON.stringify(response.data);
     var opcion = `<option value="0">Seleccione Categoría</option>`;
@@ -25,74 +26,104 @@ function NombreCat() {
       opcion += `<option value="${categoria.id}">${categoria.nombre}</option>`;
     });
     cbCategoria.innerHTML = opcion;
-  });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // Variables globales
 var id = 0;
+let dataTable;
+let dataTableIsInitialized = false;
+
+// Opciones para el DataTable
+const dataTableOptions = {
+  dom: 'Bfrtip',
+    buttons: ['copy', 'csv', 'excel', 'pdf', 
+            { extend: 'print',
+              exportOptions: {
+                columns: [0, 1, 2, 3, 4, 5] 
+              }
+            }],
+  columnDefs: [
+      { className: "centered", targets: [0, 1, 2, 3, 4, 5, 6, 7] },
+      { orderable: false, targets: [6, 7] },
+      { searchable: false, targets: [0, 6, 7] }
+  ],
+  pageLength: 4,
+  destroy: true
+};
+
+const initDataTable = async () => {
+  if (dataTableIsInitialized) {
+      dataTable.destroy();
+  }
+  await obtenerProductos();
+  dataTable = $("#tables").DataTable(dataTableOptions);
+  dataTableIsInitialized = true;
+};
+
 
 // Obtiene los productos de la base de datos
-function obtenerProductos() {
-  var tabla = document.getElementById("tablaPro");
-  var rows = [];
-  var NombreCat = "";
-  axios
-    .get("/api/v1.0/productos/")
-    .then(function (response) {
-      console.log(response);
-      response.data.forEach((element, index) => {
-        let categorias = JSON.parse(localStorage.categoria);
-        categorias.forEach((cat) => {
-          if (cat.id === element.categoria) {
-            NombreCat = cat.nombre;
-          }
-        });
+async function obtenerProductos() {
+  try {
+    var tabla = document.getElementById("tablaPro");
+    var data = "";
+    var NombreCat = "";
+    const response = await axios.get("/api/v1.0/productos/");
+    console.log(response);
 
-        // Formatear el precio con separador de miles y el símbolo COP
-        const precioFormateado = new Intl.NumberFormat("es-CO", {
-          style: "currency",
-          currency: "COP",
-        }).format(element.precio);
+    let categorias = JSON.parse(localStorage.categoria);
 
-        var row = `<tr>
-                       <th scope="row">${index + 1}</th>
-                       <td>${element.nombre}</td>
-                       <td>${element.descripcion}</td>
-                       <td>${precioFormateado}</td>
-                       <td>${element.cantidadEnInventario}</td>
-                       <td>${NombreCat}</td>
-                       <td>
-                            <img src="${element.foto}" alt="Imagen" height="100" width="100" onclick='vistaPrevia(${JSON.stringify(element)})'>
-                       </td>
-                       <td>
-                         <input type="radio" name="checkOpcion" id="checkOpcion" onclick='load(${JSON.stringify(
-                           element
-                         )})'>
-                       </td>
-                     </tr>`;
-        rows.push(row);
+    response.data.forEach((element, index) => {
+      categorias.forEach((cat) => {
+        if (cat.id === element.categoria) {
+          NombreCat = cat.nombre;
+        }
       });
-      tabla.innerHTML = rows.join("");
-    })
-    .catch(function (error) {
-      console.error(error);
+
+      // Formatear el precio con separador de miles y el símbolo COP
+      const precioFormateado = new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+      }).format(element.precio);
+
+      data += `<tr>
+                  <th scope="row">${index + 1}</th>
+                  <td>${element.nombre}</td>
+                  <td>${element.descripcion}</td>
+                  <td>${precioFormateado}</td>
+                  <td>${element.cantidadEnInventario}</td>
+                  <td>${NombreCat}</td>
+                  <td>
+                    <img src="${element.foto}" alt="Imagen" height="100" width="100" onclick='vistaPrevia(${JSON.stringify(element)})' class="btn">
+                  </td>
+                  <td>
+                    <input type="radio" name="checkOpcion" id="checkOpcion" onclick='load(${JSON.stringify(element)})'>
+                  </td>
+                </tr>`;
     });
+    tabla.innerHTML = data;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
+
 function vistaPrevia(element) {
-    // Construimos el contenido del cuadro de diálogo de SweetAlert con los datos del producto
-    const contenido = `
+  // Construimos el contenido del cuadro de diálogo de SweetAlert con los datos del producto
+  const contenido = `
     <h3>${element.nombre}</h3>
     <img src="${element.foto}" alt="Imagen" height="300" width="300">
     <p>${element.descripcion}</p>
     <p>Precio: $${element.precio}</p>
         `;
-  
-    // Mostramos el cuadro de diálogo de SweetAlert
-    swal.fire({
-      html: contenido,
-    });
-  }
+
+  // Mostramos el cuadro de diálogo de SweetAlert
+  swal.fire({
+    html: contenido,
+  });
+}
 
 // carga los datos en el formulario para modificar o eliminar
 function load(element) {
@@ -231,7 +262,7 @@ function limpiar() {
 }
 
 // Eventos para obtener los productos y traer el nombre de las categorias
-window.onload = function () {
-  obtenerProductos();
-  NombreCat();
-};
+window.addEventListener("load", async () => {
+  await initDataTable();
+  await NombreCat();
+});

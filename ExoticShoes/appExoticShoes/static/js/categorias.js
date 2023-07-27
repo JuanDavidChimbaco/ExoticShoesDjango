@@ -1,30 +1,62 @@
 // ---------------------Categorias-------------------------------
+let dataTable;
+let dataTableIsInitialized = false;
+
+const dataTableOptions = {
+    dom: 'Bfrtip',
+    buttons: ['copy', 
+            'csv', 
+            'excel', 
+            'pdf', 
+            {
+                extend: 'print',
+                exportOptions: {
+                    columns: [0, 1] 
+                }
+            }],
+    columnDefs: [
+        { className: "centered", targets: [0, 1, 2] },
+        { orderable: false, targets: [2] },
+        { searchable: false, targets: [0, 2]}
+    ],
+    pageLength: 4,
+    destroy: true
+};
+
+
+const initDataTable = async () => {
+    if (dataTableIsInitialized) {
+        dataTable.destroy();
+    }
+
+    await obtenerCat();
+
+    dataTable = $("#tableCat").DataTable(dataTableOptions);
+
+    dataTableIsInitialized = true;
+};
+
 var id = 0;
-function obtenerCat() {
-    var tabla = document.getElementById('tabla');
-    var rows = [];
-
-    axios
-        .get('/api/v1.0/categorias/')
-        .then(function (response) {
-            console.log(response);
-            response.data.forEach((element, index) => {
-                var row = `<tr>
-                       <th scope="row">${index + 1}</th>
-                       <td>${element.nombre}</td>
-                       <td>
-                         <input type="radio" name="checkOpcion" id="checkOpcion" onclick='load(${JSON.stringify(element)})'>
-                       </td>
-                     </tr>`;
-                rows.push(row);
-            });
-
-            tabla.innerHTML = rows.join('');
-        })
-        .catch(function (error) {
-            console.error(error);
+async function obtenerCat() {
+    try {
+        const response = await axios.get('/api/v1.0/categorias/');
+        console.log(response);
+        let data = "";
+        response.data.forEach((element, index) => {
+            data += `<tr>
+                        <th scope="row">${index + 1}</th>
+                        <td>${element.nombre}</td>
+                        <td>
+                            <input type="radio" name="checkOpcion" id="checkOpcion" onclick='load(${JSON.stringify(element)})'>
+                        </td>
+                    </tr>`;
         });
+        tabla.innerHTML = data;
+    } catch (error) {
+        console.error(error);
+    }
 }
+
 function load(element) {
     console.log(element);
     this.id = element.id;
@@ -110,6 +142,7 @@ function limpiar() {
     });
 }
 
-window.onload = function () {
-    obtenerCat();
-};
+
+window.addEventListener("load", async () => {
+    await initDataTable();
+});
