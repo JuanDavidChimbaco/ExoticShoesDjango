@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import  Usuarios, Categorias, Productos, Pedidos, DetallePedido, Pago, Envio, Devoluciones
+from .models import  Usuarios, Categorias, Productos, ItemCarrito, Pedidos, DetallePedido, Pago, Envio, Devoluciones
 
 # Definir los serializadores 
 
@@ -16,6 +16,13 @@ class CategoriasSerializer(serializers.ModelSerializer):
 class ProductosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Productos
+        fields = '__all__'
+        
+class ItemCarritoSerializer(serializers.ModelSerializer):
+    producto = ProductosSerializer()
+
+    class Meta:
+        model = ItemCarrito
         fields = '__all__'
 
 class PedidosSerializer(serializers.ModelSerializer):

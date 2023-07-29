@@ -1,0 +1,21 @@
+{% if request.user.is_authenticated %}
+<h1>Carrito de Compras</h1>
+
+{% if items_carrito %}
+<ul>
+    {% for item in items_carrito %}
+    <li>
+        {{ item.producto.nombre }} - Cantidad: {{ item.cantidad }} - Subtotal: {{ item.producto.precio * item.cantidad
+        }}
+        <a href="{% url 'eliminar_del_carrito' item.id %}">Eliminar</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+    <p>Carrito vacío. Agrega productos para comenzar a comprar.</p>
+{% endif %}
+
+<p>Total del carrito: {{ total_carrito }}</p>
+{% else %}
+<p>Inicia sesión para ver tu carrito de compras.</p>
+{% endif %}

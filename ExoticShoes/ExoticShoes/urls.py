@@ -20,13 +20,12 @@ from django.conf.urls.static import static
 from django.urls import include, path
 from rest_framework import routers
 from appExoticShoes import views
-from appExoticShoes.views import inicio,categorias,productos,pedidos,envios
-
 
 router = routers.DefaultRouter()
 router.register(r'usuarios', views.UsuariosViewSet)
 router.register(r'categorias', views.CategoriasViewSet)
 router.register(r'productos', views.ProductosViewSet)
+router.register(r'carrito', views.ItemCarritoViewSet, basename='carrito')
 router.register(r'pedidos', views.PedidosViewSet)
 router.register(r'detallePedidos', views.DetallePedidoViewSet,basename='detallepedido')
 router.register(r'pago', views.PagoViewSet)
@@ -38,11 +37,18 @@ urlpatterns = [
     path('', views.redirect_to_login, name='redirect_to_login'),
     path('login/', views.custom_login, name='login'),
     path('logout/', views.custom_logout, name='logout'),
-    path('inicio/', inicio, name='inicio'),
-    path('frmCategorias/', categorias, name='categorias'),
-    path('frmProductos/', productos, name='productos'),
-    path('frmPedidos/', pedidos, name='pedidos'),
-    path('frmEnvios/', envios, name='envios'),
+    path('inicio/', views.inicio, name='inicio'),
+    path('frmCategorias/', views.categorias, name='categorias'),
+    path('frmProductos/', views.productos, name='productos'),
+    path('frmPedidos/', views.pedidos, name='pedidos'),
+    path('frmEnvios/', views.envios, name='envios'),
+    path('convertir-a-pedido/', views.convertir_a_pedido, name='convertir_a_pedido'),
+    path('api/procesar-pago/<int:pedido_id>/', views.ProcesarPagoView.as_view(), name='procesar_pago_api'),
+    
+    path('agregar-al-carrito/<int:producto_id>/', views.agregar_al_carrito, name='agregar_al_carrito'),
+    path('eliminar-del-carrito/<int:item_id>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
+    path('carrito/', views.vista_del_carrito, name='vista_del_carrito'),
+    
     path('api/v1.0/', include(router.urls)),
 ]
 
