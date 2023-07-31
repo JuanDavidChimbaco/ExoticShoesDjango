@@ -66,15 +66,13 @@ async function detallePedidos(id) {
     let data = ""
     const response = await axios.get(`/api/v1.0/detallePedidos/${id}/`);
     console.log(response);
-    for (element in response.data) {
-      data += `<tr>
-                  <th scope="row">${1}</th>
-                  <td>${element.cantidad}</td>
-                  <td>${element.subtotal}</td>
-                  <td>${element.pedido}</td>
-                  <td>${element.producto}</td>
+      data = `<tr>
+                  <th scope="row">${response.data.id}</th>
+                  <td>${response.data.cantidad}</td>
+                  <td>${response.data.subtotal}</td>
+                  <td>${response.data.pedido}</td>
+                  <td>${response.data.producto}</td>
               </tr>`;
-    };
     tableDetalle.innerHTML = data;
   } catch (error) {
     console.log(error);
