@@ -155,6 +155,10 @@ def productos(request):
 def pedidos(request):
     return render(request, "frmPedidos.html", {})
 
+@login_required(login_url="/")
+def pagos(request):
+    return render(request, "frmPagos.html", {})
+
 
 @login_required(login_url="/")
 def envios(request):
