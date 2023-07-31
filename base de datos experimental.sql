@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_detallepedido` (
   CONSTRAINT `appExoticShoes_detal_producto_id_29dfa03e_fk_appExotic` FOREIGN KEY (`producto_id`) REFERENCES `appexoticshoes_productos` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_detallepedido: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_detallepedido: ~0 rows (aproximadamente)
 DELETE FROM `appexoticshoes_detallepedido`;
 INSERT INTO `appexoticshoes_detallepedido` (`id`, `cantidad`, `subtotal`, `pedido_id`, `producto_id`) VALUES
 	(1, 1, 264, 1, 1),
@@ -69,10 +69,12 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_devoluciones` (
   KEY `appExoticShoes_devol_pago_id_566dc979_fk_appExotic` (`pago_id`),
   CONSTRAINT `appExoticShoes_devol_envio_id_1a62d54e_fk_appExotic` FOREIGN KEY (`envio_id`) REFERENCES `appexoticshoes_envio` (`id`),
   CONSTRAINT `appExoticShoes_devol_pago_id_566dc979_fk_appExotic` FOREIGN KEY (`pago_id`) REFERENCES `appexoticshoes_pago` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 -- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_devoluciones: ~0 rows (aproximadamente)
 DELETE FROM `appexoticshoes_devoluciones`;
+INSERT INTO `appexoticshoes_devoluciones` (`id`, `fechaDevolucion`, `motivo`, `productosDevueltos`, `cantidadDevuelta`, `envio_id`, `pago_id`) VALUES
+	(1, '2023-08-03 12:43:00.000000', 'Prenda Dañada', 'Nike', 1, 1, 1);
 
 -- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_envio
 CREATE TABLE IF NOT EXISTS `appexoticshoes_envio` (
@@ -86,10 +88,12 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_envio` (
   PRIMARY KEY (`id`),
   KEY `appExoticShoes_envio_estadoPago_id_b142f800_fk_appExotic` (`estadoPago_id`),
   CONSTRAINT `appExoticShoes_envio_estadoPago_id_b142f800_fk_appExotic` FOREIGN KEY (`estadoPago_id`) REFERENCES `appexoticshoes_pago` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 -- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_envio: ~0 rows (aproximadamente)
 DELETE FROM `appexoticshoes_envio`;
+INSERT INTO `appexoticshoes_envio` (`id`, `servicioEnvio`, `DireccionEnv`, `fechaEnvio`, `fechaEntrega`, `estado`, `estadoPago_id`) VALUES
+	(1, 'SurEnvios', 'Carrera 9', '2023-07-31 12:40:00.000000', '2023-08-01 12:40:00.000000', 'Enviado', 1);
 
 -- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_itemcarrito
 CREATE TABLE IF NOT EXISTS `appexoticshoes_itemcarrito` (
@@ -119,10 +123,12 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_pago` (
   PRIMARY KEY (`id`),
   KEY `appExoticShoes_pago_pedidos_id_18f1d6da_fk_appExotic` (`pedidos_id`),
   CONSTRAINT `appExoticShoes_pago_pedidos_id_18f1d6da_fk_appExotic` FOREIGN KEY (`pedidos_id`) REFERENCES `appexoticshoes_pedidos` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 -- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_pago: ~0 rows (aproximadamente)
 DELETE FROM `appexoticshoes_pago`;
+INSERT INTO `appexoticshoes_pago` (`id`, `metodo`, `monto`, `fecha`, `estado`, `pedidos_id`) VALUES
+	(1, 'PSE', 264000, '2023-07-31 12:39:00.000000', 'Pagado', 1);
 
 -- Volcando estructura para tabla tiendaexoticshoes.appexoticshoes_pedidos
 CREATE TABLE IF NOT EXISTS `appexoticshoes_pedidos` (
@@ -134,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_pedidos` (
   CONSTRAINT `appExoticShoes_pedid_usuario_id_4c709d32_fk_appExotic` FOREIGN KEY (`usuario_id`) REFERENCES `appexoticshoes_usuarios` (`user_ptr_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_pedidos: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.appexoticshoes_pedidos: ~0 rows (aproximadamente)
 DELETE FROM `appexoticshoes_pedidos`;
 INSERT INTO `appexoticshoes_pedidos` (`id`, `fechaPedido`, `usuario_id`) VALUES
 	(1, '2023-07-31', 2);
@@ -223,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `auth_group_permissions` (
   CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla tiendaexoticshoes.auth_group_permissions: ~40 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.auth_group_permissions: ~9 rows (aproximadamente)
 DELETE FROM `auth_group_permissions`;
 INSERT INTO `auth_group_permissions` (`id`, `group_id`, `permission_id`) VALUES
 	(1, 1, 25),
@@ -362,7 +368,7 @@ CREATE TABLE IF NOT EXISTS `auth_user` (
 -- Volcando datos para la tabla tiendaexoticshoes.auth_user: ~3 rows (aproximadamente)
 DELETE FROM `auth_user`;
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-	(1, 'pbkdf2_sha256$600000$j6vdn897Mwqp23Xbe0IGZu$S8UGu03lxyAWxo0T3GrkodvHBak+RihPxb5bPTMW8d4=', '2023-07-31 12:03:11.367918', 1, 'admin', 'Juan David', 'Chimbaco Herrera', 'dajun318@gmail.com', 1, 1, '2023-07-22 21:48:31.000000'),
+	(1, 'pbkdf2_sha256$600000$j6vdn897Mwqp23Xbe0IGZu$S8UGu03lxyAWxo0T3GrkodvHBak+RihPxb5bPTMW8d4=', '2023-07-31 12:45:48.888444', 1, 'admin', 'Juan David', 'Chimbaco Herrera', 'dajun318@gmail.com', 1, 1, '2023-07-22 21:48:31.000000'),
 	(2, '1234', NULL, 0, 'user', 'Juan David', 'Chimbaco Herrera', 'dajun318@gmail.com', 0, 1, '2023-07-27 23:37:58.000000'),
 	(3, '1234', NULL, 1, 'admin2', 'Juan David', 'Chimbaco Herrera', 'dajun318@gmail.com', 1, 1, '2023-07-28 23:51:33.000000');
 
@@ -533,7 +539,7 @@ CREATE TABLE IF NOT EXISTS `django_content_type` (
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla tiendaexoticshoes.django_content_type: ~15 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.django_content_type: ~0 rows (aproximadamente)
 DELETE FROM `django_content_type`;
 INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 	(1, 'admin', 'logentry'),
@@ -561,7 +567,7 @@ CREATE TABLE IF NOT EXISTS `django_migrations` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla tiendaexoticshoes.django_migrations: ~22 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.django_migrations: ~0 rows (aproximadamente)
 DELETE FROM `django_migrations`;
 INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 	(1, 'contenttypes', '0001_initial', '2023-07-28 22:41:01.254770'),
@@ -596,11 +602,12 @@ CREATE TABLE IF NOT EXISTS `django_session` (
   KEY `django_session_expire_date_a5c62663` (`expire_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla tiendaexoticshoes.django_session: ~3 rows (aproximadamente)
+-- Volcando datos para la tabla tiendaexoticshoes.django_session: ~2 rows (aproximadamente)
 DELETE FROM `django_session`;
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
 	('avhov3okgqsu6uekq1zf1q3gd7yb99bt', '.eJxVjMsOwiAURH9FWRvCow9x6Vr_wIRc4NKiFZJSEhPjv0uTLnQzizkz5000lGXUJeOsgyMnwsnhtzNgHxhX4O4Qh0RtisscDF0ndKOZXpPD6bxt_wQj5LG-jeo8eCFa0fS9b5lkQjhADkevOomdckJKb2vRMOMFd41E4Nyi8EpJ8FU6pSFEnYu1mLN-1oABq_pWGAN-WekOX2FJOe3J5wvB0EjP:1qPWml:1QbMLbzw7LM8bsUk0KNG7dbseRm-ITI2xjqD3OdiPeY', '2023-08-11 23:22:15.552635'),
 	('k74g6j2jza1jh3x4faeoh8csywwkos6c', '.eJxVjMsOwiAURH9FWRvCow9x6Vr_wIRc4NKiFZJSEhPjv0uTLnQzizkz5000lGXUJeOsgyMnwsnhtzNgHxhX4O4Qh0RtisscDF0ndKOZXpPD6bxt_wQj5LG-jeo8eCFa0fS9b5lkQjhADkevOomdckJKb2vRMOMFd41E4Nyi8EpJ8FU6pSFEnYu1mLN-1oABq_pWGAN-WekOX2FJOe3J5wvB0EjP:1qPoNq:xQN2wOM-DspkaN7sina6acxDwK9__K8Fm96382eh-5c', '2023-08-12 18:09:42.990622'),
+	('n02ge8p089068pkuk8ypz0bd2f8jldgb', '.eJxVjMsOwiAURH9FWRvCow9x6Vr_wIRc4NKiFZJSEhPjv0uTLnQzizkz5000lGXUJeOsgyMnwsnhtzNgHxhX4O4Qh0RtisscDF0ndKOZXpPD6bxt_wQj5LG-jeo8eCFa0fS9b5lkQjhADkevOomdckJKb2vRMOMFd41E4Nyi8EpJ8FU6pSFEnYu1mLN-1oABq_pWGAN-WekOX2FJOe3J5wvB0EjP:1qQSHU:NU6or1U8a341fTueeU3XhlHutd_uDP5XutewHlwO43g', '2023-08-14 12:45:48.890484'),
 	('y0tb3edtexx12vowqdvb75acnhihpw85', '.eJxVjMsOwiAURH9FWRvCow9x6Vr_wIRc4NKiFZJSEhPjv0uTLnQzizkz5000lGXUJeOsgyMnwsnhtzNgHxhX4O4Qh0RtisscDF0ndKOZXpPD6bxt_wQj5LG-jeo8eCFa0fS9b5lkQjhADkevOomdckJKb2vRMOMFd41E4Nyi8EpJ8FU6pSFEnYu1mLN-1oABq_pWGAN-WekOX2FJOe3J5wvB0EjP:1qQRcF:kCiQ-Ai_28vfoI-0HW0p21HBl_yJtUCfCnU7jB0QQYo', '2023-08-14 12:03:11.370795');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;

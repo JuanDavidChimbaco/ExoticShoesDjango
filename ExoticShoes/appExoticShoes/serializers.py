@@ -24,6 +24,21 @@ class ItemCarritoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemCarrito
         fields = '__all__'
+        
+    def create(self, validated_data):
+        # Extract nested data if present
+        nested_data = validated_data.pop('nested_field', None)
+
+        # Create the item carrito instance
+        item_carrito = ItemCarrito.objects.create(**validated_data)
+
+        # Handle nested data if present and create related objects
+        if nested_data:
+            # Create or update related objects based on nested_data
+            # For example:
+            UsuariosSerializer.objects.create(item_carrito=item_carrito, **nested_data)
+
+        return item_carrito
 
 class PedidosSerializer(serializers.ModelSerializer):
     class Meta:
