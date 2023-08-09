@@ -24,28 +24,26 @@ const initDataTable = async () => {
   if (dataTableIsInitialized) {
     dataTable.destroy();
   }
-  await obtenerPago();
-  dataTable = $("#tablaPago").DataTable(dataTableOptions);
+  await obtenerDevoluiones();
+  dataTable = $("#tablaDev").DataTable(dataTableOptions);
   dataTableIsInitialized = true;
 };
 
-
-async function obtenerPago() {
+async function obtenerDevoluiones() {
     try {
-        const response = await axios.get('/api/v1.0/pago/');
+        const response = await axios.get('/api/v1.0/devoluciones/');
         console.log(response);
         let data = "";
         response.data.forEach((element, index) => {
             data += `<tr>
                         <th scope="row">${index + 1}</th>
-                        <td>${element.metodo}</td>
-                        <td>${element.monto}</td>
-                        <td>${element.fecha}</td>
-                        <td>${element.estado}</td>
-                        <td>${element.pedidos}</td>
+                        <td>${element.fechaDevolucion}</td>
+                        <td>${element.motivo}</td>
+                        <td>${element.productosDevueltos}</td>
+                        <td>${element.cantidadDevuelta}</td>
                     </tr>`;
         });
-        tablepagos.innerHTML = data;
+        table.innerHTML = data;
     } catch (error) {
         console.error(error);
     }
@@ -54,3 +52,4 @@ async function obtenerPago() {
 window.onload = function () {
     initDataTable();
   };
+  

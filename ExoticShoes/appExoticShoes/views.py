@@ -164,22 +164,22 @@ def pagos(request):
 def envios(request):
     return render(request, "frmEnvios.html", {})
 
+@login_required(login_url="/")
+def devoluciones(request):
+    return render(request, "frmDevoluciones.html", {})
 
 @login_required(login_url="/")
 def custom_logout(request):
     logout(request)
     return redirect("login")
 
-
 @login_required(login_url="/")
 def convertir_a_pedido(request):
     if request.user.is_authenticated:
         usuario = request.user
         carrito = ItemCarrito.objects.filter(usuario=usuario)
-
         # Crear el objeto Pedido
         pedido = Pedidos.objects.create(fechaPedido=timezone.now(), usuario=usuario)
-
         # Crear los DetallePedido asociados al Pedido
         for item in carrito:
             DetallePedido.objects.create(
@@ -188,13 +188,9 @@ def convertir_a_pedido(request):
                 cantidad=item.cantidad,
                 subtotal=item.producto.precio * item.cantidad,
             )
-
         # Vaciar el carrito (eliminar todos los elementos del carrito)
         carrito.delete()
-
-        return redirect(
-            "vista_del_carrito"
-        )  # O redireccionar a una vista de confirmación de pedido
+        return redirect("vista_del_carrito")  # O redireccionar a una vista de confirmación de pedido
     else:
         # Manejar el caso de usuario no autenticado si es necesario.
         pass
@@ -205,13 +201,10 @@ def agregar_al_carrito(request, producto_id):
     if request.user.is_authenticated:
         producto = Productos.objects.get(pk=producto_id)
         usuario = Usuarios.objects.get(Usuarios=request.user)
-        item_carrito, created = ItemCarrito.objects.get_or_create(
-            usuario=usuario, producto=producto
-        )
+        item_carrito, created = ItemCarrito.objects.get_or_create(usuario=usuario, producto=producto)
         if not created:
             item_carrito.cantidad += 1
             item_carrito.save()
-
         return redirect("vista_del_carrito")
     else:
         # Aquí puedes manejar el caso de un usuario no autenticado, por ejemplo, redirigiéndolo a la página de inicio de sesión.
@@ -228,7 +221,6 @@ def eliminar_del_carrito(request, item_id):
             item_carrito.delete()
         except ItemCarrito.DoesNotExist:
             pass
-
         return redirect("vista_del_carrito")
     else:
         # Manejar el caso de usuario no autenticado si es necesario.
@@ -240,15 +232,11 @@ def vista_del_carrito(request):
     if request.user.is_authenticated:
         usuario = request.user
         items_carrito = ItemCarrito.objects.filter(usuario=usuario)
-        total_carrito = sum(
-            item.producto.precio * item.cantidad for item in items_carrito
-        )
-
+        total_carrito = sum(item.producto.precio * item.cantidad for item in items_carrito)
         context = {
             "items_carrito": items_carrito,
             "total_carrito": total_carrito,
         }
-
         return render(request, "carrito.html", context)
     else:
         # Manejar el caso de usuario no autenticado si es necesario.

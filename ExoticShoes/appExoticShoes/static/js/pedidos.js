@@ -29,6 +29,8 @@ const initDataTable = async () => {
   dataTable = $("#tablaPro").DataTable(dataTableOptions);
   dataTableIsInitialized = true;
 };
+
+
 async function obtenerPed() {
   try {
     var data = "";

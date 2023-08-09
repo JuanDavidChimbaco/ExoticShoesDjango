@@ -1,3 +1,34 @@
+let dataTable;
+let dataTableIsInitialized = false;
+
+// Opciones para el DataTable
+const dataTableOptions = {
+  dom: 'Bfrtip',
+  buttons: ['copy', 'csv', 'excel', 'pdf',
+    {
+      extend: 'print',
+      exportOptions: {
+        columns: [0, 1, 2, 3, 4, 5]
+      }
+    }],
+  columnDefs: [
+    { className: "centered", targets: [0, 1, 2, 3, 4] },
+    { orderable: false, targets: [4] },
+    { searchable: false, targets: [] }
+  ],
+  pageLength: 4,
+  destroy: true
+};
+
+const initDataTable = async () => {
+  if (dataTableIsInitialized) {
+    dataTable.destroy();
+  }
+  await obtenerEnvios();
+  dataTable = $("#tablaEnvio").DataTable(dataTableOptions);
+  dataTableIsInitialized = true;
+};
+
 async function obtenerEnvios() {
     try {
         const response = await axios.get('/api/v1.0/envio/');
@@ -14,13 +45,13 @@ async function obtenerEnvios() {
                         <td>${element.estadoPago}</td>
                     </tr>`;
         });
-        tableEnvios.innerHTML = data;
+        table.innerHTML = data;
     } catch (error) {
         console.error(error);
     }
 }
 
-window.addEventListener("load", async () => {
-    await obtenerEnvios();
-  });
+window.onload = function () {
+    initDataTable();
+  };
   

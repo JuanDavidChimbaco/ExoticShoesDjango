@@ -43,6 +43,8 @@ urlpatterns = [
     path('frmPedidos/', views.pedidos, name='pedidos'),
     path('frmEnvios/', views.envios, name='envios'),
     path('frmPagos/', views.pagos, name='pagos'),
+    path('frmDevoluciones/', views.devoluciones, name='devoluciones'),
+    
     path('convertir-a-pedido/', views.convertir_a_pedido, name='convertir_a_pedido'),
     path('api/procesar-pago/<int:pedido_id>/', views.ProcesarPagoView.as_view(), name='procesar_pago_api'),
     
