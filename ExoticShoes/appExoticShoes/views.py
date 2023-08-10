@@ -1,6 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import LimitOffsetPagination
 from .models import Usuarios,Categorias, Productos,ItemCarrito,Pedidos,DetallePedido,Pago,Envio,Devoluciones
 from .serializers import (UsuariosSerializer,CategoriasSerializer,ProductosSerializer,ItemCarritoSerializer,
 PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
@@ -34,6 +36,31 @@ class ProductosViewSet(viewsets.ModelViewSet):
         instance.estado = False
         instance.save()
 
+class CustomLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 4
+
+class ProductosListView(ViewSet):
+    pagination_class = CustomLimitOffsetPagination
+    def list(self, request):
+        productos = Productos.objects.filter(estado=True)
+        paginator = LimitOffsetPagination()
+        paginated_productos = paginator.paginate_queryset(productos, request)
+        serializer = ProductosSerializer(paginated_productos, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
+    serializer_class = ProductosSerializer
+    def get_queryset(self):
+        queryset = Productos.objects.filter(estado=True)
+        # Obtener el parámetro de ID de categoría de la URL
+        categoria_id = self.request.query_params.get('categoria_id', None)
+        if categoria_id:
+            queryset = queryset.filter(categoria_id=categoria_id)
+        return queryset
+
+    def perform_destroy(self, instance):
+        instance.estado = False
+        instance.save()
 
 class ItemCarritoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

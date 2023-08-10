@@ -19,18 +19,22 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
 from rest_framework import routers
+from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet
 from appExoticShoes import views
 
 router = routers.DefaultRouter()
 router.register(r'usuarios', views.UsuariosViewSet)
 router.register(r'categorias', views.CategoriasViewSet)
 router.register(r'productos', views.ProductosViewSet)
+router.register(r'productos-filtrados', ProductosFiltradosPorCategoriaViewSet, basename='productos-filtrados')
 router.register(r'carrito', views.ItemCarritoViewSet, basename='carrito')
 router.register(r'pedidos', views.PedidosViewSet)
 router.register(r'detallePedidos', views.DetallePedidoViewSet,basename='detallepedido')
 router.register(r'pago', views.PagoViewSet)
 router.register(r'envio', views.EnvioViewSet)
 router.register(r'devoluciones', views.DevolucionesViewSet)
+
+producto_list_view = ProductosListView.as_view({'get': 'list'})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -51,6 +55,8 @@ urlpatterns = [
     path('agregar-al-carrito/<int:producto_id>/', views.agregar_al_carrito, name='agregar_al_carrito'),
     path('eliminar-del-carrito/<int:item_id>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
     path('carrito/', views.vista_del_carrito, name='vista_del_carrito'),
+    
+    path('productos-limit-offset/', producto_list_view, name='productos-limit-offset'),
     
     path('api/v1.0/', include(router.urls)),
 ]
