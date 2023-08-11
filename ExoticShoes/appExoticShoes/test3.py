@@ -1,6 +1,7 @@
 from django.test import TestCase
 from .models import Usuarios, Categorias, Productos, Pedidos, DetallePedido, Pago, Envio, Devoluciones
 
+
 class UsuariosModelTestCase(TestCase):
     def test_creacion_usuario(self):
         usuario = Usuarios.objects.create_user(
