@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import User, Group
 
@@ -37,9 +38,16 @@ class ItemCarrito(models.Model):
     usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
     producto = models.ForeignKey(Productos, on_delete=models.CASCADE)
     cantidad = models.PositiveIntegerField(default=1)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_precio = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return f"{self.usuario.username} - {self.producto.nombre}"
+
+    def save(self, *args, **kwargs):
+        self.subtotal = self.producto.precio * self.cantidad
+        self.total_precio = self.subtotal
+        super().save(*args, **kwargs)
 
 class Pedidos(models.Model):
     fechaPedido = models.DateField()
@@ -76,6 +84,7 @@ class Pago(models.Model):
         return f"Pago {self.id}"
 
 
+
 class Envio(models.Model):
     servicioEnvio = models.CharField(max_length=45)
     DireccionEnv = models.CharField(max_length=45)
@@ -86,6 +95,13 @@ class Envio(models.Model):
 
     def __str__(self):
         return f"Envío {self.id}"
+    
+    def save(self, *args, **kwargs):
+        if not self.fechaEnvio:
+            self.fechaEnvio = timezone.now()
+        if not self.fechaEntrega:
+            self.fechaEntrega = timezone.now() + timezone.timedelta(days=1)  # Ejemplo: fechaEntrega es un día después
+        super().save(*args, **kwargs)
 
 
 class Devoluciones(models.Model):
@@ -98,3 +114,8 @@ class Devoluciones(models.Model):
 
     def __str__(self):
         return f"Devolución {self.id}"
+    
+    def save(self, *args, **kwargs):
+        if not self.fechaDevolucion:
+            self.fechaDevolucion = timezone.now()
+        super().save(*args, **kwargs)
