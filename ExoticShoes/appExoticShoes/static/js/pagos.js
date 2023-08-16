@@ -14,10 +14,14 @@ const dataTableOptions = {
   columnDefs: [
     { className: "centered", targets: [0, 1, 2, 3, 4] },
     { orderable: false, targets: [4] },
-    { searchable: false, targets: [] }
+    { searchable: true, targets: [0,1,2] }
   ],
   pageLength: 4,
-  destroy: true
+  destroy: true,
+  responsive: true,
+  rowReorder: {
+    selector: 'td:nth-child(2)'
+}
 };
 
 const initDataTable = async () => {

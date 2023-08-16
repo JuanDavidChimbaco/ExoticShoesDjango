@@ -51,7 +51,8 @@ const dataTableOptions = {
       { searchable: false, targets: [0, 6, 7] }
   ],
   pageLength: 4,
-  destroy: true
+  destroy: true,
+  responsive: true
 };
 
 const initDataTable = async () => {

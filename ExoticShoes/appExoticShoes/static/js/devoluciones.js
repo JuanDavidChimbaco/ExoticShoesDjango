@@ -17,7 +17,8 @@ const dataTableOptions = {
     { searchable: false, targets: [] }
   ],
   pageLength: 4,
-  destroy: true
+  destroy: true,
+  responsive: true
 };
 
 const initDataTable = async () => {

@@ -20,7 +20,8 @@ const dataTableOptions = {
         { searchable: false, targets: [0, 2]}
     ],
     pageLength: 4,
-    destroy: true
+    destroy: true,
+    responsive: true
 };
 
 
