@@ -4,3 +4,17 @@ function mostrarImagen(evento){
     const url = URL.createObjectURL(archivo)  
     $("#imagenMostrar").attr("src",url)
   }
+
+function activeNavItem(){
+  let url = window.location.href
+  url = url.slice(-url.length+22,-1)
+  console.log(url);
+  document.querySelectorAll('a').forEach(element => {
+    console.log(element);
+    if(element.href.includes(url)){
+      element.classList.add('active')
+    }
+  })
+}
+
+activeNavItem()

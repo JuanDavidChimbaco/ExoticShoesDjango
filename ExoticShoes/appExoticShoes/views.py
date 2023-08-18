@@ -132,6 +132,7 @@ class ProcesarPagoView(APIView):
         serializer = PagoSerializer(pago)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    
 
 # ------------------- Vistas -------------------
 
