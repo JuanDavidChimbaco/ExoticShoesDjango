@@ -14,10 +14,43 @@ class CategoriasSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductosSerializer(serializers.ModelSerializer):
+    categoria = CategoriasSerializer()
     class Meta:
         model = Productos
         fields = '__all__'
+
+class PedidosSerializer(serializers.ModelSerializer):
+    usuario = UsuariosSerializer()
+    class Meta:
+        model = Pedidos
+        fields = '__all__'
         
+class DetallePedidoSerializer(serializers.ModelSerializer):
+    pedido = PedidosSerializer()
+    producto = ProductosSerializer()
+    class Meta:
+        model = DetallePedido
+        fields = '__all__'
+        
+class PagoSerializer(serializers.ModelSerializer):
+    pedidos = PedidosSerializer()
+    class Meta:
+        model = Pago
+        fields = '__all__'
+
+class EnvioSerializer(serializers.ModelSerializer):
+    estadoPago = PagoSerializer()
+    class Meta:
+        model = Envio
+        fields = '__all__'
+
+class DevolucionesSerializer(serializers.ModelSerializer):
+    envio = EnvioSerializer()
+    pago = PagoSerializer()
+    class Meta:
+        model = Devoluciones
+        fields = '__all__'
+
 class ItemCarritoSerializer(serializers.ModelSerializer):
     producto = ProductosSerializer()
 
@@ -32,29 +65,3 @@ class ItemCarritoSerializer(serializers.ModelSerializer):
             UsuariosSerializer.objects.create(item_carrito=item_carrito, **nested_data)
 
         return item_carrito
-
-class PedidosSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Pedidos
-        fields = '__all__'
-        
-class DetallePedidoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = DetallePedido
-        fields = '__all__'
-        
-class PagoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Pago
-        fields = '__all__'
-
-class EnvioSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Envio
-        fields = '__all__'
-
-class DevolucionesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Devoluciones
-        fields = '__all__'
-

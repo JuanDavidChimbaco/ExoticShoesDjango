@@ -11,7 +11,6 @@ class Usuarios(User):
     telefono = models.CharField(max_length=45)
     FechaNacimiento = models.DateField()
     direccion = models.CharField(max_length=45)
-    grupos = models.ManyToManyField(Group)
      
     def __str__(self):
         return self.username
@@ -52,7 +51,7 @@ class ItemCarrito(models.Model):
 class Pedidos(models.Model):
     fechaPedido = models.DateField()
     usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
-
+        
     def __str__(self):
         return f"Pedido {self.id}"
 

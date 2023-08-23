@@ -17,15 +17,14 @@ from pyexpat.errors import messages
 import os
 
 
+# ========================== Api ==========================
 class UsuariosViewSet(viewsets.ModelViewSet):
     queryset = Usuarios.objects.all()
     serializer_class = UsuariosSerializer
 
-
 class CategoriasViewSet(viewsets.ModelViewSet):
     queryset = Categorias.objects.all()
     serializer_class = CategoriasSerializer
-
 
 class ProductosViewSet(viewsets.ModelViewSet):
     # trae todos los productos que esten activos
@@ -78,31 +77,25 @@ class ItemCarritoViewSet(viewsets.ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
 class PedidosViewSet(viewsets.ModelViewSet):
     queryset = Pedidos.objects.all()
     serializer_class = PedidosSerializer
-
-
+    
 class DetallePedidoViewSet(viewsets.ModelViewSet):
     serializer_class = DetallePedidoSerializer
     queryset = DetallePedido.objects.all()
-
 
 class PagoViewSet(viewsets.ModelViewSet):
     queryset = Pago.objects.all()
     serializer_class = PagoSerializer
 
-
 class EnvioViewSet(viewsets.ModelViewSet):
     queryset = Envio.objects.all()
     serializer_class = EnvioSerializer
-
-
+    
 class DevolucionesViewSet(viewsets.ModelViewSet):
     queryset = Devoluciones.objects.all()
     serializer_class = DevolucionesSerializer
-
 
 class ProcesarPagoView(APIView):
     permission_classes = [IsAuthenticated]
@@ -134,12 +127,11 @@ class ProcesarPagoView(APIView):
 
     
 
-# ------------------- Vistas -------------------
+# ====================== Vistas del Administrador ======================
 
 
 def redirect_to_login(request):
     return redirect("login")
-
 
 def custom_login(request):
     if request.method == "POST":
@@ -155,29 +147,25 @@ def custom_login(request):
                 {"login_success_message": request.session["login_success_message"]},
             )
         else:
-            error_message = (
-                "Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo."
-            )
+            error_message = ("Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.")
             return render(
-                request, "inicio_sesion.html", {"error_message": error_message}
+                request, 
+                "inicio_sesion.html", 
+                {"error_message": error_message}
             )
     return render(request, "inicio_sesion.html")
-
 
 @login_required(login_url="login")
 def inicio(request):
     return render(request, "dashboard.html", {})
 
-
 @login_required(login_url="/")
 def categorias(request):
     return render(request, "frmCategorias.html", {})
 
-
 @login_required(login_url="/")
 def productos(request):
     return render(request, "frmProductos.html", {})
-
 
 @login_required(login_url="/")
 def pedidos(request):
@@ -186,7 +174,6 @@ def pedidos(request):
 @login_required(login_url="/")
 def pagos(request):
     return render(request, "frmPagos.html", {})
-
 
 @login_required(login_url="/")
 def envios(request):
@@ -200,6 +187,50 @@ def devoluciones(request):
 def custom_logout(request):
     logout(request)
     return redirect("login")
+
+@login_required(login_url="/")
+def agregar_al_carrito(request, producto_id):
+    if request.user.is_authenticated:
+        producto = Productos.objects.get(pk=producto_id)
+        usuario = Usuarios.objects.get(Usuarios=request.user)
+        item_carrito, created = ItemCarrito.objects.get_or_create(usuario=usuario, producto=producto)
+        if not created:
+            item_carrito.cantidad += 1
+            item_carrito.save()
+        return redirect("vista_del_carrito")
+    else:
+        # Aquí puedes manejar el caso de un usuario no autenticado, por ejemplo, redirigiéndolo a la página de inicio de sesión.
+        pass
+
+@login_required(login_url="/")
+def eliminar_del_carrito(request, item_id):
+    if request.user.is_authenticated:
+        usuario = request.user
+
+        try:
+            item_carrito = ItemCarrito.objects.get(pk=item_id, usuario=usuario)
+            item_carrito.delete()
+        except ItemCarrito.DoesNotExist:
+            pass
+        return redirect("vista_del_carrito")
+    else:
+        # Manejar el caso de usuario no autenticado si es necesario.
+        pass
+
+@login_required(login_url="/")
+def vista_del_carrito(request):
+    if request.user.is_authenticated:
+        usuario = request.user
+        items_carrito = ItemCarrito.objects.filter(usuario=usuario)
+        total_carrito = sum(item.producto.precio * item.cantidad for item in items_carrito)
+        context = {
+            "items_carrito": items_carrito,
+            "total_carrito": total_carrito,
+        }
+        return render(request, "carrito.html", context)
+    else:
+        # Manejar el caso de usuario no autenticado si es necesario.
+        pass
 
 @login_required(login_url="/")
 def convertir_a_pedido(request):
@@ -219,53 +250,6 @@ def convertir_a_pedido(request):
         # Vaciar el carrito (eliminar todos los elementos del carrito)
         carrito.delete()
         return redirect("vista_del_carrito")  # O redireccionar a una vista de confirmación de pedido
-    else:
-        # Manejar el caso de usuario no autenticado si es necesario.
-        pass
-
-
-@login_required(login_url="/")
-def agregar_al_carrito(request, producto_id):
-    if request.user.is_authenticated:
-        producto = Productos.objects.get(pk=producto_id)
-        usuario = Usuarios.objects.get(Usuarios=request.user)
-        item_carrito, created = ItemCarrito.objects.get_or_create(usuario=usuario, producto=producto)
-        if not created:
-            item_carrito.cantidad += 1
-            item_carrito.save()
-        return redirect("vista_del_carrito")
-    else:
-        # Aquí puedes manejar el caso de un usuario no autenticado, por ejemplo, redirigiéndolo a la página de inicio de sesión.
-        pass
-
-
-@login_required(login_url="/")
-def eliminar_del_carrito(request, item_id):
-    if request.user.is_authenticated:
-        usuario = request.user
-
-        try:
-            item_carrito = ItemCarrito.objects.get(pk=item_id, usuario=usuario)
-            item_carrito.delete()
-        except ItemCarrito.DoesNotExist:
-            pass
-        return redirect("vista_del_carrito")
-    else:
-        # Manejar el caso de usuario no autenticado si es necesario.
-        pass
-
-
-@login_required(login_url="/")
-def vista_del_carrito(request):
-    if request.user.is_authenticated:
-        usuario = request.user
-        items_carrito = ItemCarrito.objects.filter(usuario=usuario)
-        total_carrito = sum(item.producto.precio * item.cantidad for item in items_carrito)
-        context = {
-            "items_carrito": items_carrito,
-            "total_carrito": total_carrito,
-        }
-        return render(request, "carrito.html", context)
     else:
         # Manejar el caso de usuario no autenticado si es necesario.
         pass

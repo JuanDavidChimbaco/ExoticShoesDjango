@@ -37,7 +37,6 @@ async function obtenerPed() {
     var data = "";
     const response = await axios.get("/api/v1.0/pedidos/");
     console.log(response.data);
-
     if (!response.data) {
       tabla.innerHTML = "<tr><td colspan='5'>No se encontraron pedidos.</td></tr>";
     } else {
@@ -46,7 +45,7 @@ async function obtenerPed() {
                       <th scope="row">${index + 1}</th>
                       <td>COD000${element.id}</td>
                       <td>${element.fechaPedido}</td>
-                      <td>${element.usuario}</td>
+                      <td>${element.usuario.first_name}</td>
                       <td>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="detallePedidos('${element.id}')">
                           Detalles
@@ -62,7 +61,6 @@ async function obtenerPed() {
   }
 }
 
-
 async function detallePedidos(id) {
   console.log(id);
   try {
@@ -73,10 +71,10 @@ async function detallePedidos(id) {
     console.log(response2);
       data = `<tr>
                   <th scope="row">${response.data.id}</th>
-                  <td>${response.data.cantidad}</td>
-                  <td>${response.data.subtotal}</td>
                   <td>COD000${response.data.pedido}</td>
                   <td>${response2.data.nombre}</td>
+                  <td>${response.data.cantidad}</td>
+                  <td>${response.data.subtotal}</td>
               </tr>`;
     tableDetalle.innerHTML = data;
   } catch (error) {
