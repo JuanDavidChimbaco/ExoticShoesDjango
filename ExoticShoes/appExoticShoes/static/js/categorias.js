@@ -1,6 +1,7 @@
 // ---------------------Categorias-------------------------------
 let dataTable;
 let dataTableIsInitialized = false;
+var id = 0;
 
 const dataTableOptions = {
     dom: 'Bfrtip',
@@ -22,8 +23,7 @@ const dataTableOptions = {
     pageLength: 4,
     destroy: true,
     responsive: true
-};
-
+}
 
 const initDataTable = async () => {
     if (dataTableIsInitialized) {
@@ -35,9 +35,8 @@ const initDataTable = async () => {
     dataTable = $("#tableCat").DataTable(dataTableOptions);
 
     dataTableIsInitialized = true;
-};
+}
 
-var id = 0;
 async function obtenerCat() {
     try {
         const response = await axios.get('/api/v1.0/categorias/');
@@ -63,6 +62,7 @@ function load(element) {
     this.id = element.id;
     txtNombre.value = element.nombre;
 }
+
 function agregarCat() {
     var nombre = txtNombre.value.trim();
     if (nombre === '') {
@@ -91,7 +91,8 @@ function agregarCat() {
             alert(mensaje);
             txtNombre.value = ""
         });
-};
+}
+
 function modificarCat() {
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
     console.log(this.id);
@@ -113,9 +114,10 @@ function modificarCat() {
             console.log(error);
         })
 }
+
 function eliminarCat() {
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-    let rest = confirm("Seguro de eliminar el Rol? ")
+    let rest = confirm("Seguro de eliminar La Categoria? ")
     if (rest) {
         axios.delete(`/api/v1.0/categorias/${this.id}/`, {
             headers: {
@@ -134,6 +136,7 @@ function eliminarCat() {
             })
     }
 }
+
 function limpiar() {
     document.getElementById('txtNombre').value = ""
     var radioButtons = document.getElementsByName('checkOpcion');
@@ -142,7 +145,6 @@ function limpiar() {
         radioButton.checked = false;
     });
 }
-
 
 window.addEventListener("load", async () => {
     await initDataTable();
