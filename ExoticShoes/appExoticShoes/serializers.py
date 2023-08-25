@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import  Usuarios, Categorias, Productos, ItemCarrito, Pedidos, DetallePedido, Pago, Envio, Devoluciones
+from .models import  Usuarios, Categorias, Productos, Pedidos, DetallePedido, Pago, Envio, Devoluciones, CartItem , Cart
 
 # Definir los serializadores 
 
@@ -14,23 +14,27 @@ class CategoriasSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ProductosSerializer(serializers.ModelSerializer):
-    categoria = CategoriasSerializer()
     class Meta:
         model = Productos
         fields = '__all__'
 
 class PedidosSerializer(serializers.ModelSerializer):
-    usuario = UsuariosSerializer()
+    usuario_id = serializers.PrimaryKeyRelatedField(queryset=Usuarios.objects.all(), source='usuario', write_only=True)
     class Meta:
         model = Pedidos
-        fields = '__all__'
+        fields = 'id', 'fechaPedido', 'usuario_id'
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['usuario'] = UsuariosSerializer(instance.usuario).data
+        return representation
         
 class DetallePedidoSerializer(serializers.ModelSerializer):
-    pedido = PedidosSerializer()
-    producto = ProductosSerializer()
+    pedido_id = serializers.PrimaryKeyRelatedField(queryset=Pedidos.objects.all(), source='pedido', write_only=True)
+    producto_id = serializers.PrimaryKeyRelatedField(queryset=Productos.objects.all(), source='producto', write_only=True)
+    
     class Meta:
         model = DetallePedido
-        fields = '__all__'
+        fields = ['pedido_id', 'producto_id', 'cantidad', 'subtotal']
         
 class PagoSerializer(serializers.ModelSerializer):
     pedidos = PedidosSerializer()
@@ -51,17 +55,14 @@ class DevolucionesSerializer(serializers.ModelSerializer):
         model = Devoluciones
         fields = '__all__'
 
-class ItemCarritoSerializer(serializers.ModelSerializer):
-    producto = ProductosSerializer()
+class CartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = '__all__'
+
+class CartSerializer(serializers.ModelSerializer):
+    products = CartItemSerializer(many=True, read_only=True)
 
     class Meta:
-        model = ItemCarrito
+        model = Cart
         fields = '__all__'
-        
-    def create(self, validated_data):
-        nested_data = validated_data.pop('nested_field', None)
-        item_carrito = ItemCarrito.objects.create(**validated_data)
-        if nested_data:
-            UsuariosSerializer.objects.create(item_carrito=item_carrito, **nested_data)
-
-        return item_carrito

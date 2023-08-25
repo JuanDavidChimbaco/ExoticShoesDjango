@@ -64,7 +64,6 @@ const initDataTable = async () => {
   dataTableIsInitialized = true;
 };
 
-
 // Obtiene los productos de la base de datos
 async function obtenerProductos() {
   try {

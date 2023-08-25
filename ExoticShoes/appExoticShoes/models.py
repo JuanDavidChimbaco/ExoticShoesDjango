@@ -1,6 +1,7 @@
 from datetime import timezone
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.core.validators import MinValueValidator
 
 ESTADO_CHOICES = (
     (True, 'Activo'),
@@ -19,7 +20,7 @@ class Categorias(models.Model):
     nombre = models.CharField(max_length=45,unique=True)
 
     def __str__(self):
-        return self.nombre
+        return self.nombre 
 
 class Productos(models.Model):
     nombre = models.CharField(max_length=45)
@@ -28,25 +29,11 @@ class Productos(models.Model):
     cantidadEnInventario = models.IntegerField()
     foto = models.ImageField(upload_to='productos/', blank=True, null=True)
     estado = models.BooleanField(choices=ESTADO_CHOICES, default=True)
-    categoria = models.ForeignKey(Categorias, on_delete=models.CASCADE)
+    categoria = models.ForeignKey(Categorias, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.nombre
 
-class ItemCarrito(models.Model):
-    usuario = models.ForeignKey(Usuarios, on_delete=models.CASCADE)
-    producto = models.ForeignKey(Productos, on_delete=models.CASCADE)
-    cantidad = models.PositiveIntegerField(default=1)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    total_precio = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-
-    def __str__(self):
-        return f"{self.usuario.username} - {self.producto.nombre}"
-
-    def save(self, *args, **kwargs):
-        self.subtotal = self.producto.precio * self.cantidad
-        self.total_precio = self.subtotal
-        super().save(*args, **kwargs)
 
 class Pedidos(models.Model):
     fechaPedido = models.DateField()
@@ -83,7 +70,6 @@ class Pago(models.Model):
         return f"Pago {self.id}"
 
 
-
 class Envio(models.Model):
     servicioEnvio = models.CharField(max_length=45)
     DireccionEnv = models.CharField(max_length=45)
@@ -118,3 +104,12 @@ class Devoluciones(models.Model):
         if not self.fechaDevolucion:
             self.fechaDevolucion = timezone.now()
         super().save(*args, **kwargs)
+
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    products = models.ManyToManyField(Productos, through='CartItem')
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Productos, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])

@@ -3,8 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
-from .models import Usuarios,Categorias, Productos,ItemCarrito,Pedidos,DetallePedido,Pago,Envio,Devoluciones
-from .serializers import (UsuariosSerializer,CategoriasSerializer,ProductosSerializer,ItemCarritoSerializer,
+from .models import Usuarios,Categorias, Productos,Pedidos,DetallePedido,Pago,Envio,Devoluciones, CartItem , Cart
+from .serializers import (UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
 PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -22,9 +22,11 @@ class UsuariosViewSet(viewsets.ModelViewSet):
     queryset = Usuarios.objects.all()
     serializer_class = UsuariosSerializer
 
+
 class CategoriasViewSet(viewsets.ModelViewSet):
     queryset = Categorias.objects.all()
     serializer_class = CategoriasSerializer
+
 
 class ProductosViewSet(viewsets.ModelViewSet):
     # trae todos los productos que esten activos
@@ -34,9 +36,16 @@ class ProductosViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.estado = False
         instance.save()
+    
+    def perform_create(self, serializer):
+        categoria_id = self.request.data.get('categoria')  # Obtén el ID de la categoría del request
+        categoria = Categorias.objects.get(id=categoria_id)  # Obtén la instancia de categoría
+        serializer.save(categoria=categoria)  # Asigna la categoría al producto y guarda
+
 
 class CustomLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 4
+
 
 class ProductosListView(ViewSet):
     pagination_class = CustomLimitOffsetPagination
@@ -46,6 +55,7 @@ class ProductosListView(ViewSet):
         paginated_productos = paginator.paginate_queryset(productos, request)
         serializer = ProductosSerializer(paginated_productos, many=True)
         return paginator.get_paginated_response(serializer.data)
+
 
 class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
     serializer_class = ProductosSerializer
@@ -60,30 +70,67 @@ class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.estado = False
         instance.save()
+        
+class CategoriasList(APIView):
+    def get(self, request):
+        categorias = Categorias.objects.all()
+        serializer = CategoriasSerializer(categorias, many=True)
+        return Response(serializer.data)
 
-class ItemCarritoViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset = ItemCarrito.objects.all()
-    serializer_class = ItemCarritoSerializer
+class ProductosList(APIView):
+    def get(self, request):
+        productos = Productos.objects.all()
+        serializer = ProductosSerializer(productos, many=True)
+        return Response(serializer.data)
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(usuario=self.request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class PedidosViewSet(viewsets.ModelViewSet):
     queryset = Pedidos.objects.all()
     serializer_class = PedidosSerializer
     
+    def perform_create(self, serializer):
+        # Obtén el ID del usuario existente que deseas asignar al pedido
+        usuario_id = self.request.data.get('usuario_id', None)  # Asegúrate de ajustar el nombre del campo
+
+        if usuario_id is not None:
+            usuario = Usuarios.objects.get(pk=usuario_id)
+            serializer.save(usuario=usuario)
+        else:
+            serializer.save()
+    
+    
 class DetallePedidoViewSet(viewsets.ModelViewSet):
     serializer_class = DetallePedidoSerializer
     queryset = DetallePedido.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        detalles = request.data.get('detalles', [])  # Obtén la lista de detalles
+
+        # Serializa cada detalle y calcula el subtotal
+        detalles_serialized = []
+        total_pedido = 0
+        for detalle_data in detalles:
+            serializer = DetallePedidoSerializer(data=detalle_data)
+            if serializer.is_valid():
+                cantidad = detalle_data.get('cantidad', 0)
+                precio_producto = detalle_data.get('producto', {}).get('precio', 0)
+                subtotal = precio_producto * cantidad
+                total_pedido += subtotal
+                detalles_serialized.append({'serializer': serializer, 'subtotal': subtotal})
+            else:
+                return Response(serializer.errors, status=400)
+
+        # Crea los detalles y actualiza el total del pedido
+        pedido_id = request.data.get('pedido_id', None)
+        if pedido_id is not None:
+            pedido = Pedidos.objects.get(pk=pedido_id)
+            for detalle_info in detalles_serialized:
+                serializer = detalle_info['serializer']
+                detalle = serializer.save(subtotal=detalle_info['subtotal'])
+                pedido.total += detalle.subtotal
+            pedido.save()
+
+        return Response({'message': 'Detalles de pedido creados exitosamente', 'total_pedido': total_pedido})
 
 class PagoViewSet(viewsets.ModelViewSet):
     queryset = Pago.objects.all()
@@ -188,68 +235,47 @@ def custom_logout(request):
     logout(request)
     return redirect("login")
 
-@login_required(login_url="/")
-def agregar_al_carrito(request, producto_id):
-    if request.user.is_authenticated:
-        producto = Productos.objects.get(pk=producto_id)
-        usuario = Usuarios.objects.get(Usuarios=request.user)
-        item_carrito, created = ItemCarrito.objects.get_or_create(usuario=usuario, producto=producto)
-        if not created:
-            item_carrito.cantidad += 1
-            item_carrito.save()
-        return redirect("vista_del_carrito")
-    else:
-        # Aquí puedes manejar el caso de un usuario no autenticado, por ejemplo, redirigiéndolo a la página de inicio de sesión.
-        pass
 
-@login_required(login_url="/")
-def eliminar_del_carrito(request, item_id):
-    if request.user.is_authenticated:
-        usuario = request.user
+# ================================ Carrito ================================
+
+class CartDetail(APIView):
+    def get_cart(self, user):
+        cart, created = Cart.objects.get_or_create(user=user)
+        return cart
+
+    def get(self, request):
+        cart = self.get_cart(request.user)
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+
+    def post(self, request):
+        product_id = request.data.get('product_id')
+        quantity = request.data.get('quantity', 1)
+
+        if product_id is None:
+            return Response({'error': 'Product ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            item_carrito = ItemCarrito.objects.get(pk=item_id, usuario=usuario)
-            item_carrito.delete()
-        except ItemCarrito.DoesNotExist:
-            pass
-        return redirect("vista_del_carrito")
-    else:
-        # Manejar el caso de usuario no autenticado si es necesario.
-        pass
+            product = Productos.objects.get(id=product_id)
+        except Productos.DoesNotExist:
+            return Response({'error': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-@login_required(login_url="/")
-def vista_del_carrito(request):
-    if request.user.is_authenticated:
-        usuario = request.user
-        items_carrito = ItemCarrito.objects.filter(usuario=usuario)
-        total_carrito = sum(item.producto.precio * item.cantidad for item in items_carrito)
-        context = {
-            "items_carrito": items_carrito,
-            "total_carrito": total_carrito,
-        }
-        return render(request, "carrito.html", context)
-    else:
-        # Manejar el caso de usuario no autenticado si es necesario.
-        pass
+        cart = self.get_cart(request.user)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        cart_item.quantity += int(quantity)
+        cart_item.save()
 
-@login_required(login_url="/")
-def convertir_a_pedido(request):
-    if request.user.is_authenticated:
-        usuario = request.user
-        carrito = ItemCarrito.objects.filter(usuario=usuario)
-        # Crear el objeto Pedido
-        pedido = Pedidos.objects.create(fechaPedido=timezone.now(), usuario=usuario)
-        # Crear los DetallePedido asociados al Pedido
-        for item in carrito:
-            DetallePedido.objects.create(
-                pedido=pedido,
-                producto=item.producto,
-                cantidad=item.cantidad,
-                subtotal=item.producto.precio * item.cantidad,
-            )
-        # Vaciar el carrito (eliminar todos los elementos del carrito)
-        carrito.delete()
-        return redirect("vista_del_carrito")  # O redireccionar a una vista de confirmación de pedido
-    else:
-        # Manejar el caso de usuario no autenticado si es necesario.
-        pass
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+
+    def delete(self, request, product_id):
+        try:
+            product = Productos.objects.get(id=product_id)
+        except Productos.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        cart = self.get_cart(request.user)
+        cart.items.filter(product=product).delete()
+
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)

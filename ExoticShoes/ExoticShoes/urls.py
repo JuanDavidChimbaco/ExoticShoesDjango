@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
 from rest_framework import routers
-from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet 
+from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet, CartDetail, CategoriasList, ProductosList
 from appExoticShoes import views
 
 # router para las rutas de la Api
@@ -12,7 +12,6 @@ router.register(r'usuarios', views.UsuariosViewSet)
 router.register(r'categorias', views.CategoriasViewSet)
 router.register(r'productos', views.ProductosViewSet)
 router.register(r'productos-filtrados', ProductosFiltradosPorCategoriaViewSet, basename='productos-filtrados')
-router.register(r'carrito', views.ItemCarritoViewSet, basename='carrito')
 router.register(r'pedidos', views.PedidosViewSet, basename='pedidos')
 router.register(r'detallePedidos', views.DetallePedidoViewSet,basename='detallepedido')
 router.register(r'pago', views.PagoViewSet)
@@ -37,16 +36,18 @@ urlpatterns = [
     path('frmDevoluciones/', views.devoluciones, name='devoluciones'),
     
     
-    # rutas para la vista del cliente
-    path('convertir-a-pedido/', views.convertir_a_pedido, name='convertir_a_pedido'),
-    path('api/procesar-pago/<int:pedido_id>/', views.ProcesarPagoView.as_view(), name='procesar_pago_api'),
-    path('carrito/', views.vista_del_carrito, name='vista_del_carrito'),
-    path('agregar-al-carrito/<int:producto_id>/', views.agregar_al_carrito, name='agregar_al_carrito'),
-    path('eliminar-del-carrito/<int:item_id>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
+    # rutas para la vista del cliente 
     path('productos-limit-offset/', producto_list_view, name='productos-limit-offset'),
     
     # rutas de la Api
     path('api/v1.0/', include(router.urls)),
+    
+    # rutas para carrito
+    path('cart/', CartDetail.as_view(), name='cart-detail'),
+    path('cart/<int:product_id>/', CartDetail.as_view(), name='cart-remove-item'),
+    
+    path('categorias/', CategoriasList.as_view(), name='categorias-list'),
+    path('productos/', ProductosList.as_view(), name='productos-list'),
 ]
 
 if settings.DEBUG:
