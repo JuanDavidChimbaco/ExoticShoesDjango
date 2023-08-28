@@ -1,0 +1,4 @@
+language: python
+rvm:
+ - 4.2.2
+ - django
