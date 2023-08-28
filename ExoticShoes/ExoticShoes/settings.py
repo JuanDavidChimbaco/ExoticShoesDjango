@@ -60,7 +60,8 @@ ROOT_URLCONF = 'ExoticShoes.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["./appExoticShoes/templates"],
+        # 'DIRS': ["./appExoticShoes/templates"],
+        'DIRS': ["os.os.path.join(BASE_DIR, 'templates')"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -148,3 +149,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 LOGIN_URL = '/login/'
+
+# AUTH_USER_MODEL = 'appExoticShoes.Usuarios'
+
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_REDIRECT_URL = '/inicio/'

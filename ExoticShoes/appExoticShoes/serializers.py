@@ -1,27 +1,27 @@
 from rest_framework import serializers
-from .models import  Usuarios, Categorias, Productos, Pedidos, DetallePedido, Pago, Envio, Devoluciones, CartItem , Cart
+from .models import  Usuario, Categoria, Producto, Pedido, DetallePedido, Pago, Envio, Devolucione, CartItem , Cart
 
 # Definir los serializadores 
 
 class UsuariosSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Usuarios
+        model = Usuario
         fields = '__all__'
 
 class CategoriasSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Categorias
+        model = Categoria
         fields = '__all__'
 
 class ProductosSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Productos
+        model = Producto
         fields = '__all__'
 
 class PedidosSerializer(serializers.ModelSerializer):
-    usuario_id = serializers.PrimaryKeyRelatedField(queryset=Usuarios.objects.all(), source='usuario', write_only=True)
+    usuario_id = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), source='usuario', write_only=True)
     class Meta:
-        model = Pedidos
+        model = Pedido
         fields = 'id', 'fechaPedido', 'usuario_id'
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -29,8 +29,8 @@ class PedidosSerializer(serializers.ModelSerializer):
         return representation
         
 class DetallePedidoSerializer(serializers.ModelSerializer):
-    pedido_id = serializers.PrimaryKeyRelatedField(queryset=Pedidos.objects.all(), source='pedido', write_only=True)
-    producto_id = serializers.PrimaryKeyRelatedField(queryset=Productos.objects.all(), source='producto', write_only=True)
+    pedido_id = serializers.PrimaryKeyRelatedField(queryset=Pedido.objects.all(), source='pedido', write_only=True)
+    producto_id = serializers.PrimaryKeyRelatedField(queryset=Producto.objects.all(), source='producto', write_only=True)
     
     class Meta:
         model = DetallePedido
@@ -52,7 +52,7 @@ class DevolucionesSerializer(serializers.ModelSerializer):
     envio = EnvioSerializer()
     pago = PagoSerializer()
     class Meta:
-        model = Devoluciones
+        model = Devolucione
         fields = '__all__'
 
 class CartItemSerializer(serializers.ModelSerializer):

@@ -6,6 +6,7 @@ from rest_framework import routers
 from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet, CartDetail, CategoriasList, ProductosList
 from appExoticShoes import views
 
+
 # router para las rutas de la Api
 router = routers.DefaultRouter()
 router.register(r'usuarios', views.UsuariosViewSet)
@@ -35,7 +36,6 @@ urlpatterns = [
     path('frmPagos/', views.pagos, name='pagos'),
     path('frmDevoluciones/', views.devoluciones, name='devoluciones'),
     
-    
     # rutas para la vista del cliente 
     path('productos-limit-offset/', producto_list_view, name='productos-limit-offset'),
     
@@ -49,6 +49,7 @@ urlpatterns = [
     path('categorias/', CategoriasList.as_view(), name='categorias-list'),
     path('productos/', ProductosList.as_view(), name='productos-list'),
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static (settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

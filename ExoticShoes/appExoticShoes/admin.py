@@ -1,19 +1,19 @@
 from django.contrib import admin
-from .models import  Usuarios, Categorias, Productos, Pedidos, DetallePedido, Pago, Envio, Devoluciones
+from .models import  Usuario, Categoria, Producto, Pedido, DetallePedido, Pago, Envio, Devolucione
 
-@admin.register(Usuarios)
+@admin.register(Usuario)
 class UsuariosAdmin(admin.ModelAdmin):
     list_display = ('telefono','FechaNacimiento','direccion')
 
-@admin.register(Categorias)
+@admin.register(Categoria)
 class CategoriasAdmin(admin.ModelAdmin):
     list_display = ('nombre',)
 
-@admin.register(Productos)
+@admin.register(Producto)
 class ProductosAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'descripcion', 'precio', 'cantidadEnInventario', 'categoria')
 
-@admin.register(Pedidos)
+@admin.register(Pedido)
 class PedidosAdmin(admin.ModelAdmin):
     list_display = ('fechaPedido', 'usuario')
 
@@ -29,6 +29,6 @@ class PagoAdmin(admin.ModelAdmin):
 class EnvioAdmin(admin.ModelAdmin):
     list_display = ('servicioEnvio', 'DireccionEnv', 'fechaEnvio', 'fechaEntrega', 'estadoPago', 'estado')
 
-@admin.register(Devoluciones)
+@admin.register(Devolucione)
 class DevolucionesAdmin(admin.ModelAdmin):
     list_display = ('fechaDevolucion', 'motivo', 'envio', 'productosDevueltos', 'cantidadDevuelta', 'pago')

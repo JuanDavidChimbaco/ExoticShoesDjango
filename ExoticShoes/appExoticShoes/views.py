@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
-from .models import Usuarios,Categorias, Productos,Pedidos,DetallePedido,Pago,Envio,Devoluciones, CartItem , Cart
+from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, CartItem , Cart
 from .serializers import (UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
 PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
 from rest_framework import viewsets, status
@@ -19,18 +19,18 @@ import os
 
 # ========================== Api ==========================
 class UsuariosViewSet(viewsets.ModelViewSet):
-    queryset = Usuarios.objects.all()
+    queryset = Usuario.objects.all()
     serializer_class = UsuariosSerializer
 
 
 class CategoriasViewSet(viewsets.ModelViewSet):
-    queryset = Categorias.objects.all()
+    queryset = Categoria.objects.all()
     serializer_class = CategoriasSerializer
 
 
 class ProductosViewSet(viewsets.ModelViewSet):
     # trae todos los productos que esten activos
-    queryset = Productos.objects.filter(estado=True)
+    queryset = Producto.objects.filter(estado=True)
     serializer_class = ProductosSerializer
 
     def perform_destroy(self, instance):
@@ -39,7 +39,7 @@ class ProductosViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         categoria_id = self.request.data.get('categoria')  # Obtén el ID de la categoría del request
-        categoria = Categorias.objects.get(id=categoria_id)  # Obtén la instancia de categoría
+        categoria = Categoria.objects.get(id=categoria_id)  # Obtén la instancia de categoría
         serializer.save(categoria=categoria)  # Asigna la categoría al producto y guarda
 
 
@@ -50,7 +50,7 @@ class CustomLimitOffsetPagination(LimitOffsetPagination):
 class ProductosListView(ViewSet):
     pagination_class = CustomLimitOffsetPagination
     def list(self, request):
-        productos = Productos.objects.filter(estado=True)
+        productos = Producto.objects.filter(estado=True)
         paginator = LimitOffsetPagination()
         paginated_productos = paginator.paginate_queryset(productos, request)
         serializer = ProductosSerializer(paginated_productos, many=True)
@@ -60,7 +60,7 @@ class ProductosListView(ViewSet):
 class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
     serializer_class = ProductosSerializer
     def get_queryset(self):
-        queryset = Productos.objects.filter(estado=True)
+        queryset = Producto.objects.filter(estado=True)
         # Obtener el parámetro de ID de categoría de la URL
         categoria_id = self.request.query_params.get('categoria_id', None)
         if categoria_id:
@@ -73,19 +73,19 @@ class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
         
 class CategoriasList(APIView):
     def get(self, request):
-        categorias = Categorias.objects.all()
+        categorias = Categoria.objects.all()
         serializer = CategoriasSerializer(categorias, many=True)
         return Response(serializer.data)
 
 class ProductosList(APIView):
     def get(self, request):
-        productos = Productos.objects.all()
+        productos = Producto.objects.all()
         serializer = ProductosSerializer(productos, many=True)
         return Response(serializer.data)
 
 
 class PedidosViewSet(viewsets.ModelViewSet):
-    queryset = Pedidos.objects.all()
+    queryset = Pedido.objects.all()
     serializer_class = PedidosSerializer
     
     def perform_create(self, serializer):
@@ -93,7 +93,7 @@ class PedidosViewSet(viewsets.ModelViewSet):
         usuario_id = self.request.data.get('usuario_id', None)  # Asegúrate de ajustar el nombre del campo
 
         if usuario_id is not None:
-            usuario = Usuarios.objects.get(pk=usuario_id)
+            usuario = Usuario.objects.get(pk=usuario_id)
             serializer.save(usuario=usuario)
         else:
             serializer.save()
@@ -123,7 +123,7 @@ class DetallePedidoViewSet(viewsets.ModelViewSet):
         # Crea los detalles y actualiza el total del pedido
         pedido_id = request.data.get('pedido_id', None)
         if pedido_id is not None:
-            pedido = Pedidos.objects.get(pk=pedido_id)
+            pedido = Pedido.objects.get(pk=pedido_id)
             for detalle_info in detalles_serialized:
                 serializer = detalle_info['serializer']
                 detalle = serializer.save(subtotal=detalle_info['subtotal'])
@@ -141,7 +141,7 @@ class EnvioViewSet(viewsets.ModelViewSet):
     serializer_class = EnvioSerializer
     
 class DevolucionesViewSet(viewsets.ModelViewSet):
-    queryset = Devoluciones.objects.all()
+    queryset = Devolucione.objects.all()
     serializer_class = DevolucionesSerializer
 
 class ProcesarPagoView(APIView):
@@ -155,8 +155,8 @@ class ProcesarPagoView(APIView):
 
         # Obtener el pedido correspondiente
         try:
-            pedido = Pedidos.objects.get(pk=pedido_id)
-        except Pedidos.DoesNotExist:
+            pedido = Pedido.objects.get(pk=pedido_id)
+        except Pedido.DoesNotExist:
             return Response(
                 {"error": "Pedido no encontrado"}, status=status.HTTP_404_NOT_FOUND
             )
@@ -256,8 +256,8 @@ class CartDetail(APIView):
             return Response({'error': 'Product ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            product = Productos.objects.get(id=product_id)
-        except Productos.DoesNotExist:
+            product = Producto.objects.get(id=product_id)
+        except Producto.DoesNotExist:
             return Response({'error': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         cart = self.get_cart(request.user)
@@ -270,8 +270,8 @@ class CartDetail(APIView):
 
     def delete(self, request, product_id):
         try:
-            product = Productos.objects.get(id=product_id)
-        except Productos.DoesNotExist:
+            product = Producto.objects.get(id=product_id)
+        except Producto.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         cart = self.get_cart(request.user)
