@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import AllowAny
 from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, CartItem , Cart
 from .serializers import (UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
 PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
@@ -16,6 +17,14 @@ from django.utils import timezone
 from pyexpat.errors import messages
 import os
 
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from rest_framework_jwt.settings import api_settings
+from datetime import datetime, timedelta
 
 # ========================== Api ==========================
 class UsuariosViewSet(viewsets.ModelViewSet):
@@ -171,10 +180,59 @@ class ProcesarPagoView(APIView):
 
         serializer = PagoSerializer(pago)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+
+# ====================== reset password ======================
+class PasswordResetRequestView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        email = request.data.get("email")
+        print(email)
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"detail": "No se encontró un usuario con este correo electrónico."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Generar el token de restablecimiento
+        jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+        jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
+        
+        payload = jwt_payload_handler(user)
+        payload["exp"] = datetime.utcnow() + timedelta(hours=1)  # Establecer la expiración a 1 hora
+        
+        token = jwt_encode_handler(payload)
+        
+        # Enviar el correo electrónico con el enlace de restablecimiento
+        subject = "Restablecimiento de contraseña"
+        message = f"Haz clic en el siguiente enlace para restablecer tu contraseña:\n\n{request.build_absolute_uri('/password-reset/?token=' + token)}"
+        
+        send_mail(subject, message, "from@example.com", [email])
+        
+        # return Response({"detail": "Se ha enviado un enlace de restablecimiento a su correo electrónico."})
+        return render(request, "registration/restablecer_password_form.html", {"token": token})
+
+class PasswordResetView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        token = request.data.get("token")
+        new_password = request.data.get("new_password")
+        
+        try:
+            payload = api_settings.JWT_DECODE_HANDLER(token)
+            user = User.objects.get(id=payload["user_id"])
+        except User.DoesNotExist:
+            return Response({"detail": "El token no es válido."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Actualizar la contraseña del usuario
+        user.set_password(new_password)
+        user.save()
+        
+        # return Response({"detail": "Contraseña actualizada exitosamente."})
+        return render(request, "registration/reset_password_success.html")
 
     
 
-# ====================== Vistas del Administrador ======================
+# ====================== Vistas del Administrador (login)======================
 
 
 def redirect_to_login(request):
@@ -182,25 +240,26 @@ def redirect_to_login(request):
 
 def custom_login(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
+        username = request.POST.get("username")
+        password = request.POST.get("password")
         user = authenticate(username=username, password=password)
-        if user is not None:
+        if user:
             login(request, user)
             request.session["login_success_message"] = "¡Login exitoso!"
-            return render(
-                request,
-                "inicio_sesion.html",
-                {"login_success_message": request.session["login_success_message"]},
-            )
+            return render(request, "inicio_sesion.html", {"login_success_message": request.session["login_success_message"]})
         else:
-            error_message = ("Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.")
-            return render(
-                request, 
-                "inicio_sesion.html", 
-                {"error_message": error_message}
-            )
+            error_message = "Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo."
+            return render(request, "inicio_sesion.html", {"error_message": error_message})
+    
     return render(request, "inicio_sesion.html")
+
+def restPasswordRequest(request):
+    return render(request, "registration/restablecer_password.html")
+
+def restPassword(request):
+    return render(request, "registration/restablecer_password_form.html")
+
+#========================= Vistas del Administrador(Logueado) ==========================
 
 @login_required(login_url="login")
 def inicio(request):

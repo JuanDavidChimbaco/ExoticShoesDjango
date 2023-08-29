@@ -42,7 +42,19 @@ INSTALLED_APPS = [
     'appExoticShoes',
     'rest_framework',
     'corsheaders',
+    'rest_framework_jwt',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -154,3 +166,20 @@ LOGIN_URL = '/login/'
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/inicio/'
+
+# Configuración para enviar correos utilizando SMTP (Simple Mail Transfer Protocol)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+from dotenv import load_dotenv
+load_dotenv()
+
+EMAIL_HOST = 'smtp.gmail.com'  # Ejemplo para Gmail
+EMAIL_PORT = 587  # Puerto para Gmail
+EMAIL_USE_TLS = True  # Usar TLS (True para Gmail)
+EMAIL_USE_SSL = False  # No usar SSL (False para Gmail)
+EMAIL_HOST_USER = os.getenv('EMAIL_SENDER')  # Tu dirección de correo
+EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_SENDER')  # Tu contraseña de correo
+
+
+# Opcional: Configuración para manejar correos en el entorno de desarrollo
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Muestra los correos en la consola en lugar de enviarlos

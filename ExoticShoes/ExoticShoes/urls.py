@@ -3,7 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
 from rest_framework import routers
-from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet, CartDetail, CategoriasList, ProductosList
+from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet, CartDetail, CategoriasList, ProductosList , PasswordResetRequestView, PasswordResetView
 from appExoticShoes import views
 
 
@@ -48,6 +48,12 @@ urlpatterns = [
     
     path('categorias/', CategoriasList.as_view(), name='categorias-list'),
     path('productos/', ProductosList.as_view(), name='productos-list'),
+    
+    path('password-reset-request/', PasswordResetRequestView.as_view(), name='password-reset-request'),
+    path('password-reset/', PasswordResetView.as_view(), name='password-reset'),
+    
+    path('reset_pasword', views.restPasswordRequest, name='reset_pasword_request'),
+    path('reset', views.restPassword, name='reset_password')
 ]
 
 

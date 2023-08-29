@@ -50,15 +50,15 @@
                 placeholder="contraseña" required />
                 </i><label for="id_password"><i class="fa-solid fa-key fa-beat-fade"></i> Contraseña</label>
               </div>
-              <div class="row">
-                <div class="col mt-3 text-center">
-                  
-                </div>
-              </div>
               <div class="form-floating col mt-3 text-center">
                 <button type="submit" class="btn btn-dark btn-block"><i class="fa fa-sign-in" aria-hidden="true"></i> &nbsp; Iniciar Sesión</button>
               </div>
             </form>
+            <div class="row">
+              <div class="col mt-3 text-center">
+                  <a href="{% url 'reset_pasword_request' %}"> olvido su contraseña ? </a>
+              </div>
+            </div>
           </div>
         </div>
 
