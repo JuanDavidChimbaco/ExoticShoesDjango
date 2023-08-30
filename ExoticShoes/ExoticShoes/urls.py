@@ -49,11 +49,14 @@ urlpatterns = [
     path('categorias/', CategoriasList.as_view(), name='categorias-list'),
     path('productos/', ProductosList.as_view(), name='productos-list'),
     
-    path('password-reset-request/', PasswordResetRequestView.as_view(), name='password-reset-request'),
-    path('password-reset/', PasswordResetView.as_view(), name='password-reset'),
+    # rutas para restablecer contraseña
+    path('validarCorreo/', views.restPasswordRequest , name='validarCorreo'),
+    path('nuevaContra/', views.restPassword, name='nuevaContra'),
+    path('mensajeCorreo/', views.mensajeCorreo, name='mensajeCorreo'),
     
-    path('reset_pasword', views.restPasswordRequest, name='reset_pasword_request'),
-    path('reset', views.restPassword, name='reset_password')
+    path('resetLink/', PasswordResetRequestView.as_view(), name='resetLink'),
+    path('resetPassword/', PasswordResetView.as_view(), name='resetPassword'),
+    
 ]
 
 

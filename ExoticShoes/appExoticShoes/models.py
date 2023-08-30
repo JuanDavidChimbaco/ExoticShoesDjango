@@ -108,10 +108,10 @@ class Devolucione(models.Model):
         super().save(*args, **kwargs)
 
 class Cart(models.Model):
-    user = models.OneToOneField(Usuario, on_delete=models.CASCADE)
+    user = models.OneToOneField(Usuario, on_delete=models.PROTECT)
     products = models.ManyToManyField(Producto, through='CartItem')
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.PROTECT)
+    product = models.ForeignKey(Producto, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])

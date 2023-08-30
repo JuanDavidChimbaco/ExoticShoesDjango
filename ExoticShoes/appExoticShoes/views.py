@@ -1,3 +1,4 @@
+from django.urls import reverse
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
@@ -183,15 +184,17 @@ class ProcesarPagoView(APIView):
     
 
 # ====================== reset password ======================
+
+# Se encarga de enviar el correo electrónico con el enlace de restablecimiento
 class PasswordResetRequestView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
         email = request.data.get("email")
-        print(email)
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return Response({"detail": "No se encontró un usuario con este correo electrónico."}, status=status.HTTP_400_BAD_REQUEST)
+            mensaje = "Correo no encontrado"
+            return render(request, "registration/restablecer_password.html", {"mensaje": mensaje})
         
         # Generar el token de restablecimiento
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
@@ -202,15 +205,20 @@ class PasswordResetRequestView(APIView):
         
         token = jwt_encode_handler(payload)
         
+         # Construir el enlace para la vista de restablecimiento de contraseña
+        reset_link = request.build_absolute_uri(reverse('nuevaContra') + f"?token={token}")
+        
         # Enviar el correo electrónico con el enlace de restablecimiento
         subject = "Restablecimiento de contraseña"
-        message = f"Haz clic en el siguiente enlace para restablecer tu contraseña:\n\n{request.build_absolute_uri('/password-reset/?token=' + token)}"
+        message = f"Haz clic en el siguiente enlace para restablecer tu contraseña:\n\n{reset_link}"
         
-        send_mail(subject, message, "from@example.com", [email])
+        send_mail(subject, message, "ExoticShoes@Shop.com", [email])
         
-        # return Response({"detail": "Se ha enviado un enlace de restablecimiento a su correo electrónico."})
-        return render(request, "registration/restablecer_password_form.html", {"token": token})
+        return Response({"detail": "Se ha enviado un enlace de restablecimiento a su correo electrónico."})
+        # return render(request, "registration/restablecer_password_form.html", {"token": token})
+        # return redirect(request.path + "?sent=true")  # Redirigir con parámetro enviado
 
+# obtiene el token y la nueva contraseña y actualiza la contraseña del usuario
 class PasswordResetView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -253,11 +261,18 @@ def custom_login(request):
     
     return render(request, "inicio_sesion.html")
 
+# vista para validar correo y enviar el enlace de restablecimiento
 def restPasswordRequest(request):
     return render(request, "registration/restablecer_password.html")
 
+# vista para mostrar mensaje de que se envio el correo
+def mensajeCorreo(request):
+    return render(request, "registration/mensaje_correo.html")
+
+# vista para digitar la nueva contraseña
 def restPassword(request):
-    return render(request, "registration/restablecer_password_form.html")
+    token = request.GET.get('token', '')
+    return render(request, "registration/restablecer_password_form.html", {"token": token})
 
 #========================= Vistas del Administrador(Logueado) ==========================
 
