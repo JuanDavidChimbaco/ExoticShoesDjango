@@ -139,7 +139,7 @@ class DetallePedidoViewSet(viewsets.ModelViewSet):
                 detalle = serializer.save(subtotal=detalle_info['subtotal'])
                 pedido.total += detalle.subtotal
             pedido.save()
-
+        
         return Response({'message': 'Detalles de pedido creados exitosamente', 'total_pedido': total_pedido})
 
 class PagoViewSet(viewsets.ModelViewSet):
@@ -213,8 +213,9 @@ class PasswordResetRequestView(APIView):
         message = f"Haz clic en el siguiente enlace para restablecer tu contraseña:\n\n{reset_link}"
         
         send_mail(subject, message, "ExoticShoes@Shop.com", [email])
-        
-        return Response({"detail": "Se ha enviado un enlace de restablecimiento a su correo electrónico."})
+        mensaje = "Se ha enviado un enlace de restablecimiento a su correo electrónico."
+        return render(request, "registration/mensaje.html", {"mensaje": mensaje})
+        # return Response({"detail": "Se ha enviado un enlace de restablecimiento a su correo electrónico."})
         # return render(request, "registration/restablecer_password_form.html", {"token": token})
         # return redirect(request.path + "?sent=true")  # Redirigir con parámetro enviado
 
