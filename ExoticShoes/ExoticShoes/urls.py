@@ -61,7 +61,7 @@ urlpatterns = [
     
     # registro y login de usuarios
     path('registro/', RegistroUsuarioView.as_view(), name='registro'),
-    path('accounts/login/', LoginUsuarioView.as_view(), name='login'),
+    path('cliente/login/', LoginUsuarioView.as_view(), name='ClienteLogin'),
     
     path('perfil/', views.perfil_usuario, name='perfil'),
     path('perfilApi/', views.perfil_usuario_api, name='perfilApi'),

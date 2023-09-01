@@ -1,4 +1,3 @@
-from django.urls import reverse
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
@@ -8,6 +7,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import viewsets, status
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
 from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, CartItem , Cart
 from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
 PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
@@ -16,6 +16,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.utils import timezone
+from django.urls import reverse
 from pyexpat.errors import messages
 import os
 
@@ -29,12 +30,14 @@ from rest_framework_jwt.settings import api_settings
 from datetime import datetime, timedelta
 
 # ========================== Api ==========================
+
+# ------------------------testeado---------------------
 class UsuariosViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuariosSerializer
     
-    
-# registro de usuario (cliente)
+# -----------------------testeado----------------------------------  
+# registro de usuario (cliente)----testeado
 class RegistroUsuarioView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -53,12 +56,13 @@ class LoginUsuarioView(APIView):
             user = authenticate(username=serializer.validated_data['username'], password=serializer.validated_data['password'])
             if user is not None:
                 login(request, user)
+                token, created = Token.objects.get_or_create(user=user)
                 return Response({'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
             else:
-                return Response({'message': 'Credenciales inválidas',}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'message': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+# ----------------testeado-----------------------------------
 class CategoriasViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriasSerializer
@@ -183,6 +187,7 @@ class DevolucionesViewSet(viewsets.ModelViewSet):
 
 # ====================== reset password ======================
 
+# --------------------------para testear ----------------------------
 # Se encarga de enviar el correo electrónico con el enlace de restablecimiento
 class PasswordResetRequestView(APIView):
     permission_classes = [AllowAny]
@@ -214,7 +219,7 @@ class PasswordResetRequestView(APIView):
         mensaje = "Se ha enviado un enlace de restablecimiento a su correo electrónico."
         return render(request, "registration/mensaje.html", {"mensaje": mensaje})
 
-
+# -----------------------------para testear-----------------------
 # obtiene el token y la nueva contraseña y actualiza la contraseña del usuario
 class PasswordResetView(APIView):
     permission_classes = [AllowAny]
@@ -258,6 +263,7 @@ def custom_login(request):
     
     return render(request, "inicio_sesion.html")
 
+# ------------------------para testear------------------------------
 # vista para validar correo y enviar el enlace de restablecimiento
 def restPasswordRequest(request):
     return render(request, "registration/restablecer_password.html")
@@ -273,6 +279,8 @@ def restPassword(request):
 
 #========================= Vistas del Administrador(Logueado) ==========================
 
+# --------------------para testear------------------------------
+# admin logueado
 @login_required
 def perfil_usuario(request):
     # Puedes acceder a los datos del usuario autenticado a través de request.user
@@ -283,6 +291,7 @@ def perfil_usuario(request):
     # Realiza cualquier otra operación que necesites con los datos del usuario
     return render(request, 'perfil.html', {'nombre': nombre, 'apellido': apellido, 'email': email})
 
+# cliente logueado 
 from rest_framework.decorators import api_view, permission_classes
 @api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
@@ -317,6 +326,7 @@ def perfil_usuario_api(request):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# --------------------------------testeado------------------------------
 @login_required(login_url="login")
 def inicio(request):
     return render(request, "dashboard.html", {})
