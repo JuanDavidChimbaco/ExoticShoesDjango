@@ -5,6 +5,9 @@ from django.core.validators import MinValueValidator
 from django.conf import settings
 
 
+cliente_group, created = Group.objects.get_or_create(name='cliente')
+admin_group, created = Group.objects.get_or_create(name='admin')
+
 ESTADO_CHOICES = (
     (True, 'Activo'),
     (False, 'Borrado'),

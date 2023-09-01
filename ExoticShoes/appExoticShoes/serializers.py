@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import  Usuario, Categoria, Producto, Pedido, DetallePedido, Pago, Envio, Devolucione, CartItem , Cart
+from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 
 # Definir los serializadores 
 
@@ -66,3 +68,20 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = '__all__'
+
+# Funcionalidad para el registro de usuarios (Solo para el cliente) 
+class RegistroUsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['username', 'password', 'telefono', 'FechaNacimiento', 'direccion']
+        extra_kwargs = {'password': {'write_only': True}}
+        
+    def create(self, validated_data):
+        user = Usuario.objects.create_user(**validated_data)
+        cliente_group = Group.objects.get(name='cliente')  # Asegúrate de que el grupo 'cliente' exista
+        user.groups.add(cliente_group)
+        return user
+        
+class LoginUsuarioSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()

@@ -5,11 +5,12 @@ from rest_framework.viewsets import ViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny
-from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, CartItem , Cart
-from .serializers import (UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
-PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
 from rest_framework import viewsets, status
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.response import Response
+from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, CartItem , Cart
+from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
+PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect, get_object_or_404
@@ -31,6 +32,31 @@ from datetime import datetime, timedelta
 class UsuariosViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuariosSerializer
+    
+    
+# registro de usuario (cliente)
+class RegistroUsuarioView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        serializer = RegistroUsuarioSerializer(data=request.data)
+        if serializer.is_valid():
+            Usuario = serializer.save()
+            return Response({'message': 'Usuario registrado exitosamente'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginUsuarioView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        serializer = LoginUsuarioSerializer(data=request.data)
+        if serializer.is_valid():
+            user = authenticate(username=serializer.validated_data['username'], password=serializer.validated_data['password'])
+            if user is not None:
+                login(request, user)
+                return Response({'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': 'Credenciales inválidas',}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CategoriasViewSet(viewsets.ModelViewSet):
@@ -99,8 +125,8 @@ class PedidosViewSet(viewsets.ModelViewSet):
     serializer_class = PedidosSerializer
     
     def perform_create(self, serializer):
-        # Obtén el ID del usuario existente que deseas asignar al pedido
-        usuario_id = self.request.data.get('usuario_id', None)  # Asegúrate de ajustar el nombre del campo
+        # Obtén el ID del usuario existente que se asigna al pedido
+        usuario_id = self.request.data.get('usuario_id', None)
 
         if usuario_id is not None:
             usuario = Usuario.objects.get(pk=usuario_id)
@@ -154,34 +180,6 @@ class DevolucionesViewSet(viewsets.ModelViewSet):
     queryset = Devolucione.objects.all()
     serializer_class = DevolucionesSerializer
 
-class ProcesarPagoView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, pedido_id):
-        # Obtener los detalles del pago desde los datos JSON
-        metodo = request.data.get("metodo_pago")
-        monto = float(request.data.get("monto_pago"))
-        fecha = timezone.now()
-
-        # Obtener el pedido correspondiente
-        try:
-            pedido = Pedido.objects.get(pk=pedido_id)
-        except Pedido.DoesNotExist:
-            return Response(
-                {"error": "Pedido no encontrado"}, status=status.HTTP_404_NOT_FOUND
-            )
-
-        # Crear el objeto Pago
-        pago = Pago.objects.create(
-            metodo=metodo, monto=monto, fecha=fecha, pedidos=pedido
-        )
-
-        # Actualizar el estado del pedido (opcional)
-        # Aquí puedes cambiar el estado del pedido a "pagado" o realizar otras acciones relacionadas con el pago.
-
-        serializer = PagoSerializer(pago)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
 
 # ====================== reset password ======================
 
@@ -215,9 +213,7 @@ class PasswordResetRequestView(APIView):
         send_mail(subject, message, "ExoticShoes@Shop.com", [email])
         mensaje = "Se ha enviado un enlace de restablecimiento a su correo electrónico."
         return render(request, "registration/mensaje.html", {"mensaje": mensaje})
-        # return Response({"detail": "Se ha enviado un enlace de restablecimiento a su correo electrónico."})
-        # return render(request, "registration/restablecer_password_form.html", {"token": token})
-        # return redirect(request.path + "?sent=true")  # Redirigir con parámetro enviado
+
 
 # obtiene el token y la nueva contraseña y actualiza la contraseña del usuario
 class PasswordResetView(APIView):
@@ -241,7 +237,7 @@ class PasswordResetView(APIView):
 
     
 
-# ====================== Vistas del Administrador (login)======================
+# ====================== Vistas del Administrador (Sin-logearse)======================
 
 
 def redirect_to_login(request):
@@ -276,6 +272,50 @@ def restPassword(request):
     return render(request, "registration/restablecer_password_form.html", {"token": token})
 
 #========================= Vistas del Administrador(Logueado) ==========================
+
+@login_required
+def perfil_usuario(request):
+    # Puedes acceder a los datos del usuario autenticado a través de request.user
+    usuario = request.user
+    nombre = usuario.first_name
+    apellido = usuario.last_name
+    email = usuario.email
+    # Realiza cualquier otra operación que necesites con los datos del usuario
+    return render(request, 'perfil.html', {'nombre': nombre, 'apellido': apellido, 'email': email})
+
+from rest_framework.decorators import api_view, permission_classes
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
+def perfil_usuario_api(request):
+    usuario = request.user
+
+    if request.method == 'GET':
+        # Obtener datos del usuario
+
+        nombre = usuario.first_name
+        apellido = usuario.last_name
+        email = usuario.email
+
+        data = {'nombre': nombre, 'apellido': apellido, 'email': email}
+        return Response(data)
+    
+    elif request.method == 'PUT':
+        # Actualizar datos del usuario
+
+        nuevo_nombre = request.data.get('nombre')
+        nuevo_apellido = request.data.get('apellido')
+        nuevo_email = request.data.get('email')
+
+        if nuevo_nombre:
+            usuario.first_name = nuevo_nombre
+        if nuevo_apellido:
+            usuario.last_name = nuevo_apellido
+        if nuevo_email:
+            usuario.email = nuevo_email
+
+        usuario.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @login_required(login_url="login")
 def inicio(request):

@@ -3,6 +3,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
 from rest_framework import routers
+from appExoticShoes.views import LoginUsuarioView, RegistroUsuarioView
 from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet, CartDetail, CategoriasList, ProductosList , PasswordResetRequestView, PasswordResetView
 from appExoticShoes import views
 
@@ -36,7 +37,7 @@ urlpatterns = [
     path('frmPagos/', views.pagos, name='pagos'),
     path('frmDevoluciones/', views.devoluciones, name='devoluciones'),
     
-    # rutas para la vista del cliente 
+    # rutas para la paginacion de productos 
     path('productos-limit-offset/', producto_list_view, name='productos-limit-offset'),
     
     # rutas de la Api
@@ -46,10 +47,11 @@ urlpatterns = [
     path('cart/', CartDetail.as_view(), name='cart-detail'),
     path('cart/<int:product_id>/', CartDetail.as_view(), name='cart-remove-item'),
     
+    # esto es una prueba
     path('categorias/', CategoriasList.as_view(), name='categorias-list'),
     path('productos/', ProductosList.as_view(), name='productos-list'),
     
-    # rutas para restablecer contraseña
+    # rutas para restablecer contraseña (Admin)
     path('validarCorreo/', views.restPasswordRequest , name='validarCorreo'),
     path('nuevaContra/', views.restPassword, name='nuevaContra'),
     path('mensajeCorreo/', views.mensajeCorreo, name='mensajeCorreo'),
@@ -57,6 +59,12 @@ urlpatterns = [
     path('resetLink/', PasswordResetRequestView.as_view(), name='resetLink'),
     path('resetPassword/', PasswordResetView.as_view(), name='resetPassword'),
     
+    # registro y login de usuarios
+    path('registro/', RegistroUsuarioView.as_view(), name='registro'),
+    path('accounts/login/', LoginUsuarioView.as_view(), name='login'),
+    
+    path('perfil/', views.perfil_usuario, name='perfil'),
+    path('perfilApi/', views.perfil_usuario_api, name='perfilApi'),
 ]
 
 
