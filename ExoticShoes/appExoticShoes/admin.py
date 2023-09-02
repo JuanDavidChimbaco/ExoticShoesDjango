@@ -3,7 +3,7 @@ from .models import  Usuario, Categoria, Producto, Pedido, DetallePedido, Pago, 
 
 @admin.register(Usuario)
 class UsuariosAdmin(admin.ModelAdmin):
-    list_display = ('username', 'telefono', 'FechaNacimiento', 'direccion')
+    list_display = ('username', 'telefono', 'fechaNacimiento', 'direccion')
 
 @admin.register(Categoria)
 class CategoriasAdmin(admin.ModelAdmin):
@@ -11,7 +11,7 @@ class CategoriasAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductosAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'descripcion', 'precio', 'cantidadEnInventario', 'categoria')
+    list_display = ('nombre', 'descripcion', 'precio', 'existencias', 'categoria')
 
 @admin.register(Pedido)
 class PedidosAdmin(admin.ModelAdmin):

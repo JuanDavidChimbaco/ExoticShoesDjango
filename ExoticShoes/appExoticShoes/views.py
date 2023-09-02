@@ -8,6 +8,9 @@ from rest_framework import viewsets, status
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
+from .permissions import AllowOnlyGET
+from .permissions import AllowOnlyPOST
 from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, CartItem , Cart
 from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
 PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
@@ -29,46 +32,37 @@ from django.core.mail import send_mail
 from rest_framework_jwt.settings import api_settings
 from datetime import datetime, timedelta
 
-# ========================== Api ==========================
-
+#================================================================ 
+# ========================== Api ViewSet ==========================
 # ------------------------testeado---------------------
 class UsuariosViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuariosSerializer
-    
-# -----------------------testeado----------------------------------  
-# registro de usuario (cliente)----testeado
-class RegistroUsuarioView(APIView):
-    permission_classes = [AllowAny]
-    def post(self, request):
-        serializer = RegistroUsuarioSerializer(data=request.data)
+
+
+class RegistroClienteViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowOnlyPOST]
+    queryset = Usuario.objects.all()
+    serializer_class = RegistroUsuarioSerializer
+
+    @action(detail=False, methods=['post'])
+    def registrar_usuario(self, request):
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            Usuario = serializer.save()
-            return Response({'message': 'Usuario registrado exitosamente'}, status=status.HTTP_201_CREATED)
+            usuario = serializer.save()
+            token, created = Token.objects.get_or_create(user=usuario)
+            return Response({'message': 'Usuario registrado exitosamente', 'token': token.key}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class LoginUsuarioView(APIView):
-    permission_classes = [AllowAny]
-    def post(self, request):
-        serializer = LoginUsuarioSerializer(data=request.data)
-        if serializer.is_valid():
-            user = authenticate(username=serializer.validated_data['username'], password=serializer.validated_data['password'])
-            if user is not None:
-                login(request, user)
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
-            else:
-                return Response({'message': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# ----------------testeado-----------------------------------
+ 
+      
 class CategoriasViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowOnlyGET]
     queryset = Categoria.objects.all()
     serializer_class = CategoriasSerializer
-
-
+ 
+    
 class ProductosViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowOnlyGET]
     # trae todos los productos que esten activos
     queryset = Producto.objects.filter(estado=True)
     serializer_class = ProductosSerializer
@@ -82,22 +76,9 @@ class ProductosViewSet(viewsets.ModelViewSet):
         categoria = Categoria.objects.get(id=categoria_id)  # Obtén la instancia de categoría
         serializer.save(categoria=categoria)  # Asigna la categoría al producto y guarda
 
-
-class CustomLimitOffsetPagination(LimitOffsetPagination):
-    default_limit = 4
-
-
-class ProductosListView(ViewSet):
-    pagination_class = CustomLimitOffsetPagination
-    def list(self, request):
-        productos = Producto.objects.filter(estado=True)
-        paginator = LimitOffsetPagination()
-        paginated_productos = paginator.paginate_queryset(productos, request)
-        serializer = ProductosSerializer(paginated_productos, many=True)
-        return paginator.get_paginated_response(serializer.data)
-
-
+        
 class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowOnlyGET]
     serializer_class = ProductosSerializer
     def get_queryset(self):
         queryset = Producto.objects.filter(estado=True)
@@ -110,20 +91,8 @@ class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.estado = False
         instance.save()
+    
         
-class CategoriasList(APIView):
-    def get(self, request):
-        categorias = Categoria.objects.all()
-        serializer = CategoriasSerializer(categorias, many=True)
-        return Response(serializer.data)
-
-class ProductosList(APIView):
-    def get(self, request):
-        productos = Producto.objects.all()
-        serializer = ProductosSerializer(productos, many=True)
-        return Response(serializer.data)
-
-
 class PedidosViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
     serializer_class = PedidosSerializer
@@ -183,11 +152,54 @@ class EnvioViewSet(viewsets.ModelViewSet):
 class DevolucionesViewSet(viewsets.ModelViewSet):
     queryset = Devolucione.objects.all()
     serializer_class = DevolucionesSerializer
+    
+#================================================================  
+# ========================== Api View ===========================
+class LoginUsuarioView(APIView):
+    permission_classes = [AllowOnlyPOST]
+    def post(self, request):
+        serializer = LoginUsuarioSerializer(data=request.data)
+        if serializer.is_valid():
+            user = authenticate(username=serializer.validated_data['username'], password=serializer.validated_data['password'])
+            if user is not None:
+                login(request, user)
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key, 'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# ====================== reset password ======================
+class CustomLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 4
 
-# --------------------------para testear ----------------------------
+class ProductosListView(ViewSet):
+    permission_classes = [AllowOnlyGET]
+    pagination_class = CustomLimitOffsetPagination
+    def list(self, request):
+        productos = Producto.objects.filter(estado=True)
+        paginator = LimitOffsetPagination()
+        paginated_productos = paginator.paginate_queryset(productos, request)
+        serializer = ProductosSerializer(paginated_productos, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+     
+class CategoriasList(APIView):
+    def get(self, request):
+        categorias = Categoria.objects.all()
+        serializer = CategoriasSerializer(categorias, many=True)
+        return Response(serializer.data)
+
+
+class ProductosList(APIView):
+    permission_classes = [AllowAny]
+    def get(self, request):
+        productos = Producto.objects.all()
+        serializer = ProductosSerializer(productos, many=True)
+        return Response(serializer.data)
+
+# --------------------------/ reset password /------------------------------
+# -------------------------- para testear ----------------------------
 # Se encarga de enviar el correo electrónico con el enlace de restablecimiento
 class PasswordResetRequestView(APIView):
     permission_classes = [AllowAny]
@@ -241,7 +253,7 @@ class PasswordResetView(APIView):
         return render(request, "registration/reset_password_success.html")
 
     
-
+#=====================================================================================
 # ====================== Vistas del Administrador (Sin-logearse)======================
 
 
@@ -325,6 +337,33 @@ def perfil_usuario_api(request):
         usuario.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# ============================decoradores para las vistas ==================================
+
+def admin_required(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            if request.user.is_staff:
+                return view_func(request, *args, **kwargs)
+            else:
+                mensaje = "No tienes permisos para acceder a esta página."
+                return render(request, "templates/pageError/ErrorPage.html", {'mensaje':mensaje})
+        return redirect("login")
+    return _wrapped_view
+
+def client_required(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            if not request.user.is_staff:
+                return view_func(request, *args, **kwargs)
+        else:
+            pass
+    return _wrapped_view
+
+def custom_404_view(request, exception):
+    nombre_template = 'templates/pageError/404.html'
+    return render(request, template_name=nombre_template, status=404)
+
 
 # --------------------------------testeado------------------------------
 @login_required(login_url="login")

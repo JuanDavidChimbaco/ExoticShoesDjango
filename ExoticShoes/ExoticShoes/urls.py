@@ -2,14 +2,12 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
-from rest_framework import routers
-from appExoticShoes.views import LoginUsuarioView, RegistroUsuarioView
-from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet, CartDetail, CategoriasList, ProductosList , PasswordResetRequestView, PasswordResetView
+from rest_framework.routers import DefaultRouter
+from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet, CartDetail, CategoriasList, ProductosList , PasswordResetRequestView, PasswordResetView, LoginUsuarioView,custom_404_view
 from appExoticShoes import views
 
-
 # router para las rutas de la Api
-router = routers.DefaultRouter()
+router = DefaultRouter()
 router.register(r'usuarios', views.UsuariosViewSet)
 router.register(r'categorias', views.CategoriasViewSet)
 router.register(r'productos', views.ProductosViewSet)
@@ -19,6 +17,7 @@ router.register(r'detallePedidos', views.DetallePedidoViewSet,basename='detallep
 router.register(r'pago', views.PagoViewSet)
 router.register(r'envio', views.EnvioViewSet)
 router.register(r'devoluciones', views.DevolucionesViewSet)
+router.register(r'registro', views.RegistroClienteViewSet)
 
 # lista de productos para la vista del cliente
 producto_list_view = ProductosListView.as_view({'get': 'list'})
@@ -38,14 +37,14 @@ urlpatterns = [
     path('frmDevoluciones/', views.devoluciones, name='devoluciones'),
     
     # rutas para la paginacion de productos 
-    path('productos-limit-offset/', producto_list_view, name='productos-limit-offset'),
+    path('api/v1.0/productos-limit-offset/', producto_list_view, name='productos-limit-offset'),
     
     # rutas de la Api
     path('api/v1.0/', include(router.urls)),
     
     # rutas para carrito
-    path('cart/', CartDetail.as_view(), name='cart-detail'),
-    path('cart/<int:product_id>/', CartDetail.as_view(), name='cart-remove-item'),
+    path('api/v1.0/cart/', CartDetail.as_view(), name='cart-detail'),
+    path('api/v1.0/cart/<int:product_id>/', CartDetail.as_view(), name='cart-remove-item'),
     
     # esto es una prueba
     path('categorias/', CategoriasList.as_view(), name='categorias-list'),
@@ -59,14 +58,14 @@ urlpatterns = [
     path('resetLink/', PasswordResetRequestView.as_view(), name='resetLink'),
     path('resetPassword/', PasswordResetView.as_view(), name='resetPassword'),
     
-    # registro y login de usuarios
-    path('registro/', RegistroUsuarioView.as_view(), name='registro'),
-    path('cliente/login/', LoginUsuarioView.as_view(), name='ClienteLogin'),
+    #login de usuarios (Cliente)
+    path('api/v1.0/cliente/login/', LoginUsuarioView.as_view(), name='ClienteLogin'),
     
-    path('perfil/', views.perfil_usuario, name='perfil'),
-    path('perfilApi/', views.perfil_usuario_api, name='perfilApi'),
+    path('api/v1.0/perfil/', views.perfil_usuario, name='perfil'),
+    path('api/v1.0/perfilApi/', views.perfil_usuario_api, name='perfilApi'),
 ]
 
+# handler404 = custom_404_view
 
 if settings.DEBUG:
     urlpatterns += static (settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

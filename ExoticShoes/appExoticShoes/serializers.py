@@ -73,7 +73,8 @@ class CartSerializer(serializers.ModelSerializer):
 class RegistroUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['username', 'password', 'telefono', 'FechaNacimiento', 'direccion']
+        fields = ['username', 'password', 'first_name', 'last_name', 'email','telefono', 'fechaNacimiento', 'direccion']
+        # exclude = ['last_login','is_staff','is_active','date_joined', 'groups', 'is_superuser', 'user_permissions']
         extra_kwargs = {'password': {'write_only': True}}
         
     def create(self, validated_data):

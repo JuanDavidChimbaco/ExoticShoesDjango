@@ -4,18 +4,18 @@ from django.contrib.auth.models import User, Group, AbstractUser
 from django.core.validators import MinValueValidator
 from django.conf import settings
 
-
-cliente_group, created = Group.objects.get_or_create(name='cliente')
-admin_group, created = Group.objects.get_or_create(name='admin')
-
 ESTADO_CHOICES = (
     (True, 'Activo'),
     (False, 'Borrado'),
 )
 
+cliente_group, created = Group.objects.get_or_create(name='cliente')
+admin_group, created = Group.objects.get_or_create(name='admin')
+
+
 class Usuario(User):
     telefono = models.CharField(max_length=45)
-    FechaNacimiento = models.DateField()
+    fechaNacimiento = models.DateField()
     direccion = models.CharField(max_length=45)
      
     def __str__(self):
@@ -31,7 +31,7 @@ class Producto(models.Model):
     nombre = models.CharField(max_length=45)
     descripcion = models.CharField(max_length=45)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
-    cantidadEnInventario = models.IntegerField()
+    existencias = models.IntegerField()
     foto = models.ImageField(upload_to='productos/', blank=True, null=True)
     estado = models.BooleanField(choices=ESTADO_CHOICES, default=True)
     categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)

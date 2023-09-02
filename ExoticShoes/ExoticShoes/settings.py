@@ -73,7 +73,6 @@ ROOT_URLCONF = 'ExoticShoes.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # 'DIRS': ["./appExoticShoes/templates"],
         'DIRS': ["os.os.path.join(BASE_DIR, 'templates')"],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -139,6 +138,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = os.path.join(BASE_DIR,'/static/')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 #para guardar archivos de multimedia 
 
