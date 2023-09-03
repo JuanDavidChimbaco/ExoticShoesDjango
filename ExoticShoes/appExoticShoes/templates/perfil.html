@@ -1,16 +1,114 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    {% if nombre %}
-        <h1>hola {{nombre}} {{apellido}} con el correo: {{email}}</h1>
+{% extends 'index.html' %} {% block contenido %}
+{% load static %}
+<div class="text-bg-dark text-center"> 
+    <h1>Mi Perfil de Usuario</h1>
+    <div id="perfil">
+        <div class="d-flex justify-content-center mb-4">
+            <div class="card text-bg-secondary" style="width: 18rem;">
+                <img src="{% static 'images/programador.png'%}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h5 class="card-title"><span id="username"></span></h5>
+                  <p class="card-text">Nombre: <small><span id="nombre"></span></small></p>
+                  <p class="card-text">Apellido: <small><span id="apellido"></span></small></p>
+                  <p class="card-text">Correo: <small><span id="email"></span></small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="editarBtn" class="btn btn-secondary mx-3">Editar</button>
+    <button id="cancelarBtn" class="btn btn-primary">Cancelar</button>
 
-    {% else %}
-        <h1>no hay nombre</h1>
-    {% endif %}
-</body>
-</html>
+    <div id="formulario" style="display: none;" >
+        <div class="d-flex justify-content-center">
+            <div>
+                <div class="form-floating mt-3">
+                    <input type="text" id="nuevoNombre" placeholder="Nuevo nombre" name="nombre" value="{{ nombre }}" class="form-control">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                </div>
+                <div class="form-floating mt-3">
+                    <input type="text" id="nuevoApellido" placeholder="Nuevo apellido" name="apellido" value="{{ apellido }}" class="form-control">
+                    <label for="apellido" class="form-label">Apellido:</label>
+                </div>
+                <div class="form-floating mt-3">
+                    <input type="email" id="nuevoEmail" placeholder="Nuevo correo" name="email" value="{{ email }}" class="form-control">
+                    <label for="email" class="form-label">Correo:</label>
+                </div>
+                <div class="form-actions text-center mt-3">
+                    <button id="guardarBtn" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let user = {}
+        $(document).ready(function () {
+            // Obtener los datos del usuario al cargar la página
+            $.get('/perfilApi/', function (data) {
+                $('#nombre').text(data.nombre);
+                $('#apellido').text(data.apellido);
+                $('#email').text(data.email);
+                $('#username').text(data.username);
+                $('#foto').text(data.profile_image);
+                user = data;
+            });
+
+            // Habilitar la edición de datos al hacer clic en el botón "Editar"
+            $('#editarBtn').click(function () {
+                $('#perfil').hide();
+                $('#formulario').show();
+            });
+
+            $('#cancelarBtn').click(function () {
+                $('#perfil').show();
+                $('#formulario').hide();
+                $('#nuevoNombre').val(user.nombre);
+                $('#nuevoApellido').val(user.apellido);
+                $('#nuevoEmail').val(user.email);
+            });
+
+            // Enviar los datos actualizados al servidor al hacer clic en "Guardar Cambios"
+            $('#guardarBtn').click(function () {
+                const nuevoNombre = $('#nuevoNombre').val();
+                const nuevoApellido = $('#nuevoApellido').val();
+                const nuevoEmail = $('#nuevoEmail').val();
+
+                // Obtener el token CSRF de las cookies
+                const csrfToken = getCookie('csrftoken');
+                console.log(csrfToken);
+
+                $.ajax({
+                    url: '/perfilApi/',
+                    type: 'PUT',
+                    data: {
+                        nombre: nuevoNombre,
+                        apellido: nuevoApellido,
+                        email: nuevoEmail
+                    },
+                    headers: {
+                        'X-CSRFToken': csrfToken // Agregar el token CSRF al encabezado
+                    },
+                    success: function () {
+                        // Actualizar la interfaz de usuario con los nuevos datos
+                        $('#nombre').text(nuevoNombre);
+                        $('#apellido').text(nuevoApellido);
+                        $('#email').text(nuevoEmail);
+
+                        // Ocultar el formulario de edición y mostrar el perfil nuevamente
+                        $('#formulario').hide();
+                        $('#perfil').show();
+                    }
+                });
+            });
+
+            // Función para obtener el valor de una cookie por su nombre
+            function getCookie(name) {
+                const value = `;${document.cookie}`;
+                console.log(value);
+                const parts = value.split(`;${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+        });
+    </script>
+</div>
+{% endblock %}

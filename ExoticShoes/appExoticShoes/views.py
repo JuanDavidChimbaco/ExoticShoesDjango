@@ -1,38 +1,39 @@
-from rest_framework import viewsets
+# =========================== rest_framework ============================ 
+from rest_framework import viewsets, status
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import AllowAny
-from rest_framework import viewsets, status
-from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated , AllowAny
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.decorators import api_view, permission_classes ,action
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import action
-from .permissions import AllowOnlyGET
-from .permissions import AllowOnlyPOST
-from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, CartItem , Cart
-from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
-PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout
+from rest_framework.authtoken.views import obtain_auth_token 
+
+
+# ============================= Django =============================
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.utils import timezone
 from django.urls import reverse
-from pyexpat.errors import messages
-import os
-
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth.models import User
+from django.http import HttpRequest
 from django.core.mail import send_mail
-from rest_framework_jwt.settings import api_settings
-from datetime import datetime, timedelta
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 
-#================================================================ 
+# =============================== Otros ===============================
+import os
+from datetime import datetime, timedelta
+from pyexpat.errors import messages
+from rest_framework_jwt.settings import api_settings
+
+# ================================ App ================================
+from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
+PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
+from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, CartItem , Cart
+from .permissions import AllowOnlyGET , AllowOnlyPOSTAndUnauthenticated , AllowOnlyPOST
+from .decorators import admin_required, client_required
+
+#==================================================================
 # ========================== Api ViewSet ==========================
 # ------------------------testeado---------------------
 class UsuariosViewSet(viewsets.ModelViewSet):
@@ -56,21 +57,17 @@ class RegistroClienteViewSet(viewsets.ModelViewSet):
  
       
 class CategoriasViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowOnlyGET]
     queryset = Categoria.objects.all()
     serializer_class = CategoriasSerializer
  
     
 class ProductosViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowOnlyGET]
     # trae todos los productos que esten activos
     queryset = Producto.objects.filter(estado=True)
     serializer_class = ProductosSerializer
-
     def perform_destroy(self, instance):
         instance.estado = False
         instance.save()
-    
     def perform_create(self, serializer):
         categoria_id = self.request.data.get('categoria')  # Obtén el ID de la categoría del request
         categoria = Categoria.objects.get(id=categoria_id)  # Obtén la instancia de categoría
@@ -153,23 +150,6 @@ class DevolucionesViewSet(viewsets.ModelViewSet):
     queryset = Devolucione.objects.all()
     serializer_class = DevolucionesSerializer
     
-#================================================================  
-# ========================== Api View ===========================
-class LoginUsuarioView(APIView):
-    permission_classes = [AllowOnlyPOST]
-    def post(self, request):
-        serializer = LoginUsuarioSerializer(data=request.data)
-        if serializer.is_valid():
-            user = authenticate(username=serializer.validated_data['username'], password=serializer.validated_data['password'])
-            if user is not None:
-                login(request, user)
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key, 'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
-            else:
-                return Response({'message': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 class CustomLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 4
 
@@ -182,6 +162,34 @@ class ProductosListView(ViewSet):
         paginated_productos = paginator.paginate_queryset(productos, request)
         serializer = ProductosSerializer(paginated_productos, many=True)
         return paginator.get_paginated_response(serializer.data)
+    
+#================================================================  
+# ========================== Api View ===========================
+
+class LoginUsuarioView(APIView):
+    permission_classes = [AllowOnlyPOST]
+    def post(self, request):
+        serializer = LoginUsuarioSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']  # Obtenemos el usuario validado
+            login(request, user)
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key, 'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@client_required
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def logOut(request):
+    logout(request)
+    data = {'mensaje': 'Cierre de sesión exitoso'}
+    return Response(data , status=status.HTTP_200_OK)
+    
+def inicioCliente(request):
+    return render(request, "cliente.html", {})
+
+def registroCliente(request):
+    return render(request, "clienteLogueado.html", {})
 
      
 class CategoriasList(APIView):
@@ -210,23 +218,18 @@ class PasswordResetRequestView(APIView):
         except User.DoesNotExist:
             mensaje = "Correo no encontrado"
             return render(request, "registration/restablecer_password.html", {"mensaje": mensaje})
-        
         # Generar el token de restablecimiento
         jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
         jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-        
+        # se encarga de establecer el usuario y la expiración del token
         payload = jwt_payload_handler(user)
         payload["exp"] = datetime.utcnow() + timedelta(hours=1)  # Establecer la expiración a 1 hora
-        
         token = jwt_encode_handler(payload)
-        
-         # Construir el enlace para la vista de restablecimiento de contraseña
+        # Construir el enlace para la vista de restablecimiento de contraseña
         reset_link = request.build_absolute_uri(reverse('nuevaContra') + f"?token={token}")
-        
         # Enviar el correo electrónico con el enlace de restablecimiento
         subject = "Restablecimiento de contraseña"
         message = f"Haz clic en el siguiente enlace para restablecer tu contraseña:\n\n{reset_link}"
-        
         send_mail(subject, message, "ExoticShoes@Shop.com", [email])
         mensaje = "Se ha enviado un enlace de restablecimiento a su correo electrónico."
         return render(request, "registration/mensaje.html", {"mensaje": mensaje})
@@ -238,17 +241,14 @@ class PasswordResetView(APIView):
     def post(self, request):
         token = request.data.get("token")
         new_password = request.data.get("new_password")
-        
         try:
             payload = api_settings.JWT_DECODE_HANDLER(token)
             user = User.objects.get(id=payload["user_id"])
         except User.DoesNotExist:
             return Response({"detail": "El token no es válido."}, status=status.HTTP_400_BAD_REQUEST)
-        
         # Actualizar la contraseña del usuario
         user.set_password(new_password)
         user.save()
-        
         # return Response({"detail": "Contraseña actualizada exitosamente."})
         return render(request, "registration/reset_password_success.html")
 
@@ -256,9 +256,11 @@ class PasswordResetView(APIView):
 #=====================================================================================
 # ====================== Vistas del Administrador (Sin-logearse)======================
 
-
 def redirect_to_login(request):
-    return redirect("login")
+    if Usuario.is_authenticated:
+        return redirect('inicio')
+    else:
+        return redirect("login")
 
 def custom_login(request):
     if request.method == "POST":
@@ -275,7 +277,6 @@ def custom_login(request):
     
     return render(request, "inicio_sesion.html")
 
-# ------------------------para testear------------------------------
 # vista para validar correo y enviar el enlace de restablecimiento
 def restPasswordRequest(request):
     return render(request, "registration/restablecer_password.html")
@@ -289,11 +290,52 @@ def restPassword(request):
     token = request.GET.get('token', '')
     return render(request, "registration/restablecer_password_form.html", {"token": token})
 
+
+# ==========================================================================================
 #========================= Vistas del Administrador(Logueado) ==========================
 
 # --------------------para testear------------------------------
+@admin_required
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
+def perfil_usuario_api(request):
+    usuario = request.user
+    if request.method == 'GET':
+        # Obtener datos del usuario
+        usename = usuario.username
+        nombre = usuario.first_name
+        apellido = usuario.last_name
+        email = usuario.email
+        data = {'nombre': nombre, 'apellido': apellido, 'email': email, 'username': usename }
+        return Response(data)
+    
+    elif request.method == 'PUT':
+        # Actualizar datos del usuario
+        nuevo_nombre = request.data.get('nombre')
+        nuevo_apellido = request.data.get('apellido')
+        nuevo_email = request.data.get('email')
+        if nuevo_nombre:
+            usuario.first_name = nuevo_nombre
+        if nuevo_apellido:
+            usuario.last_name = nuevo_apellido
+        if nuevo_email:
+            usuario.email = nuevo_email
+        usuario.save()
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def custom_404_view(request, exception):
+    nombre_template = 'templates/pageError/404.html'
+    return render(request, template_name=nombre_template, status=404)
+
+
+# --------------------------------testeado------------------------------
+@admin_required
+def inicio(request):
+    return render(request, "dashboard.html", {})
 # admin logueado
-@login_required
+@admin_required
 def perfil_usuario(request):
     # Puedes acceder a los datos del usuario autenticado a través de request.user
     usuario = request.user
@@ -303,98 +345,31 @@ def perfil_usuario(request):
     # Realiza cualquier otra operación que necesites con los datos del usuario
     return render(request, 'perfil.html', {'nombre': nombre, 'apellido': apellido, 'email': email})
 
-# cliente logueado 
-from rest_framework.decorators import api_view, permission_classes
-@api_view(['GET', 'PUT'])
-@permission_classes([IsAuthenticated])
-def perfil_usuario_api(request):
-    usuario = request.user
-
-    if request.method == 'GET':
-        # Obtener datos del usuario
-
-        nombre = usuario.first_name
-        apellido = usuario.last_name
-        email = usuario.email
-
-        data = {'nombre': nombre, 'apellido': apellido, 'email': email}
-        return Response(data)
-    
-    elif request.method == 'PUT':
-        # Actualizar datos del usuario
-
-        nuevo_nombre = request.data.get('nombre')
-        nuevo_apellido = request.data.get('apellido')
-        nuevo_email = request.data.get('email')
-
-        if nuevo_nombre:
-            usuario.first_name = nuevo_nombre
-        if nuevo_apellido:
-            usuario.last_name = nuevo_apellido
-        if nuevo_email:
-            usuario.email = nuevo_email
-
-        usuario.save()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-# ============================decoradores para las vistas ==================================
-
-def admin_required(view_func):
-    def _wrapped_view(request, *args, **kwargs):
-        if request.user.is_authenticated:
-            if request.user.is_staff:
-                return view_func(request, *args, **kwargs)
-            else:
-                mensaje = "No tienes permisos para acceder a esta página."
-                return render(request, "templates/pageError/ErrorPage.html", {'mensaje':mensaje})
-        return redirect("login")
-    return _wrapped_view
-
-def client_required(view_func):
-    def _wrapped_view(request, *args, **kwargs):
-        if request.user.is_authenticated:
-            if not request.user.is_staff:
-                return view_func(request, *args, **kwargs)
-        else:
-            pass
-    return _wrapped_view
-
-def custom_404_view(request, exception):
-    nombre_template = 'templates/pageError/404.html'
-    return render(request, template_name=nombre_template, status=404)
-
-
-# --------------------------------testeado------------------------------
-@login_required(login_url="login")
-def inicio(request):
-    return render(request, "dashboard.html", {})
-
-@login_required(login_url="/")
+@admin_required
 def categorias(request):
     return render(request, "frmCategorias.html", {})
 
-@login_required(login_url="/")
+@admin_required
 def productos(request):
     return render(request, "frmProductos.html", {})
 
-@login_required(login_url="/")
+@admin_required
 def pedidos(request):
     return render(request, "frmPedidos.html", {})
 
-@login_required(login_url="/")
+@admin_required
 def pagos(request):
     return render(request, "frmPagos.html", {})
 
-@login_required(login_url="/")
+@admin_required
 def envios(request):
     return render(request, "frmEnvios.html", {})
 
-@login_required(login_url="/")
+@admin_required
 def devoluciones(request):
     return render(request, "frmDevoluciones.html", {})
 
-@login_required(login_url="/")
+@admin_required
 def custom_logout(request):
     logout(request)
     return redirect("login")
@@ -403,6 +378,7 @@ def custom_logout(request):
 # ================================ Carrito ================================
 
 class CartDetail(APIView):
+    permission_classes = [AllowAny]
     def get_cart(self, user):
         cart, created = Cart.objects.get_or_create(user=user)
         return cart

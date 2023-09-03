@@ -6,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet, CartDetail, CategoriasList, ProductosList , PasswordResetRequestView, PasswordResetView, LoginUsuarioView,custom_404_view
 from appExoticShoes import views
 
+
 # router para las rutas de la Api
 router = DefaultRouter()
 router.register(r'usuarios', views.UsuariosViewSet)
@@ -49,6 +50,8 @@ urlpatterns = [
     # esto es una prueba
     path('categorias/', CategoriasList.as_view(), name='categorias-list'),
     path('productos/', ProductosList.as_view(), name='productos-list'),
+    path('inicioCliente/', views.inicioCliente, name='inicioCliente'),
+    path('registroCliente/', views.registroCliente, name='registroCliente'),
     
     # rutas para restablecer contraseña (Admin)
     path('validarCorreo/', views.restPasswordRequest , name='validarCorreo'),
@@ -59,10 +62,13 @@ urlpatterns = [
     path('resetPassword/', PasswordResetView.as_view(), name='resetPassword'),
     
     #login de usuarios (Cliente)
-    path('api/v1.0/cliente/login/', LoginUsuarioView.as_view(), name='ClienteLogin'),
+    path('inicioSesion/', LoginUsuarioView.as_view(), name='inicioSesion'),
+    path('logOut/', views.logOut, name='logOut'),
     
-    path('api/v1.0/perfil/', views.perfil_usuario, name='perfil'),
+    # perfil de usuario(Admin)
+    path('perfil/', views.perfil_usuario, name='perfil'),
     path('api/v1.0/perfilApi/', views.perfil_usuario_api, name='perfilApi'),
+    
 ]
 
 # handler404 = custom_404_view

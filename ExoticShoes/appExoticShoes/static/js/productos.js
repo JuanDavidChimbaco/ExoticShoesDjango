@@ -70,7 +70,7 @@ async function obtenerProductos() {
     var tabla = document.getElementById("tablaPro");
     var data = "";
     var NombreCat = "";
-    const response = await axios.get("/api/v1.0/productos/");
+    const response = await axios.get("/api/v1.0/productos");
     console.log(response);
 
     let categorias = JSON.parse(localStorage.categoria);
@@ -93,7 +93,7 @@ async function obtenerProductos() {
                   <td>${element.nombre}</td>
                   <td>${element.descripcion}</td>
                   <td>${precioFormateado}</td>
-                  <td>${element.cantidadEnInventario}</td>
+                  <td>${element.existencias}</td>
                   <td>${NombreCat}</td>
                   <td>
                     <img src="${element.foto}" alt="Imagen" height="100" width="100" onclick='vistaPrevia(${JSON.stringify(element)})' class="btn">
@@ -132,7 +132,7 @@ function load(element) {
   txtNombre.value = element.nombre;
   txtDescripcion.value = element.descripcion;
   txtPrecio.value = element.precio;
-  txtCantidad.value = element.cantidadEnInventario;
+  txtCantidad.value = element.existencias;
   cbCategoria.value = element.categoria;
   vistaPreviaFoto.src = element.foto;
 }
@@ -147,7 +147,7 @@ function agregarPro() {
   formData.append("nombre", txtNombre.value);
   formData.append("descripcion", txtDescripcion.value);
   formData.append("precio", txtPrecio.value);
-  formData.append("cantidadEnInventario", txtCantidad.value);
+  formData.append("existencias", txtCantidad.value);
   formData.append("categoria", cbCategoria.value);
   formData.append("foto", file);
 
@@ -184,7 +184,7 @@ function modificarPro() {
   formData.append("nombre", txtNombre.value);
   formData.append("descripcion", txtDescripcion.value);
   formData.append("precio", txtPrecio.value);
-  formData.append("cantidadEnInventario", txtCantidad.value);
+  formData.append("existencias", txtCantidad.value);
   formData.append("categoria", cbCategoria.value);
   formData.append("foto", file);
 

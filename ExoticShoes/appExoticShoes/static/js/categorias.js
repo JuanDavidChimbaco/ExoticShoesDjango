@@ -82,12 +82,13 @@ function agregarCat() {
             })
         .then(function (response) {
             console.log('Categoria agregado con éxito' + response);
+            console.log(csrfToken);
             obtenerCat()
             txtNombre.value = ""
         })
         .catch(function (error) {
             console.log(error)
-            let mensaje = error.response.data.nombre[0]
+            let mensaje = error.response.data.detail
             alert(mensaje);
             txtNombre.value = ""
         });

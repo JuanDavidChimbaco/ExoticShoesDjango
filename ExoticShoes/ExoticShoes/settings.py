@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import os
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_jwt',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
 ]
 
 REST_FRAMEWORK = {
@@ -51,10 +53,20 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Tiempo de vida del token de acceso (60 minutos por defecto)
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),  # Tiempo de vida del token de actualización (1 día por defecto)
+    'SLIDING_TOKEN_LIFETIME': timedelta(days=14),  # Tiempo de vida máxima del token de actualización (14 días por defecto)
+    'SLIDING_TOKEN_REFRESH_LIFETIME_GRACE_PERIOD': timedelta(days=1),  # Período de gracia para la actualización del token (1 día por defecto)
+    'SLIDING_TOKEN_REFRESH_EACH_TIME': False,  # True si el token de acceso debe actualizarse cada vez que se utiliza, False por defecto
 }
 
 MIDDLEWARE = [
@@ -69,6 +81,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'ExoticShoes.urls'
+
+# Tiempo de sesión en segundos (30 minutos)
+SESSION_COOKIE_AGE = 1800
+
+# Si deseas que la sesión expire cuando el navegador se cierre, puedes usar esto:
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 TEMPLATES = [
     {
