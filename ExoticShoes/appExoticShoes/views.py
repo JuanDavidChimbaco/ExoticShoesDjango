@@ -193,6 +193,7 @@ def registroCliente(request):
 
      
 class CategoriasList(APIView):
+    permission_classes = [AllowAny]
     def get(self, request):
         categorias = Categoria.objects.all()
         serializer = CategoriasSerializer(categorias, many=True)

@@ -64,6 +64,7 @@ urlpatterns = [
     #login de usuarios (Cliente)
     path('inicioSesion/', LoginUsuarioView.as_view(), name='inicioSesion'),
     path('logOut/', views.logOut, name='logOut'),
+    path('custom_logout/', views.custom_logout, name='custom_logout'),
     
     # perfil de usuario(Admin)
     path('perfil/', views.perfil_usuario, name='perfil'),
