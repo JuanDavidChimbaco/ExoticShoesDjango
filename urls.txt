@@ -1,0 +1,1 @@
+url para registrar un cliente: http://192.168.100.9:8000/api/v1.0/registro/registrar_usuario/

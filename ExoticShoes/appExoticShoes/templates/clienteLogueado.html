@@ -1,16 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <title>Document</title>
 </head>
+
 <body>
     incio Cliente Logueado
-    <a href="/logOut">cerrar Sesion</a>
+    <div id="app">
+        <h1>Carrito de Compras</h1>
+
+        <div>
+            <h2>Productos</h2>
+            <button @click="productos()">Mostrar Productos</button>
+            <div v-for="(product,index) in products">
+                [[ product.nombre ]] $[[ product.precio ]]
+                <button @click="addToCart(index)">Agregar al carrito</button>
+            </div>
+        </div>
+
+        <div>
+            <h2>Carrito de Compras</h2>
+            <ul>
+                <li v-for="(item, index) in cart" :key="index">
+                    [[ item.nombre ]] - $[[ item.precio ]] - Cantidad: [[ item.quantity ]] - SubTotal: $[[ item.precio *
+                    item.quantity ]]
+                    <button @click="removeFromCart(index)">Eliminar</button>
+                </li>
+            </ul>
+            <p>Total: $[[ total ]] </p>
+            <button @click="tokens()">mirar token</button>
+                [[ csrf_token ]]
+                <button type="submit" @click="compra()">Comprar</button>
+            <p>[[hoy]]</p>
+        </div>
+        <form method="post" action="/logout/">
+            {% csrf_token %}
+            <button type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+    <br>
+
     <script>
-        var token = localStorage.getItem('token');
-        console.log(token);
+        new Vue({
+            el: '#app',
+            data: {
+                products: [],
+                cart: [],
+                hoy:  new Date().toISOString().slice(0, 10),
+                token: '',
+                user: '',
+                pedido: '',
+                csrf_token : csrf_token.value,
+            },
+            computed: {
+                total: function () {
+                    return this.cart.reduce((total, item) => total + item.precio * item.quantity, 0);
+                },
+            },
+            methods: {
+                addToCart: function (index) {
+                    const product = this.products[index];
+                    const cartItem = this.cart.find(item => item.nombre === product.nombre);
+                    if (cartItem) {
+                        cartItem.quantity++;
+                    } else {
+                        this.cart.push({ ...product, quantity: 1 });
+                    }
+                },
+                removeFromCart: function (index) {
+                    this.cart.splice(index, 1);
+                },
+                productos: function () {
+                    axios.get('/api/v1.0/productos/')
+                    .then(res => {
+                        res.data.forEach(producto => {
+                            this.products.push(producto);
+                        });
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    })
+                },
+                tokens:function(){
+                    this.token = localStorage.getItem('token');
+                    this.user = localStorage.getItem('user');
+                },
+                compra: function(){
+                    axios.post('/api/v1.0/pedidos/',{
+                        codigoPedido:'3',
+                        fechaPedido: this.hoy,
+                        total:this.total,
+                        usuario: this.user,
+                    },{headers: {
+                        'X-CSRFToken': this.csrfToken, // Incluye el token CSRF en el encabezado
+                    },})
+                    .then(res => {
+                        console.log(res);
+                        this.pedido = res.data.codigoPedido;
+                        this.cart.forEach(item => {
+                            axios.post('/api/v1.0/detallePedidos/',{
+                                cantidad: item.quantity,
+                                subtotal: item.precio * item.quantity,
+                                producto: item.id,
+                                pedido: this.pedido,
+                            },{headers: {
+                                'X-CSRFToken': this.csrfToken, // Incluye el token CSRF en el encabezado
+                            },})
+                            .then(res => {
+                                console.log(res);
+                            })
+                        });
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    })
+                },
+                logout: function(){
+                    console.log('cerrar sesion');
+                    axios.post('/logout/',null,{withCredentials: true})
+                    .then(res => {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.href = "/inicioCliente";
+                    })
+                    .catch(err => {
+                        console.error('Error al cerrar sesión:', err);
+                    })
+                },
+                formatearfecha: function(){
+
+                }
+            },
+            delimiters: ['[[', ']]'],
+        });
     </script>
 </body>
+
 </html>

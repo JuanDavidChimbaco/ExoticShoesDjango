@@ -41,21 +41,22 @@ class Producto(models.Model):
 
 
 class Pedido(models.Model):
+    codigoPedido = models.CharField(max_length=45 , unique=True)
     fechaPedido = models.DateField()
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.PROTECT)
+    total = models.FloatField() 
         
     def __str__(self):
-        return f"Pedido {self.id}"
+        return f"Pedido {self.codigoPedido}"
 
 
 class DetallePedido(models.Model):
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
-    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    pedido = models.ForeignKey(Pedido, on_delete=models.PROTECT)
+    producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
     cantidad = models.IntegerField()
-    subtotal = models.FloatField()
-
+    subtotal = models.FloatField()  
     def __str__(self):
-        return f"Detalle de pedido {self.id}"
+        return f"Detalle de pedido {self.pedido.codigoPedido}"
 
 
 class Pago(models.Model):

@@ -21,26 +21,18 @@ class ProductosSerializer(serializers.ModelSerializer):
         model = Producto
         fields = '__all__'
 
-class PedidosSerializer(serializers.ModelSerializer):
-    usuario_id = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all(), source='usuario', write_only=True)
+class PedidoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Pedido
-        fields = 'id', 'fechaPedido', 'usuario_id'
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['usuario'] = UsuariosSerializer(instance.usuario).data
-        return representation
+        fields = '__all__'
         
 class DetallePedidoSerializer(serializers.ModelSerializer):
-    pedido_id = serializers.PrimaryKeyRelatedField(queryset=Pedido.objects.all(), source='pedido', write_only=True)
-    producto_id = serializers.PrimaryKeyRelatedField(queryset=Producto.objects.all(), source='producto', write_only=True)
-    
     class Meta:
         model = DetallePedido
-        fields = ['pedido_id', 'producto_id', 'cantidad', 'subtotal']
-        
+        fields = '__all__'
+  
 class PagoSerializer(serializers.ModelSerializer):
-    pedidos = PedidosSerializer()
+    pedidos = PedidoSerializer
     class Meta:
         model = Pago
         fields = '__all__'

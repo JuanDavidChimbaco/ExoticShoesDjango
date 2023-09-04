@@ -15,7 +15,7 @@ class ProductosAdmin(admin.ModelAdmin):
 
 @admin.register(Pedido)
 class PedidosAdmin(admin.ModelAdmin):
-    list_display = ('fechaPedido', 'usuario')
+    list_display = ('codigoPedido','fechaPedido', 'usuario', 'total')
 
 @admin.register(DetallePedido)
 class DetallePedidoAdmin(admin.ModelAdmin):

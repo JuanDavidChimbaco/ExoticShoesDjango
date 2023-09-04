@@ -1,5 +1,5 @@
 # =========================== rest_framework ============================ 
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
@@ -18,6 +18,7 @@ from django.urls import reverse
 from django.http import HttpRequest
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import LogoutView
 from django.contrib.auth.models import User
 
 # =============================== Otros ===============================
@@ -28,7 +29,7 @@ from rest_framework_jwt.settings import api_settings
 
 # ================================ App ================================
 from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
-PedidosSerializer,DetallePedidoSerializer,PagoSerializer,EnvioSerializer,DevolucionesSerializer)
+PagoSerializer,EnvioSerializer,DevolucionesSerializer, PedidoSerializer, DetallePedidoSerializer)
 from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, CartItem , Cart
 from .permissions import AllowOnlyGET , AllowOnlyPOSTAndUnauthenticated , AllowOnlyPOST
 from .decorators import admin_required, client_required
@@ -57,12 +58,14 @@ class RegistroClienteViewSet(viewsets.ModelViewSet):
  
       
 class CategoriasViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = Categoria.objects.all()
     serializer_class = CategoriasSerializer
  
     
 class ProductosViewSet(viewsets.ModelViewSet):
     # trae todos los productos que esten activos
+    permission_classes = [AllowAny]
     queryset = Producto.objects.filter(estado=True)
     serializer_class = ProductosSerializer
     def perform_destroy(self, instance):
@@ -88,55 +91,64 @@ class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         instance.estado = False
         instance.save()
-    
-        
+
 class PedidosViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = Pedido.objects.all()
-    serializer_class = PedidosSerializer
-    
-    def perform_create(self, serializer):
-        # Obtén el ID del usuario existente que se asigna al pedido
-        usuario_id = self.request.data.get('usuario_id', None)
+    serializer_class = PedidoSerializer
 
-        if usuario_id is not None:
-            usuario = Usuario.objects.get(pk=usuario_id)
-            serializer.save(usuario=usuario)
-        else:
-            serializer.save()
-    
-    
-class DetallePedidoViewSet(viewsets.ModelViewSet):
-    serializer_class = DetallePedidoSerializer
+class PedidoDetailViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowAny]
     queryset = DetallePedido.objects.all()
-
-    def create(self, request, *args, **kwargs):
-        detalles = request.data.get('detalles', [])  # Obtén la lista de detalles
-
-        # Serializa cada detalle y calcula el subtotal
-        detalles_serialized = []
-        total_pedido = 0
-        for detalle_data in detalles:
-            serializer = DetallePedidoSerializer(data=detalle_data)
-            if serializer.is_valid():
-                cantidad = detalle_data.get('cantidad', 0)
-                precio_producto = detalle_data.get('producto', {}).get('precio', 0)
-                subtotal = precio_producto * cantidad
-                total_pedido += subtotal
-                detalles_serialized.append({'serializer': serializer, 'subtotal': subtotal})
-            else:
-                return Response(serializer.errors, status=400)
-
-        # Crea los detalles y actualiza el total del pedido
-        pedido_id = request.data.get('pedido_id', None)
-        if pedido_id is not None:
-            pedido = Pedido.objects.get(pk=pedido_id)
-            for detalle_info in detalles_serialized:
-                serializer = detalle_info['serializer']
-                detalle = serializer.save(subtotal=detalle_info['subtotal'])
-                pedido.total += detalle.subtotal
-            pedido.save()
+    serializer_class = DetallePedidoSerializer
         
-        return Response({'message': 'Detalles de pedido creados exitosamente', 'total_pedido': total_pedido})
+# class PedidosViewSet(viewsets.ModelViewSet):
+#     queryset = Pedido.objects.all()
+#     serializer_class = PedidosSerializer
+    
+#     def perform_create(self, serializer):
+#         # Obtén el ID del usuario existente que se asigna al pedido
+#         usuario_id = self.request.data.get('usuario_id', None)
+
+#         if usuario_id is not None:
+#             usuario = Usuario.objects.get(pk=usuario_id)
+#             serializer.save(usuario=usuario)
+#         else:
+#             serializer.save()
+    
+    
+# class DetallePedidoViewSet(viewsets.ModelViewSet):
+#     serializer_class = DetallePedidoSerializer
+#     queryset = DetallePedido.objects.all()
+
+#     def create(self, request, *args, **kwargs):
+#         detalles = request.data.get('detalles', [])  # Obtén la lista de detalles
+
+#         # Serializa cada detalle y calcula el subtotal
+#         detalles_serialized = []
+#         total_pedido = 0
+#         for detalle_data in detalles:
+#             serializer = DetallePedidoSerializer(data=detalle_data)
+#             if serializer.is_valid():
+#                 cantidad = detalle_data.get('cantidad', 0)
+#                 precio_producto = detalle_data.get('producto', {}).get('precio', 0)
+#                 subtotal = precio_producto * cantidad
+#                 total_pedido += subtotal
+#                 detalles_serialized.append({'serializer': serializer, 'subtotal': subtotal})
+#             else:
+#                 return Response(serializer.errors, status=400)
+
+#         # Crea los detalles y actualiza el total del pedido
+#         pedido_id = request.data.get('pedido_id', None)
+#         if pedido_id is not None:
+#             pedido = Pedido.objects.get(pk=pedido_id)
+#             for detalle_info in detalles_serialized:
+#                 serializer = detalle_info['serializer']
+#                 detalle = serializer.save(subtotal=detalle_info['subtotal'])
+#                 pedido.total += detalle.subtotal
+#             pedido.save()
+        
+#         return Response({'message': 'Detalles de pedido creados exitosamente', 'total_pedido': total_pedido})
 
 class PagoViewSet(viewsets.ModelViewSet):
     queryset = Pago.objects.all()
@@ -174,16 +186,13 @@ class LoginUsuarioView(APIView):
             user = serializer.validated_data['user']  # Obtenemos el usuario validado
             login(request, user)
             token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key, 'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
+            return Response({'token': token.key, 'message': 'Inicio de sesión exitoso','user':user.id}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-@client_required
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def logOut(request):
+def cerrar_sesion(request):
+    permission_classes = [AllowOnlyPOST]
     logout(request)
-    data = {'mensaje': 'Cierre de sesión exitoso'}
-    return Response(data , status=status.HTTP_200_OK)
+    return redirect('/inicioCliente/')
     
 def inicioCliente(request):
     return render(request, "cliente.html", {})

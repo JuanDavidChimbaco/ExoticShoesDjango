@@ -39,6 +39,7 @@
             .then(function (response) {
                 console.log(response.data.message);
                 localStorage.setItem('token', response.data.token);
+                localStorage.setItem('user', response.data.user);
                 window.location.href = "/registroCliente"; 
             })
             .catch(function (error) {

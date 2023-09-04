@@ -14,7 +14,7 @@ router.register(r'categorias', views.CategoriasViewSet)
 router.register(r'productos', views.ProductosViewSet)
 router.register(r'productos-filtrados', ProductosFiltradosPorCategoriaViewSet, basename='productos-filtrados')
 router.register(r'pedidos', views.PedidosViewSet, basename='pedidos')
-router.register(r'detallePedidos', views.DetallePedidoViewSet,basename='detallepedido')
+router.register(r'detallePedidos', views.PedidoDetailViewSet,basename='detallePedido')
 router.register(r'pago', views.PagoViewSet)
 router.register(r'envio', views.EnvioViewSet)
 router.register(r'devoluciones', views.DevolucionesViewSet)
@@ -28,7 +28,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.redirect_to_login, name='redirect_to_login'),
     path('login/', views.custom_login, name='login'),
-    path('logout/', views.custom_logout, name='logout'),
+    # path('logout/', views.custom_logout, name='logout'),
+    path('logout/', views.cerrar_sesion, name='logout'),
+    # path('logout/', views.LogoutView.as_view(), name='logout'),
     path('inicio/', views.inicio, name='inicio'),
     path('frmCategorias/', views.categorias, name='categorias'),
     path('frmProductos/', views.productos, name='productos'),
@@ -63,12 +65,13 @@ urlpatterns = [
     
     #login de usuarios (Cliente)
     path('inicioSesion/', LoginUsuarioView.as_view(), name='inicioSesion'),
-    path('logOut/', views.logOut, name='logOut'),
     path('custom_logout/', views.custom_logout, name='custom_logout'),
     
     # perfil de usuario(Admin)
     path('perfil/', views.perfil_usuario, name='perfil'),
     path('api/v1.0/perfilApi/', views.perfil_usuario_api, name='perfilApi'),
+    
+    # path('pedidos/', PedidoListCreateView.as_view(), name='pedido-list-create'),
     
 ]
 

@@ -203,4 +203,5 @@ EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_SENDER')  # Tu contraseña de correo
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Muestra los correos en la consola en lugar de enviarlos
     
-LOGOUT_URL = '/custom_logout/'
+LOGOUT_URL = '/logout/'
+LOGIN_URL = '/login/'
