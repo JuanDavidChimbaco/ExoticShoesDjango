@@ -113,7 +113,7 @@ WSGI_APPLICATION = 'ExoticShoes.wsgi.application'
 DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'TiendaExoticShoes',
+            'NAME': 'db_tienda',
             'USER': 'root',
             'PASSWORD': '',
             'HOST': 'localhost'

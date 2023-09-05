@@ -1,11 +1,8 @@
 from rest_framework import serializers
 from .models import  Usuario, Categoria, Producto, Pedido, DetallePedido, Pago, Envio, Devolucione, CartItem , Cart
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
-from django.contrib.auth import get_user_model
 
 # Definir los serializadores 
-
 class UsuariosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
@@ -32,20 +29,16 @@ class DetallePedidoSerializer(serializers.ModelSerializer):
         fields = '__all__'
   
 class PagoSerializer(serializers.ModelSerializer):
-    pedidos = PedidoSerializer
     class Meta:
         model = Pago
         fields = '__all__'
 
 class EnvioSerializer(serializers.ModelSerializer):
-    estadoPago = PagoSerializer()
     class Meta:
         model = Envio
         fields = '__all__'
 
 class DevolucionesSerializer(serializers.ModelSerializer):
-    envio = EnvioSerializer()
-    pago = PagoSerializer()
     class Meta:
         model = Devolucione
         fields = '__all__'
@@ -56,8 +49,7 @@ class CartItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class CartSerializer(serializers.ModelSerializer):
-    products = CartItemSerializer(many=True, read_only=True)
-
+    items = CartItemSerializer(many=True, read_only=True)
     class Meta:
         model = Cart
         fields = '__all__'
@@ -67,16 +59,7 @@ class RegistroUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = ['username', 'password', 'first_name', 'last_name', 'email','telefono', 'fechaNacimiento', 'direccion']
-        # exclude = ['last_login','is_staff','is_active','date_joined', 'groups', 'is_superuser', 'user_permissions']
         extra_kwargs = {'password': {'write_only': True}}
-        
-    def create(self, validated_data):
-        user = Usuario.objects.create_user(**validated_data)
-        cliente_group = Group.objects.get(name='cliente')  # Asegúrate de que el grupo 'cliente' exista
-        user.groups.add(cliente_group)
-        return user
-        
-User = get_user_model()
 
 class LoginUsuarioSerializer(serializers.Serializer):
     username = serializers.CharField()

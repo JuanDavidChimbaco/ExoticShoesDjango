@@ -7,32 +7,28 @@ from rest_framework.permissions import IsAuthenticated , AllowAny
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.decorators import api_view, permission_classes ,action
 from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.views import obtain_auth_token 
+from rest_framework_jwt.settings import api_settings
 
 
 # ============================= Django =============================
 from django.shortcuts import render, redirect, get_object_or_404
-from django.conf import settings
-from django.utils import timezone
 from django.urls import reverse
-from django.http import HttpRequest
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.views import LogoutView
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 # =============================== Otros ===============================
 import os
 from datetime import datetime, timedelta
 from pyexpat.errors import messages
-from rest_framework_jwt.settings import api_settings
 
 # ================================ App ================================
-from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,CartItemSerializer,
+from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer, CartItemSerializer,
 PagoSerializer,EnvioSerializer,DevolucionesSerializer, PedidoSerializer, DetallePedidoSerializer)
-from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, CartItem , Cart
-from .permissions import AllowOnlyGET , AllowOnlyPOSTAndUnauthenticated , AllowOnlyPOST
+from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, Cart, CartItem
+from .permissions import AllowOnlyGET  , AllowOnlyPOST
 from .decorators import admin_required, client_required
+
 
 #==================================================================
 # ========================== Api ViewSet ==========================
@@ -46,13 +42,14 @@ class RegistroClienteViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyPOST]
     queryset = Usuario.objects.all()
     serializer_class = RegistroUsuarioSerializer
-
     @action(detail=False, methods=['post'])
     def registrar_usuario(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
-            usuario = serializer.save()
-            token, created = Token.objects.get_or_create(user=usuario)
+            user = Usuario.objects.create_user(**serializer.validated_data)
+            cliente_group = Group.objects.get(name='cliente')  # Asegúrate de que el grupo 'cliente' exista
+            user.groups.add(cliente_group)
+            token, created = Token.objects.get_or_create(user=user)
             return Response({'message': 'Usuario registrado exitosamente', 'token': token.key}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
@@ -87,80 +84,37 @@ class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
         if categoria_id:
             queryset = queryset.filter(categoria_id=categoria_id)
         return queryset
-
     def perform_destroy(self, instance):
         instance.estado = False
         instance.save()
+
 
 class PedidosViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
 
+
 class PedidoDetailViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = DetallePedido.objects.all()
     serializer_class = DetallePedidoSerializer
-        
-# class PedidosViewSet(viewsets.ModelViewSet):
-#     queryset = Pedido.objects.all()
-#     serializer_class = PedidosSerializer
-    
-#     def perform_create(self, serializer):
-#         # Obtén el ID del usuario existente que se asigna al pedido
-#         usuario_id = self.request.data.get('usuario_id', None)
 
-#         if usuario_id is not None:
-#             usuario = Usuario.objects.get(pk=usuario_id)
-#             serializer.save(usuario=usuario)
-#         else:
-#             serializer.save()
-    
-    
-# class DetallePedidoViewSet(viewsets.ModelViewSet):
-#     serializer_class = DetallePedidoSerializer
-#     queryset = DetallePedido.objects.all()
-
-#     def create(self, request, *args, **kwargs):
-#         detalles = request.data.get('detalles', [])  # Obtén la lista de detalles
-
-#         # Serializa cada detalle y calcula el subtotal
-#         detalles_serialized = []
-#         total_pedido = 0
-#         for detalle_data in detalles:
-#             serializer = DetallePedidoSerializer(data=detalle_data)
-#             if serializer.is_valid():
-#                 cantidad = detalle_data.get('cantidad', 0)
-#                 precio_producto = detalle_data.get('producto', {}).get('precio', 0)
-#                 subtotal = precio_producto * cantidad
-#                 total_pedido += subtotal
-#                 detalles_serialized.append({'serializer': serializer, 'subtotal': subtotal})
-#             else:
-#                 return Response(serializer.errors, status=400)
-
-#         # Crea los detalles y actualiza el total del pedido
-#         pedido_id = request.data.get('pedido_id', None)
-#         if pedido_id is not None:
-#             pedido = Pedido.objects.get(pk=pedido_id)
-#             for detalle_info in detalles_serialized:
-#                 serializer = detalle_info['serializer']
-#                 detalle = serializer.save(subtotal=detalle_info['subtotal'])
-#                 pedido.total += detalle.subtotal
-#             pedido.save()
-        
-#         return Response({'message': 'Detalles de pedido creados exitosamente', 'total_pedido': total_pedido})
 
 class PagoViewSet(viewsets.ModelViewSet):
     queryset = Pago.objects.all()
     serializer_class = PagoSerializer
 
+
 class EnvioViewSet(viewsets.ModelViewSet):
     queryset = Envio.objects.all()
     serializer_class = EnvioSerializer
+   
     
 class DevolucionesViewSet(viewsets.ModelViewSet):
     queryset = Devolucione.objects.all()
     serializer_class = DevolucionesSerializer
+    
     
 class CustomLimitOffsetPagination(LimitOffsetPagination):
     default_limit = 4
@@ -178,29 +132,36 @@ class ProductosListView(ViewSet):
 #================================================================  
 # ========================== Api View ===========================
 
-class LoginUsuarioView(APIView):
+class LoginClienteView(APIView):
     permission_classes = [AllowOnlyPOST]
     def post(self, request):
         serializer = LoginUsuarioSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.validated_data['user']  # Obtenemos el usuario validado
-            login(request, user)
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key, 'message': 'Inicio de sesión exitoso','user':user.id}, status=status.HTTP_200_OK)
+            username = serializer.validated_data['username']
+            password = serializer.validated_data['password']
+            user = User.objects.filter(username=username).first()
+            if user and user.check_password(password):
+                login(request, user)
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key, 'message': 'Inicio de sesión exitoso', 'user': user.id}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': 'Credenciales inválidas'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-def cerrar_sesion(request):
-    permission_classes = [AllowOnlyPOST]
-    logout(request)
-    return redirect('/inicioCliente/')
     
-def inicioCliente(request):
-    return render(request, "cliente.html", {})
-
-def registroCliente(request):
-    return render(request, "clienteLogueado.html", {})
-
-     
+class CustomLoginView(APIView):
+    permission_classes = [AllowAny] 
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = authenticate(username=username, password=password)
+        if user and user.groups.filter(name='admin').exists(): 
+            login(request, user)
+            return Response({'message': 'Login exitoso'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'error_message': 'Usuario o contraseña incorrectos o no es un administrador.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
 class CategoriasList(APIView):
     permission_classes = [AllowAny]
     def get(self, request):
@@ -267,25 +228,10 @@ class PasswordResetView(APIView):
 # ====================== Vistas del Administrador (Sin-logearse)======================
 
 def redirect_to_login(request):
-    if Usuario.is_authenticated:
         return redirect('inicio')
-    else:
-        return redirect("login")
-
-def custom_login(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(username=username, password=password)
-        if user:
-            login(request, user)
-            request.session["login_success_message"] = "¡Login exitoso!"
-            return render(request, "inicio_sesion.html", {"login_success_message": request.session["login_success_message"]})
-        else:
-            error_message = "Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo."
-            return render(request, "inicio_sesion.html", {"error_message": error_message})
     
-    return render(request, "inicio_sesion.html")
+def index(request):
+    return render(request, "inicio.html")
 
 # vista para validar correo y enviar el enlace de restablecimiento
 def restPasswordRequest(request):
@@ -342,7 +288,7 @@ def custom_404_view(request, exception):
 
 # --------------------------------testeado------------------------------
 @admin_required
-def inicio(request):
+def dashboard(request):
     return render(request, "dashboard.html", {})
 # admin logueado
 @admin_required
@@ -384,48 +330,56 @@ def custom_logout(request):
     logout(request)
     return redirect("login")
 
+# ============================================================================
+# ================================ Cliente ====================================
+    
+def inicioCliente(request):
+    return render(request, "cliente.html", {})
 
+def registroCliente(request):
+    return render(request, "clienteLogueado.html", {})
+
+def cerrar_sesion(request):
+    logout(request)
+    return redirect('/inicioCliente/')
+
+# ========================================================================
 # ================================ Carrito ================================
 
-class CartDetail(APIView):
-    permission_classes = [AllowAny]
-    def get_cart(self, user):
-        cart, created = Cart.objects.get_or_create(user=user)
-        return cart
+class CartViewSet(viewsets.ModelViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
 
-    def get(self, request):
-        cart = self.get_cart(request.user)
-        serializer = CartSerializer(cart)
-        return Response(serializer.data)
-
-    def post(self, request):
-        product_id = request.data.get('product_id')
-        quantity = request.data.get('quantity', 1)
-
-        if product_id is None:
-            return Response({'error': 'Product ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
-
+    @action(detail=True, methods=['post'])
+    def agregar_producto(self, request, pk=None):
+        cart = self.get_object()
+        producto_id = request.data.get('producto_id')
+        cantidad = int(request.data.get('cantidad', 1))
+        
         try:
-            product = Producto.objects.get(id=product_id)
+            producto = Producto.objects.get(id=producto_id)
         except Producto.DoesNotExist:
-            return Response({'error': 'Product not found.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Producto no encontrado'}, status=400)
 
-        cart = self.get_cart(request.user)
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-        cart_item.quantity += int(quantity)
-        cart_item.save()
+        cart.agregar_producto(producto, cantidad)
+        return Response({'message': 'Producto agregado al carrito'})
 
-        serializer = CartSerializer(cart)
-        return Response(serializer.data)
-
-    def delete(self, request, product_id):
+    @action(detail=True, methods=['post'])
+    def eliminar_producto(self, request, pk=None):
+        cart = self.get_object()
+        producto_id = request.data.get('producto_id')
+        
         try:
-            product = Producto.objects.get(id=product_id)
+            producto = Producto.objects.get(id=producto_id)
         except Producto.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Producto no encontrado'}, status=400)
 
-        cart = self.get_cart(request.user)
-        cart.items.filter(product=product).delete()
+        cart.eliminar_producto(producto)
+        return Response({'message': 'Producto eliminado del carrito'})
 
-        serializer = CartSerializer(cart)
-        return Response(serializer.data)
+    @action(detail=True, methods=['post'])
+    def vaciar_carrito(self, request, pk=None):
+        cart = self.get_object()
+        cart.vaciar_carrito()
+        return Response({'message': 'Carrito vaciado'})
+    

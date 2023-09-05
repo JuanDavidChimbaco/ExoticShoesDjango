@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <link rel="icon" href="../../media/image.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- vue  -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+  <!-- axios -->
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <!-- bootstrap 5.3 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/6bf421ec3d.js" crossorigin="anonymous"></script>
+
+  <!-- SweetAlert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- archivos locales estaticos -->
+  <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+  <script src="{% static '../static/js/login.js' %}"></script>
+  <title>Gestion Administrador</title>
+</head>
+
+<body>
+  <section>
+    <div class="container mt-5">
+      <div class="row contenido">
+        <div class="col">
+
+          <div id="app" class="d-flex justify-content-center">
+
+            <div @click="toggleLogin">
+              <a class="card text-center text-decoration-none card-button" v-show="cardVisible">
+                <div class="card-body">
+                  <i class="fa-solid fa-user fa-bounce fa-2xl"></i>
+                  <h5 class="card-title mt-3">Iniciar Sesión</h5>
+                </div>
+              </a>
+            </div>
+
+
+            <div class="card shadow cardLogin" v-show="loginVisible">
+              <div class="card-header bg-dark text-white">
+                <h4 class="text-center mt-2"><i class="fa fa-solid fa-user fa-2xl"></i>&nbsp;Administrador</h4>
+              </div>
+
+              <div class="card-body">
+                <form id="login-form" method="POST" @submit.prevent="login">
+                  {% csrf_token %}
+
+                  <div class="form-floating">
+                    <input type="text" class="form-control" id="id_username" name="username" maxlength="150"
+                      placeholder="Usuario" required v-model="username" />
+                    <label for="id_username"><i class="fa-solid fa-user fa-beat-fade"></i> Usuario</label>
+                  </div>
+
+                  <div class="form-floating mt-3">
+                    <input type="password" class="form-control" id="id_password" name="password"
+                      placeholder="contraseña" required v-model="password" />
+                    </i><label for="id_password"><i class="fa-solid fa-key fa-beat-fade"></i> Contraseña</label>
+                  </div>
+                  <div class="form-floating col mt-3 text-center">
+                    <button type="submit" class="btn btn-dark btn-block"><i class="fa fa-sign-in"
+                        aria-hidden="true"></i>
+                      &nbsp; Iniciar Sesión</button>
+                  </div>
+                  <div class="form-floating col mt-3 text-center">
+                    <button @click="toggleLogin" class="btn btn-secondary mt-3">Cerrar</button>
+                  </div>
+                </form>
+                <div class="row">
+                  <div class="col mt-3 text-center">
+                    <a href="{% url 'validarCorreo' %}" class="link-secondary"> Olvido su contraseña ? </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="row footer">
+        <div class="col">
+          <small><a
+              href="https://www.freepik.es/vector-gratis/fondo-monocromatico-blanco-estilo-papel_15518074.htm#query=fondo&position=1&from_view=keyword&track=sph"
+              class="link-dark">Imagen
+              de pikisuperstar</a> en Freepik
+          </small>
+        </div>
+      </div>
+
+      {% if error_message %}
+      <script>
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: '{{ error_message }}',
+        })
+      </script>
+      {% endif %}
+
+      {% if login_success_message %}
+      <script>
+        Swal.fire({
+          icon: 'success',
+          title: 'Éxito!',
+          text: '{{ login_success_message }}',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "{% url 'inicio' %}";
+          }
+        })
+      </script>
+      {% endif %}
+    </div>
+  </section>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        loginVisible: false,
+        cardVisible: true,
+        username: '',
+        password: ''
+      },
+      methods: {
+        toggleLogin() {
+          this.loginVisible = !this.loginVisible;
+          this.cardVisible = !this.cardVisible;
+        },
+        login() {
+          const formData = {
+            username: this.username,
+            password: this.password,
+
+          };
+          // Obtén el valor del CSRF token del formulario
+          const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+            // Configura Axios para incluir el CSRF token en el encabezado
+          axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
+          axios.post('/api/login/', formData)
+            .then(response => {
+              // Procesa la respuesta después del inicio de sesión exitoso
+              console.log(response.data);
+              window.location.href = "{% url 'dashboard' %}";
+            })
+            .catch(error => {
+              // Maneja errores de inicio de sesión
+              console.error(error.response.data);
+              // Aquí puedes mostrar mensajes de error al usuario
+            });
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

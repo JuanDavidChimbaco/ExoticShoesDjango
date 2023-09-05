@@ -44,11 +44,11 @@
             <div class="dropdown-center">
               {% if user.is_authenticated %}
               <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{{ user.profile_image.url }}" alt="{{user.username}}">
+                <img src="{{ user.FotoPerfil }}" alt="{{user.username}}">
               </button>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li class="nav-item"><a class="dropdown-item" href="{% url 'perfil' %}">Ver Perfil &nbsp; <i class="fa-regular fa-user"></i></a></li>
-                <li class="nav-item"><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión &nbsp; <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
+                <li class="nav-item"><a class="dropdown-item" href="">Cerrar Sesión &nbsp; <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
               </ul>
               {% endif %}
             </div>
