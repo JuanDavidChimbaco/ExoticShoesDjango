@@ -15,3 +15,7 @@ class AllowOnlyPOSTAndUnauthenticated(permissions.BasePermission):
         if request.method == 'POST':
             return True
         return not request.user.is_authenticated
+    
+class IsAdminUser(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.groups.filter(name='admin').exists() and not request.user.groups.filter(name='staff').exists()

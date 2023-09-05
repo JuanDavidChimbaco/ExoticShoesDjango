@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin 
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import include, path
@@ -7,6 +7,7 @@ from rest_framework.routers import DefaultRouter
 from appExoticShoes.views import ProductosListView , ProductosFiltradosPorCategoriaViewSet, CategoriasList, ProductosList , PasswordResetRequestView, PasswordResetView,custom_404_view
 
 from appExoticShoes import views
+
 
 
 # router para las rutas de la Api
@@ -38,8 +39,8 @@ urlpatterns = [
     path('frmEnvios/', views.envios, name='envios'),
     path('frmPagos/', views.pagos, name='pagos'),
     path('frmDevoluciones/', views.devoluciones, name='devoluciones'),
-    path('api/login/', views.CustomLoginView.as_view(), name='login'),
-    
+     path('api/login/', views.custom_login, name='custom_login'),
+
     # rutas de la Api
     path('api/v1.0/', include(router.urls)),
     

@@ -9,6 +9,9 @@ from rest_framework.decorators import api_view, permission_classes ,action
 from rest_framework.authtoken.models import Token
 from rest_framework_jwt.settings import api_settings
 
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 
 # ============================= Django =============================
 from django.shortcuts import render, redirect, get_object_or_404
@@ -23,10 +26,10 @@ from datetime import datetime, timedelta
 from pyexpat.errors import messages
 
 # ================================ App ================================
-from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer, CartItemSerializer,
-PagoSerializer,EnvioSerializer,DevolucionesSerializer, PedidoSerializer, DetallePedidoSerializer)
+from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,
+PagoSerializer,EnvioSerializer,DevolucionesSerializer, PedidoSerializer, DetallePedidoSerializer,UsuariosSerializer)
 from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, Cart, CartItem
-from .permissions import AllowOnlyGET  , AllowOnlyPOST
+from .permissions import AllowOnlyGET  , AllowOnlyPOST, IsAdminUser, AllowOnlyPOSTAndUnauthenticated
 from .decorators import admin_required, client_required
 
 
@@ -149,20 +152,33 @@ class LoginClienteView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-class CustomLoginView(APIView):
-    permission_classes = [AllowAny] 
-    def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
-        if username is None or password is None:
-            return Response({'error_message': 'Por favor, ingrese ambos campos.'}, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            user = authenticate(username=username, password=password)
-            if user and user.groups.filter(name='admin').exists():
-                login(request, user)
-                return Response({'message': 'Login exitoso'}, status=status.HTTP_200_OK)
-            else:
-                return Response({'error_message': 'Usuario no es un administrador.'}, status=status.HTTP_400_BAD_REQUEST)
+# class CustomLoginView(APIView):
+#     permission_classes = [AllowAny] 
+#     def post(self, request):
+#         username = request.data.get("username")
+#         password = request.data.get("password")
+#         if username is None or password is None:
+#             return Response({'error_message': 'Por favor, ingrese ambos campos.'}, status=status.HTTPS_400_BAD_REQUEST)
+#         else:
+#             user = authenticate(username=username, password=password)
+#             if user and user.groups.filter(name='admin').exists():
+#                 login(request, user)
+#                 return Response({'message': 'Login exitoso'}, status=status.HTTPS_200_OK)
+#             else:
+#                 return Response({'error_message': 'Usuario no es un administrador.'}, status=status.HTTPS_400_BAD_REQUEST)
+            
+@api_view(['POST'])
+@permission_classes([AllowOnlyPOSTAndUnauthenticated])
+def custom_login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        login(request, user)
+        return Response({'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'message': 'Credenciales incorrectas'}, status=status.HTTP_401_UNAUTHORIZED)
         
         
 class CategoriasList(APIView):

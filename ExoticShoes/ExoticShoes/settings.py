@@ -173,14 +173,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # permitir todas las solicitudes de origen cruzado
 CORS_ORIGIN_ALLOW_ALL = True
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:8080",
-#     "http://192.168.100.9:8080",
-#     "http://127.0.0.1:50963",
-#     "http://localhost:50963",
-#     "http://10.192.66.170:8000",
-#     "http://192.168.56.1:8000"
-# ]
+CORS_ALLOWED_ORIGINS = [
+    # este es para consumir desde el vue.js en el puerto 8080
+    "http://localhost:8080",
+    # el de mi casa
+    "http://192.168.100.9:8080",
+    # "http://127.0.0.1:50963",
+    # "http://localhost:50963",
+    # el del sena red 4 
+    "http://10.192.66.170",
+    # el del sena 
+    "http://192.168.56.1:8000"
+]
 
 
 # Configuración para enviar correos utilizando SMTP (Simple Mail Transfer Protocol)
@@ -198,4 +202,6 @@ EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_SENDER')  # Tu contraseña de correo
 # Opcional: Configuración para manejar correos en el entorno de desarrollo
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Muestra los correos en la consola en lugar de enviarlos
-    
+
+# 
+LOGOUT_REDIRECT_URL = '/'
