@@ -3,7 +3,7 @@
 <html lang="es">
 
 <head>
-  <link rel="icon" href="../../media/image.png" />
+  <link rel="icon" href="{% static 'images/Logo.png'%}" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- vue  -->
@@ -24,7 +24,6 @@
 
   <!-- archivos locales estaticos -->
   <link rel="stylesheet" href="{% static 'css/login.css' %}" />
-  <script src="{% static '../static/js/login.js' %}"></script>
   <title>Gestion Administrador</title>
 </head>
 
@@ -47,6 +46,7 @@
 
 
             <div class="card shadow cardLogin" v-show="loginVisible">
+
               <div class="card-header bg-dark text-white">
                 <h4 class="text-center mt-2"><i class="fa fa-solid fa-user fa-2xl"></i>&nbsp;Administrador</h4>
               </div>
@@ -71,9 +71,7 @@
                         aria-hidden="true"></i>
                       &nbsp; Iniciar Sesión</button>
                   </div>
-                  <div class="form-floating col mt-3 text-center">
-                    <button @click="toggleLogin" class="btn btn-secondary mt-3">Cerrar</button>
-                  </div>
+                  
                 </form>
                 <div class="row">
                   <div class="col mt-3 text-center">
@@ -145,7 +143,7 @@
           };
           // Obtén el valor del CSRF token del formulario
           const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-
+          console.log(csrfToken);
             // Configura Axios para incluir el CSRF token en el encabezado
           axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
           axios.post('/api/login/', formData)

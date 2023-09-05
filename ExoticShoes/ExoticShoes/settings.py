@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-)7%zbdyx4$76k7in8f2r%m83t)m&xfem!1#!f$&%uctw!y9aro
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['10.192.66.170', 'localhost', '127.0.0.1','192.168.56.1']
+
 
 
 # Application definition
@@ -40,9 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # custom
+    'corsheaders',
     'appExoticShoes',
     'rest_framework',
-    'corsheaders',
     'rest_framework_jwt',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
@@ -172,19 +173,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # permitir todas las solicitudes de origen cruzado
 CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://192.168.100.9:8080",
-    "http://127.0.0.1:50963",
-    "http://localhost:50963"
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8080",
+#     "http://192.168.100.9:8080",
+#     "http://127.0.0.1:50963",
+#     "http://localhost:50963",
+#     "http://10.192.66.170:8000",
+#     "http://192.168.56.1:8000"
+# ]
 
-LOGIN_URL = '/login/'
-
-# AUTH_USER_MODEL = 'appExoticShoes.Usuarios'
-
-# Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/inicio/'
 
 # Configuración para enviar correos utilizando SMTP (Simple Mail Transfer Protocol)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -198,10 +195,7 @@ EMAIL_USE_SSL = False  # No usar SSL (False para Gmail)
 EMAIL_HOST_USER = os.getenv('EMAIL_SENDER')  # Tu dirección de correo
 EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_SENDER')  # Tu contraseña de correo
 
-
 # Opcional: Configuración para manejar correos en el entorno de desarrollo
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Muestra los correos en la consola en lugar de enviarlos
     
-LOGOUT_URL = '/logout/'
-LOGIN_URL = '/login/'

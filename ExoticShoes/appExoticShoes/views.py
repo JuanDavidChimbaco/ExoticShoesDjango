@@ -154,12 +154,15 @@ class CustomLoginView(APIView):
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
-        user = authenticate(username=username, password=password)
-        if user and user.groups.filter(name='admin').exists(): 
-            login(request, user)
-            return Response({'message': 'Login exitoso'}, status=status.HTTP_200_OK)
+        if username is None or password is None:
+            return Response({'error_message': 'Por favor, ingrese ambos campos.'}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'error_message': 'Usuario o contraseña incorrectos o no es un administrador.'}, status=status.HTTP_400_BAD_REQUEST)
+            user = authenticate(username=username, password=password)
+            if user and user.groups.filter(name='admin').exists():
+                login(request, user)
+                return Response({'message': 'Login exitoso'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error_message': 'Usuario no es un administrador.'}, status=status.HTTP_400_BAD_REQUEST)
         
         
 class CategoriasList(APIView):
