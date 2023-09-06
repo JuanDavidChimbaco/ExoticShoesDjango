@@ -3,22 +3,53 @@ let dataTable;
 let dataTableIsInitialized = false;
 var id = 0;
 
+
+function imagen() {
+    const file = fileFoto.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            uploadedImage.src = e.target.result;
+            uploadedImage.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        uploadedImage.src = '';
+        uploadedImage.style.display = 'none';
+    }
+}
+
+function vistaImagen(urlFoto) {
+    Swal.fire({
+        imageUrl: urlFoto,
+        imageAlt: 'Custom image',
+    })
+}
+
+function vistaImagenFrm() {
+    url = uploadedImage.src
+    Swal.fire({
+        imageUrl: url,
+        imageAlt: 'Custom image',
+    })
+}
+
 const dataTableOptions = {
     dom: 'Bfrtip',
-    buttons: ['copy', 
-            'csv', 
-            'excel', 
-            'pdf', 
-            {
-                extend: 'print',
-                exportOptions: {
-                    columns: [0, 1] 
-                }
-            }],
+    buttons: ['copy',
+        'csv',
+        'excel',
+        'pdf',
+        {
+            extend: 'print',
+            exportOptions: {
+                columns: [0, 1]
+            }
+        }],
     columnDefs: [
         { className: "centered", targets: [0, 1, 2] },
         { orderable: false, targets: [2] },
-        { searchable: false, targets: [0, 2]}
+        { searchable: false, targets: [0, 2] }
     ],
     pageLength: 4,
     destroy: true,
@@ -45,9 +76,10 @@ async function obtenerCat() {
         response.data.forEach((element, index) => {
             data += `<tr>
                         <th scope="row">${index + 1}</th>
-                        <td>${element.nombre}</td>
-                        <td>
-                            <input type="radio" name="checkOpcion" id="checkOpcion" onclick='load(${JSON.stringify(element)})'>
+                        <td class="align-middle">${element.nombre}</td>
+                        <td><img src="${element.imagenCategoria}" alt="${element.nombre}" width="50" height="50" onclick='vistaImagen("${element.imagenCategoria}")'></td>
+                        <td class="align-middle">
+                            <input type="radio" name="checkOpcion" id="checkOpcion" onclick='load(${JSON.stringify(element)})' class="form-check-input">
                         </td>
                     </tr>`;
         });
@@ -61,36 +93,64 @@ function load(element) {
     console.log(element);
     this.id = element.id;
     txtNombre.value = element.nombre;
+    uploadedImage.src = element.imagenCategoria;
+    uploadedImage.style.display = 'block';
 }
 
 function agregarCat() {
-    var nombre = txtNombre.value.trim();
-    if (nombre === '') {
-        alert('La categoria no puede estar vacío');
-        return
-    }
-
+    var fileInput = document.getElementById("fileFoto");
+    var file = fileInput.files[0];
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+    var formData = new FormData();
+    formData.append("nombre", txtNombre.value.trim());
+    formData.append("imagenCategoria", file);
+
     axios
-        .post('/api/v1.0/categorias/', {
-            nombre: txtNombre.value,
-        },
+        .post('/api/v1.0/categorias/', formData,
             {
                 headers: {
                     'X-CSRFToken': csrfToken
                 }
             })
         .then(function (response) {
-            console.log('Categoria agregado con éxito' + response);
-            console.log(csrfToken);
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Categoria agregada correctamente',
+                showConfirmButton: true,
+                allowOutsideClick: false,
+                timer: 2000
+            });
             obtenerCat()
-            txtNombre.value = ""
+            limpiar()
         })
         .catch(function (error) {
-            console.log(error)
-            let mensaje = error.response.data.detail
-            alert(mensaje);
-            txtNombre.value = ""
+            var errorMessages = [];
+            for (var key in error.response.data) {
+                if (error.response.data.hasOwnProperty(key)) {
+                    var mensajes = error.response.data[key];
+                    for (var i = 0; i < mensajes.length; i++) {
+                        errorMessages.push(mensajes[i]);
+                    }
+                }
+            }
+            if (errorMessages.length > 0) {
+                var errorMessageList = '<ul class="list-group list-group-numbered">';
+                for (var j = 0; j < errorMessages.length; j++) {
+                    errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
+                }
+                errorMessageList += '</ul>';
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Oops...',
+                    html: errorMessageList, // Utilizamos "html" para insertar la lista como HTML
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    timer: 5000
+                });
+            }
         });
 }
 
@@ -107,39 +167,108 @@ function modificarCat() {
             }
         })
         .then(function (response) {
-            console.log(response);
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Categoria Modificada correctamente',
+                showConfirmButton: true,
+                allowOutsideClick: false,
+                timer: 2000
+            });
             obtenerCat()
-            txtNombre.value = ""
+            limpiar()
         })
         .catch(function (error) {
-            console.log(error);
+            var errorMessages = [];
+            for (var key in error.response.data) {
+                if (error.response.data.hasOwnProperty(key)) {
+                    var mensajes = error.response.data[key];
+                    for (var i = 0; i < mensajes.length; i++) {
+                        errorMessages.push(mensajes[i]);
+                    }
+                }
+            }
+            if (errorMessages.length > 0) {
+                var errorMessageList = '<ul class="list-group list-group-numbered">';
+                for (var j = 0; j < errorMessages.length; j++) {
+                    errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
+                }
+                errorMessageList += '</ul>';
+                Swal.fire({
+                    position: 'center',
+                    icon: 'error',
+                    title: 'Oops...',
+                    html: errorMessageList, // Utilizamos "html" para insertar la lista como HTML
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    timer: 5000
+                });
+            }
         })
 }
 
 function eliminarCat() {
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-    let rest = confirm("Seguro de eliminar La Categoria? ")
-    if (rest) {
-        axios.delete(`/api/v1.0/categorias/${this.id}/`, {
-            headers: {
-                'X-CSRFToken': csrfToken
-            }
-        })
-            .then(function (response) {
-                console.log(response);
-                obtenerCat()
-                txtNombre.value = ""
+    Swal.fire({
+        title: 'Eliminar ?',
+        text: "No podras Recuperar esto!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Borrar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            axios.delete(`/api/v1.0/categorias/${this.id}/`, {
+                headers: {
+                    'X-CSRFToken': csrfToken
+                }
             })
-            .catch(function (error) {
-                console.log(error);
-                let mensaje = error.response.data.detail
-                alert(mensaje);
-            })
-    }
+                .then(function (response) {
+                    console.log(response);
+                    Swal.fire(
+                        'Borrado!',
+                        'Su categoria ha sido borrada.',
+                        'success'
+                    )
+                    obtenerCat()
+                    limpiar()
+                })
+                .catch(function (error) {
+                    var errorMessages = [];
+                    for (var key in error.response.data) {
+                        if (error.response.data.hasOwnProperty(key)) {
+                            var mensajes = error.response.data[key];
+                            for (var i = 0; i < mensajes.length; i++) {
+                                errorMessages.push(mensajes[i]);
+                            }
+                        }
+                    }
+                    if (errorMessages.length > 0) {
+                        var errorMessageList = '<ul class="list-group list-group-numbered">';
+                        for (var j = 0; j < errorMessages.length; j++) {
+                            errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
+                        }
+                        errorMessageList += '</ul>';
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Oops...',
+                            html: errorMessageList, // Utilizamos "html" para insertar la lista como HTML
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
+                            timer: 5000
+                        });
+                    }
+                });
+        }
+    })
 }
 
 function limpiar() {
-    document.getElementById('txtNombre').value = ""
+    txtNombre.value = ""
+    fileFoto.value = ""
+    uploadedImage.style.display = 'none'
     var radioButtons = document.getElementsByName('checkOpcion');
 
     radioButtons.forEach(function (radioButton) {

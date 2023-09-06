@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import  Usuario, Categoria, Producto, Pedido, DetallePedido, Pago, Envio, Devolucione, CartItem , Cart
+from .models import  Usuario, Categoria, Producto, Pedido, DetallePedido, Pago, Envio, Devolucione, CartItem , Cart , ImagenProducto, Talla, ProductoConTalla
 from django.contrib.auth.models import User
 
 # Definir los serializadores 
@@ -13,9 +13,24 @@ class CategoriasSerializer(serializers.ModelSerializer):
         model = Categoria
         fields = '__all__'
 
-class ProductosSerializer(serializers.ModelSerializer):
+class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
+        fields = '__all__'
+        
+class ImagenProductoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ImagenProducto
+        fields = '__all__'
+
+class TallaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Talla
+        fields = '__all__'
+
+class ProductoConTallaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductoConTalla
         fields = '__all__'
 
 class PedidoSerializer(serializers.ModelSerializer):

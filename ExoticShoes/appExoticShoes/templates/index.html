@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" href="../../media/Logo.png">
+    <link rel="icon" href="{% static 'images/Logo.png'%}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--jquery-->
@@ -13,13 +13,14 @@
 
     <!-- DataTable CSS-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.4.1/css/rowReorder.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
 
     <!-- DataTable JS-->
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/rowreorder/1.4.1/js/dataTables.rowReorder.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/rowreorder/1.4.1/js/dataTables.rowReorder.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
@@ -55,10 +56,11 @@
 
 <body>
     <div class="container-fluid d-flex flex-column min-vh-100">
+
         <header class="row mt-1 bg-dark">
             <div class="col-9">
                 <h1 class="display-4 font-weight-bold text-light">
-                    Gestión de inventario - Tienda Exotic Shoes
+                    Gestión de inventario - Adrile Boutique
                 </h1>
             </div>
             <div class="col-3">
@@ -69,17 +71,21 @@
                 </marquee>
             </div>
         </header>
+
         <div class="row sticky-top">
             {% include 'menu.html' %}
         </div>
+
         <section class="row flex-grow-1 d-flex justify-content-center">
             {% block contenido %}
-
+                <!-- aqui va el contenido -->
             {% endblock %}
         </section>
+
         <footer class="row">
             {% include 'piePagina.html' %}
         </footer>
+
     </div>
 </body>
 

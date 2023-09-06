@@ -9,10 +9,6 @@ from rest_framework.decorators import api_view, permission_classes ,action
 from rest_framework.authtoken.models import Token
 from rest_framework_jwt.settings import api_settings
 
-from rest_framework.authentication import BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
-
-
 # ============================= Django =============================
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -23,14 +19,50 @@ from django.contrib.auth.models import User, Group
 # =============================== Otros ===============================
 import os
 from datetime import datetime, timedelta
-from pyexpat.errors import messages
 
 # ================================ App ================================
-from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,ProductosSerializer,CartSerializer,
-PagoSerializer,EnvioSerializer,DevolucionesSerializer, PedidoSerializer, DetallePedidoSerializer,UsuariosSerializer)
-from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, Cart, CartItem
+from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,CartSerializer,
+PagoSerializer,EnvioSerializer,DevolucionesSerializer, PedidoSerializer, DetallePedidoSerializer, ProductoSerializer, ImagenProductoSerializer,TallaSerializer, ProductoConTallaSerializer )
+from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, Cart, CartItem, ImagenProducto,Talla,ProductoConTalla
 from .permissions import AllowOnlyGET  , AllowOnlyPOST, IsAdminUser, AllowOnlyPOSTAndUnauthenticated
 from .decorators import admin_required, client_required
+
+# ==================================================================================
+# ======================================== Api Generica de los productos ===========
+
+class ProductoListCreateView(generics.ListCreateAPIView):
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+    def perform_create(self, serializer):
+        producto = serializer.save()
+        producto.existencias_total = sum(
+            producto_con_talla.existencias
+            for producto_con_talla in producto.productocontalla_set.all()
+        )
+        producto.save()
+
+class ProductoDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+    def perform_update(self, serializer):
+        producto = serializer.save()
+        producto.existencias_total = sum(
+            producto_con_talla.existencias
+            for producto_con_talla in producto.productocontalla_set.all()
+        )
+        producto.save()
+
+class ImagenProductoListCreateView(generics.ListCreateAPIView):
+    queryset = ImagenProducto.objects.all()
+    serializer_class = ImagenProductoSerializer
+
+class TallaListView(generics.ListCreateAPIView):
+    queryset = Talla.objects.all()
+    serializer_class = TallaSerializer
+
+class ProductoConTallaListView(generics.ListCreateAPIView):
+    queryset = ProductoConTalla.objects.all()
+    serializer_class = ProductoConTallaSerializer
 
 
 #==================================================================
@@ -67,7 +99,7 @@ class ProductosViewSet(viewsets.ModelViewSet):
     # trae todos los productos que esten activos
     permission_classes = [AllowAny]
     queryset = Producto.objects.filter(estado=True)
-    serializer_class = ProductosSerializer
+    serializer_class = ProductoSerializer
     def perform_destroy(self, instance):
         instance.estado = False
         instance.save()
@@ -79,7 +111,7 @@ class ProductosViewSet(viewsets.ModelViewSet):
         
 class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyGET]
-    serializer_class = ProductosSerializer
+    serializer_class = ProductoSerializer
     def get_queryset(self):
         queryset = Producto.objects.filter(estado=True)
         # Obtener el parámetro de ID de categoría de la URL
@@ -129,7 +161,7 @@ class ProductosListView(ViewSet):
         productos = Producto.objects.filter(estado=True)
         paginator = LimitOffsetPagination()
         paginated_productos = paginator.paginate_queryset(productos, request)
-        serializer = ProductosSerializer(paginated_productos, many=True)
+        serializer = ProductoSerializer(paginated_productos, many=True)
         return paginator.get_paginated_response(serializer.data)
     
 #================================================================  
@@ -151,21 +183,6 @@ class LoginClienteView(APIView):
                 return Response({'message': 'Credenciales inválidas'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-    
-# class CustomLoginView(APIView):
-#     permission_classes = [AllowAny] 
-#     def post(self, request):
-#         username = request.data.get("username")
-#         password = request.data.get("password")
-#         if username is None or password is None:
-#             return Response({'error_message': 'Por favor, ingrese ambos campos.'}, status=status.HTTPS_400_BAD_REQUEST)
-#         else:
-#             user = authenticate(username=username, password=password)
-#             if user and user.groups.filter(name='admin').exists():
-#                 login(request, user)
-#                 return Response({'message': 'Login exitoso'}, status=status.HTTPS_200_OK)
-#             else:
-#                 return Response({'error_message': 'Usuario no es un administrador.'}, status=status.HTTPS_400_BAD_REQUEST)
             
 @api_view(['POST'])
 @permission_classes([AllowOnlyPOSTAndUnauthenticated])
@@ -173,30 +190,41 @@ def custom_login(request):
     username = request.data.get('username')
     password = request.data.get('password')
     user = authenticate(request, username=username, password=password)
-
     if user is not None:
         login(request, user)
         return Response({'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
     else:
         return Response({'message': 'Credenciales incorrectas'}, status=status.HTTP_401_UNAUTHORIZED)
         
-        
-class CategoriasList(APIView):
-    permission_classes = [AllowAny]
-    def get(self, request):
-        categorias = Categoria.objects.all()
-        serializer = CategoriasSerializer(categorias, many=True)
-        return Response(serializer.data)
+
+@admin_required
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
+def perfil_usuario_api(request):
+    usuario = request.user
+    if request.method == 'GET':
+        # Obtener datos del usuario
+        usename = usuario.username
+        nombre = usuario.first_name
+        apellido = usuario.last_name
+        email = usuario.email
+        data = {'nombre': nombre, 'apellido': apellido, 'email': email, 'username': usename }
+        return Response(data)
+    elif request.method == 'PUT':
+        # Actualizar datos del usuario
+        nuevo_nombre = request.data.get('nombre')
+        nuevo_apellido = request.data.get('apellido')
+        nuevo_email = request.data.get('email')
+        if nuevo_nombre:
+            usuario.first_name = nuevo_nombre
+        if nuevo_apellido:
+            usuario.last_name = nuevo_apellido
+        if nuevo_email:
+            usuario.email = nuevo_email
+        usuario.save()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ProductosList(APIView):
-    permission_classes = [AllowAny]
-    def get(self, request):
-        productos = Producto.objects.all()
-        serializer = ProductosSerializer(productos, many=True)
-        return Response(serializer.data)
-
-# --------------------------/ reset password /------------------------------
 # -------------------------- para testear ----------------------------
 # Se encarga de enviar el correo electrónico con el enlace de restablecimiento
 class PasswordResetRequestView(APIView):
@@ -247,7 +275,7 @@ class PasswordResetView(APIView):
 # ====================== Vistas del Administrador (Sin-logearse)======================
 
 def redirect_to_login(request):
-        return redirect('inicio')
+        return redirect('login')
     
 def index(request):
     return render(request, "inicio.html")
@@ -270,34 +298,7 @@ def restPassword(request):
 #========================= Vistas del Administrador(Logueado) ==========================
 
 # --------------------para testear------------------------------
-@admin_required
-@api_view(['GET', 'PUT'])
-@permission_classes([IsAuthenticated])
-def perfil_usuario_api(request):
-    usuario = request.user
-    if request.method == 'GET':
-        # Obtener datos del usuario
-        usename = usuario.username
-        nombre = usuario.first_name
-        apellido = usuario.last_name
-        email = usuario.email
-        data = {'nombre': nombre, 'apellido': apellido, 'email': email, 'username': usename }
-        return Response(data)
-    
-    elif request.method == 'PUT':
-        # Actualizar datos del usuario
-        nuevo_nombre = request.data.get('nombre')
-        nuevo_apellido = request.data.get('apellido')
-        nuevo_email = request.data.get('email')
-        if nuevo_nombre:
-            usuario.first_name = nuevo_nombre
-        if nuevo_apellido:
-            usuario.last_name = nuevo_apellido
-        if nuevo_email:
-            usuario.email = nuevo_email
-        usuario.save()
 
-    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 def custom_404_view(request, exception):
@@ -306,19 +307,14 @@ def custom_404_view(request, exception):
 
 
 # --------------------------------testeado------------------------------
+# admin logueado
 @admin_required
 def dashboard(request):
     return render(request, "dashboard.html", {})
-# admin logueado
+
 @admin_required
 def perfil_usuario(request):
-    # Puedes acceder a los datos del usuario autenticado a través de request.user
-    usuario = request.user
-    nombre = usuario.first_name
-    apellido = usuario.last_name
-    email = usuario.email
-    # Realiza cualquier otra operación que necesites con los datos del usuario
-    return render(request, 'perfil.html', {'nombre': nombre, 'apellido': apellido, 'email': email})
+    return render(request, 'perfil.html',{})
 
 @admin_required
 def categorias(request):

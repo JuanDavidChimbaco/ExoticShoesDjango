@@ -1,8 +1,185 @@
 {% extends 'index.html' %} {% block contenido %}
 {% load static %}
-<div class="text-bg-dark text-center"> 
+
+<div id="app">
+    <div v-if="!editing">
+      <h1>{{ userProfile.name }}</h1>
+      <p>Correo Electrónico: {{ userProfile.email }}</p>
+      <p>Teléfono: {{ userProfile.phone }}</p>
+      <button @click="editProfile">Editar</button>
+    </div>
+    <div v-else>
+      <h1>Editar Perfil</h1>
+      <form @submit.prevent="saveProfile">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" v-model="editedProfile.name">
+        <br>
+        <label for="email">Correo Electrónico:</label>
+        <input type="text" id="email" v-model="editedProfile.email">
+        <br>
+        <label for="phone">Teléfono:</label>
+        <input type="text" id="phone" v-model="editedProfile.phone">
+        <br>
+        <button type="submit">Guardar</button>
+        <button @click="cancelEdit">Cancelar</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        userProfile: {}, // Datos del usuario
+        editedProfile: {}, // Datos editados
+        editing: false // Bandera para controlar la vista
+      },
+      mounted() {
+        // Hacer una solicitud GET para obtener los datos del usuario
+        axios.get('URL_DE_TU_API')
+          .then(response => {
+            this.userProfile = response.data;
+          })
+          .catch(error => {
+            console.error('Error al obtener los datos del usuario:', error);
+          });
+      },
+      methods: {
+        editProfile() {
+          // Copiar los datos del usuario a editedProfile para la edición
+          this.editedProfile = { ...this.userProfile };
+          this.editing = true;
+        },
+        saveProfile() {
+          // Aquí puedes hacer una solicitud PUT para guardar los cambios en la URL correspondiente
+          // Luego, actualiza this.userProfile con los datos guardados
+          // Aquí asumimos que la solicitud fue exitosa y actualizamos los datos directamente
+          this.userProfile = { ...this.editedProfile };
+          this.editing = false;
+        },
+        cancelEdit() {
+          this.editing = false;
+        }
+      }
+    });
+  </script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+<div id="app">
+    <div class="text-bg-dark text-center">
+        <h1>Mi Perfil de Usuario</h1>
+        <div id="">
+            <div class="d-flex justify-content-center mb-4">
+                <div class="card text-bg-secondary" style="width: 18rem;">
+                    <img src="{% static 'images/programador.png'%}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title"><span id="username"></span></h5>
+                        <p class="card-text">Nombre: <small><span id="nombre"></span></small></p>
+                        <p class="card-text">Apellido: <small><span id="apellido"></span></small></p>
+                        <p class="card-text">Correo: <small><span id="email"></span></small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="editarBtn" class="btn btn-secondary mx-3">Editar</button>
+        <button id="cancelarBtn" class="btn btn-primary">Cancelar</button>
+
+        <div id="formulario" style="display: none;">
+            <div class="d-flex justify-content-center">
+                <div>
+                    <div class="form-floating mt-3">
+                        <input type="text" id="nuevoNombre" placeholder="Nuevo nombre" name="nombre" v-model="nuevoNombre" class="form-control">
+                        <label for="nombre" class="form-label">Nombre:</label>
+                    </div>
+                    <div class="form-floating mt-3">
+                        <input type="text" id="nuevoApellido" placeholder="Nuevo apellido" name="apellido" v-model="nuevoApellido" class="form-control">
+                        <label for="apellido" class="form-label">Apellido:</label>
+                    </div>
+                    <div class="form-floating mt-3">
+                        <input type="email" id="nuevoEmail" placeholder="Nuevo correo" name="email" v-model="nuevoEmail" class="form-control">
+                        <label for="email" class="form-label">Correo:</label>
+                    </div>
+                    <div class="form-actions text-center mt-3">
+                        <button @click="guardarCambios" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Inicializa la aplicación Vue.js
+    new Vue({
+        el: '#app',
+        data: {
+            nuevoNombre: '',
+            nuevoApellido: '',
+            nuevoEmail: '',
+            user: {}
+        },
+        mounted() {
+            // Obtener los datos del usuario al cargar la página
+            $.get('/perfilApi/', (data) => {
+                this.user = data;
+                this.nuevoNombre = data.nombre;
+                this.nuevoApellido = data.apellido;
+                this.nuevoEmail = data.email;
+            });
+        },
+        methods: {
+            editarPerfil() {
+                // Habilitar la edición de datos al hacer clic en el botón "Editar"
+                $('#perfil').hide();
+                $('#formulario').show();
+            },
+            cancelarEdicion() {
+                // Cancelar la edición y volver a mostrar el perfil
+                $('#perfil').show();
+                $('#formulario').hide();
+                this.nuevoNombre = this.user.nombre;
+                this.nuevoApellido = this.user.apellido;
+                this.nuevoEmail = this.user.email;
+            },
+            guardarCambios() {
+                // Enviar los datos actualizados al servidor al hacer clic en "Guardar Cambios"
+                const csrfToken = this.getCookie('csrftoken');
+                $.ajax({
+                    url: '/perfilApi/',
+                    type: 'PUT',
+                    data: {
+                        nombre: this.nuevoNombre,
+                        apellido: this.nuevoApellido,
+                        email: this.nuevoEmail
+                    },
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    },
+                    success: () => {
+                        // Actualizar la interfaz de usuario con los nuevos datos
+                        $('#nombre').text(this.nuevoNombre);
+                        $('#apellido').text(this.nuevoApellido);
+                        $('#email').text(this.nuevoEmail);
+
+                        // Ocultar el formulario de edición y mostrar el perfil nuevamente
+                        $('#formulario').hide();
+                        $('#perfil').show();
+                    }
+                });
+            },
+            getCookie(name) {
+                const value = `;${document.cookie}`;
+                const parts = value.split(`;${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+        }
+    });
+</script> -->
+
+<!-- <div class="text-bg-dark text-center"> 
     <h1>Mi Perfil de Usuario</h1>
-    <div id="perfil">
+    <div id="perfil" >
         <div class="d-flex justify-content-center mb-4">
             <div class="card text-bg-secondary" style="width: 18rem;">
                 <img src="{% static 'images/programador.png'%}" class="card-img-top" alt="...">
@@ -38,9 +215,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
-    <script>
+
+    <!-- <script>
         let user = {}
         $(document).ready(function () {
             // Obtener los datos del usuario al cargar la página
@@ -109,6 +287,6 @@
                 if (parts.length === 2) return parts.pop().split(';').shift();
             }
         });
-    </script>
+    </script> -->
 </div>
 {% endblock %}

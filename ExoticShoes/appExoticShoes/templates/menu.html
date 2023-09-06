@@ -4,7 +4,7 @@
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
-      <a class="navbar-fixed-top navbar-brand" href="/inicio"><i class="fa-solid fa-house fa-2x"></i> Panel</a>
+      <a class="navbar-fixed-top navbar-brand" href="/dashboard"><i class="fa-solid fa-house fa-2x"></i> Panel</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -42,15 +42,13 @@
         <ul class="navbar-nav mb-2 mb-lg-0 mx-2">
           <li class="nav-item">
             <div class="dropdown-center">
-              {% if user.is_authenticated %}
-              <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img src="{{ user.FotoPerfil }}" alt="{{user.username}}">
-              </button>
+              <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-user fa-2x"></i> Mi cuenta
+              </a>
               <ul class="dropdown-menu dropdown-menu-end">
                 <li class="nav-item"><a class="dropdown-item" href="{% url 'perfil' %}">Ver Perfil &nbsp; <i class="fa-regular fa-user"></i></a></li>
-                <li class="nav-item"><a class="dropdown-item" href="">Cerrar Sesión &nbsp; <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
+                <li class="nav-item"><a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión &nbsp; <i class="fa-solid fa-arrow-right-from-bracket"></i></a></li>
               </ul>
-              {% endif %}
             </div>
           </li>
         </ul>

@@ -157,7 +157,7 @@ class Envio(models.Model):
 
 # ================================= Devolucion ==============================================
 class Devolucione(models.Model):
-    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
+    pedido = models.ForeignKey(Pedido, on_delete=models.PROTECT)
     motivo = models.CharField(max_length=255)
     detalles = models.TextField(blank=True, null=True)
     fechaDevolucion = models.DateTimeField(auto_now_add=True)

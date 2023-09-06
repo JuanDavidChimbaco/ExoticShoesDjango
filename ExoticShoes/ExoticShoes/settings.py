@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-)7%zbdyx4$76k7in8f2r%m83t)m&xfem!1#!f$&%uctw!y9aro
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['10.192.66.170', 'localhost', '127.0.0.1','192.168.56.1']
+ALLOWED_HOSTS = ['*']
 
 
 
@@ -203,5 +203,8 @@ EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_SENDER')  # Tu contraseña de correo
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Muestra los correos en la consola en lugar de enviarlos
 
-# 
+# ruta a la cual sera redirigido cuando termine su sesion
 LOGOUT_REDIRECT_URL = '/'
+
+# ruta la cual sera redirigido cuando caduque la sesion
+LOGIN_URL = 'login'

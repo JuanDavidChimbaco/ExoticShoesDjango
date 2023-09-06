@@ -28,7 +28,7 @@
 </head>
 
 <body>
-  <section>
+  <section id="content">
     <div class="container mt-5">
       <div class="row contenido">
         <div class="col">
@@ -71,7 +71,6 @@
                         aria-hidden="true"></i>
                       &nbsp; Iniciar Sesión</button>
                   </div>
-                  
                 </form>
                 <div class="row">
                   <div class="col mt-3 text-center">
@@ -95,31 +94,6 @@
           </small>
         </div>
       </div>
-
-      <!-- {% if error_message %}
-      <script>
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: '{{ error_message }}',
-        })
-      </script>
-      {% endif %}
-
-      {% if login_success_message %}
-      <script>
-        Swal.fire({
-          icon: 'success',
-          title: 'Éxito!',
-          text: '{{ login_success_message }}',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.href = "{% url 'inicio' %}";
-          }
-        })
-      </script>
-      {% endif %}
-     -->
     </div>
   </section>
   <script>
@@ -144,24 +118,66 @@
           };
           // Obtén el valor del CSRF token del formulario
           const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-          console.log(csrfToken);
-            // Configura Axios para incluir el CSRF token en el encabezado
+          // Configura Axios para incluir el CSRF token en el encabezado
           axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
           axios.post('/api/login/', formData)
             .then(response => {
               // Procesa la respuesta después del inicio de sesión exitoso
               console.log(response.data);
-              window.location.href = "{% url 'dashboard' %}";
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: '¡Genial! ' + response.data.message,
+                //html: '<div class="d-flex justify-content-center overflow-hidden"><div class="loader" id="loader"></div></div>',
+                showConfirmButton: true,
+                allowOutsideClick: false,
+              }).then(() => {
+                  window.location.href = "{% url 'dashboard' %}";
+              });
             })
             .catch(error => {
               // Maneja errores de inicio de sesión
               console.error(error.response.data);
+              Swal.fire({
+                position: 'center',
+                icon: 'error',
+                title: 'Oops... '+error.response.data.message,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                timer: 2000
+              }).then(()=>{
+                this.username=""
+                this.password=""
+              })
               // Aquí puedes mostrar mensajes de error al usuario
             });
         }
       }
     });
   </script>
+
+  <style>
+    /* Estilos para el spinner */
+    .loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 2s linear infinite;
+      display: block;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </body>
 
 </html>
