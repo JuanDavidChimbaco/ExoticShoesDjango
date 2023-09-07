@@ -83,11 +83,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ExoticShoes.urls'
 
-# Tiempo de sesión en segundos (30 minutos)
-SESSION_COOKIE_AGE = 1800
+# Tiempo de sesión en segundos (30 minutos) por defecto
+SESSION_COOKIE_AGE = 8 * 60 * 60 # 8 horas
 
-# Si deseas que la sesión expire cuando el navegador se cierre, puedes usar esto:
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# la sesion se cierra si se cierra el navegador (True, para activar): 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 TEMPLATES = [
     {

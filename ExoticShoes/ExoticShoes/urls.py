@@ -13,7 +13,6 @@ from appExoticShoes import views
 # router para las rutas de la Api
 router = DefaultRouter()
 router.register(r'usuarios', views.UsuariosViewSet, basename='usuarios')
-router.register(r'registro', views.RegistroClienteViewSet , basename='registro')
 router.register(r'carrito', views.CartViewSet , basename='carrito')
 router.register(r'categorias', views.CategoriasViewSet , basename='categorias')
 router.register(r'productos', views.ProductosViewSet, basename='productos')
@@ -26,6 +25,7 @@ router.register(r'devoluciones', views.DevolucionesViewSet , basename='devolucio
 
 # lista de productos para la vista del cliente
 producto_list_view = ProductosListView.as_view({'get': 'list'})
+registro_cliente_view = views.RegistroClienteViewSet.as_view({'post': 'create'})
 
 urlpatterns = [
     # Rutas para la vista del Administrador
@@ -45,6 +45,8 @@ urlpatterns = [
     # rutas de la Api
     path('api/v1.0/', include(router.urls)),
     
+    path('api/v1.0/registro_cliente/', registro_cliente_view, name='registro_cliente'),
+    path('api/v1.0/sesion_cliente/', views.LoginClienteView.as_view(), name='sesion_cliente'),
     # rutas para la paginacion de productos 
     path('api/v1.0/productos-limit-offset/', producto_list_view, name='productos-limit-offset'),
    
@@ -58,10 +60,12 @@ urlpatterns = [
     path('resetPassword/', PasswordResetView.as_view(), name='resetPassword'),
     
     #login de usuarios (Cliente)
-    path('inicioSesion/', views.LoginClienteView.as_view(), name='inicioSesion'),
-    path('inicioCliente/', views.inicioCliente, name='inicioCliente'),
-    path('registroCliente/', views.registroCliente, name='registroCliente'),
-    path('custom_logout/', views.custom_logout, name='custom_logout'),
+    
+    
+    path('registro_cliente/', views.registroCliente, name='registro_cliente'),
+    path('login_cliente/', views.loginCliente, name='login_cliente'),
+    path('inicio_cliente/', views.inicioCliente, name='inicio_cliente'),
+    path('custom_logout/', views.cerrar_sesion, name='custom_logout'),
     
     # perfil de usuario(Admin)
     path('perfil/', views.perfil_usuario, name='perfil'),

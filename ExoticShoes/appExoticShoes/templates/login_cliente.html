@@ -24,14 +24,21 @@
             <br>
             <input type="button" value="Iniciar Sesion" onclick="inicioSesion()">
         </form>
-
+        {% if mensaje %}
+            <div>
+                Error: {{mensaje}}
+            </div>
+            <script>
+                alert('Warning')
+            </script>
+        {% endif %}
     </div>
     <script>
         
         function inicioSesion() {
             axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
             axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
-            axios.post('http://192.168.100.9:8000/inicioSesion/', {
+            axios.post('/inicioSesion/', {
                 username: usuario.value,
                 password: pass.value,
                 csrfmiddlewaretoken: csrf_token.value
@@ -40,7 +47,7 @@
                 console.log(response.data.message);
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('user', response.data.user);
-                window.location.href = "/registroCliente"; 
+                window.location.href = "/Cliente"; 
             })
             .catch(function (error) {
                 console.log(error);

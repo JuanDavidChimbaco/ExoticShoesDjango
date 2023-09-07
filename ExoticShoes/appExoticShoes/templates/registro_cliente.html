@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <form action="" id="registroForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" id="csrf_token">
+            <label for="">username:</label>
+            <input type="text" name="username" id="username">
+            <label for="">password</label>
+            <input type="text" name="password" id="password">
+            <label for="">nombre</label>
+            <input type="text" name="first_name" id="first_name">
+            <label for="">apellido</label>
+            <input type="text" name="last_name" id="last_name">
+            <label for="">correo</label>
+            <input type="email" name="email" id="email" >
+            <label for="">telefono</label>
+            <input type="text" name="telefono" id="telefono">
+            <label for="">fecha nacimineto</label>
+            <input type="date" name="fechaNacimiento" id="fechaNacimiento" >
+            <label for="">direccion</label>
+            <input type="text" name="direccion" id="direccion">
+            <input type="file" name="fotoPerfil" id="fotoPerfil" >
+            <input type="button" onclick="registro()" value="registrar">
+        </form>
+    </div>
+    
+    <script>
+        axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+        axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
+            function registro(){
+                const fotoPerfil = document.getElementById('fotoPerfil').files[0];
+                const formData = new FormData();
+                formData.append('username', username.value);
+                formData.append('password', password.value);
+                formData.append('first_name', first_name.value);
+                formData.append('last_name', last_name.value);
+                formData.append('email', email.value);
+                formData.append('telefono', telefono.value);
+                formData.append('fechaNacimiento', fechaNacimiento.value);
+                formData.append('direccion', direccion.value);
+                formData.append('fotoPerfil', fotoPerfil, fotoPerfil.name);
+                axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+                axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
+                axios.post('/api/v1.0/registro_cliente/', formData,{
+                    headers: {
+                        'Content-Type': 'multipart/form-data', // Asegurarse de establecer el tipo de contenido adecuado
+                    },
+                }
+                )
+                .then(res => {
+                    console.log(res);
+                    alert(res.status)
+                    window.location.href = "/inicioCliente"
+                })
+                .catch(err => {
+                    console.error(err);
+                })
+            }
+</script>
+</body>
+</html>

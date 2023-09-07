@@ -43,7 +43,8 @@ const dataTableOptions = {
         {
             extend: 'print',
             exportOptions: {
-                columns: [0, 1]
+                stripHtml : false,
+                columns: [0, 1, 2]
             }
         }],
     columnDefs: [

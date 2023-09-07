@@ -73,22 +73,11 @@ class CartSerializer(serializers.ModelSerializer):
 class RegistroUsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['username', 'password', 'first_name', 'last_name', 'email','telefono', 'fechaNacimiento', 'direccion']
+        fields = ['username', 'password', 'first_name', 'last_name', 'email', 'telefono', 'fechaNacimiento', 'direccion', 'fotoPerfil']
         extra_kwargs = {'password': {'write_only': True}}
+        
 
 class LoginUsuarioSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField(write_only=True)  # Marcamos la contraseña como solo escritura
-    def validate(self, data):
-        username = data.get('username')
-        password = data.get('password')
-        if username and password:
-            user = User.objects.filter(username=username).first()
-            if user and user.check_password(password):
-                # Las credenciales son válidas
-                data['user'] = user
-            else:
-                raise serializers.ValidationError('Credenciales inválidas')
-        else:
-            raise serializers.ValidationError('Se requieren tanto el nombre de usuario como la contraseña')
-        return data
+

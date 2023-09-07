@@ -13,6 +13,7 @@ from rest_framework_jwt.settings import api_settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 
@@ -74,18 +75,22 @@ class UsuariosViewSet(viewsets.ModelViewSet):
 
 
 class RegistroClienteViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowOnlyPOST]
+    permission_classes = [AllowAny]
     queryset = Usuario.objects.all()
     serializer_class = RegistroUsuarioSerializer
     @action(detail=False, methods=['post'])
-    def registrar_usuario(self, request):
+    def create(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
+            # Verificar si el correo electrónico ya está en uso
+            email = serializer.validated_data['email']
+            if Usuario.objects.filter(Q(email=email) | Q(username=email)).exists():
+                return Response({'message': 'Este correo electrónico ya está en uso.'}, status=status.HTTP_400_BAD_REQUEST)
+            # Crear el usuario
             user = Usuario.objects.create_user(**serializer.validated_data)
-            cliente_group = Group.objects.get(name='cliente')  # Asegúrate de que el grupo 'cliente' exista
+            cliente_group = Group.objects.get_or_create(name='cliente')[0]  # Asegúrate de que el grupo 'cliente' exista
             user.groups.add(cliente_group)
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'message': 'Usuario registrado exitosamente', 'token': token.key}, status=status.HTTP_201_CREATED)
+            return Response({'message': 'Usuario registrado exitosamente'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
       
@@ -174,11 +179,11 @@ class LoginClienteView(APIView):
         if serializer.is_valid():
             username = serializer.validated_data['username']
             password = serializer.validated_data['password']
-            user = User.objects.filter(username=username).first()
+            user = Usuario.objects.filter(username=username).first()
             if user and user.check_password(password):
                 login(request, user)
                 token, created = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key, 'message': 'Inicio de sesión exitoso', 'user': user.id}, status=status.HTTP_200_OK)
+                return Response({'token': token.key, 'message': 'Inicio de sesión exitoso', 'user': user}, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'Credenciales inválidas'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -189,9 +194,14 @@ class LoginClienteView(APIView):
 def custom_login(request):
     username = request.data.get('username')
     password = request.data.get('password')
+    rememberMe = request.data.get('rememberme')
     user = authenticate(request, username=username, password=password)
     if user is not None:
         login(request, user)
+        if (rememberMe):
+            request.session.set_expiry(2592000) # 30 días en segundos
+        else:
+            request.session.set_expiry(0)  # Duración predeterminada
         return Response({'message': 'Inicio de sesión exitoso'}, status=status.HTTP_200_OK)
     else:
         return Response({'message': 'Credenciales incorrectas'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -348,15 +358,20 @@ def custom_logout(request):
 # ============================================================================
 # ================================ Cliente ====================================
     
-def inicioCliente(request):
-    return render(request, "cliente.html", {})
+def loginCliente(request):
+    return render(request, "login_cliente.html", {})
 
 def registroCliente(request):
-    return render(request, "clienteLogueado.html", {})
+    return render(request,"registro_cliente.html",{})
+
+@client_required
+def inicioCliente(request):
+    return render(request, "inicio_cliente.html", {})
 
 def cerrar_sesion(request):
     logout(request)
-    return redirect('/inicioCliente/')
+    return redirect('/login_cliente/')
+
 
 # ========================================================================
 # ================================ Carrito ================================

@@ -66,6 +66,10 @@
                       placeholder="contraseña" required v-model="password" />
                     </i><label for="id_password"><i class="fa-solid fa-key fa-beat-fade"></i> Contraseña</label>
                   </div>
+                  <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me" v-model="rememberme">
+                    <label class="form-check-label" for="remember_me">Recuérdame</label>
+                  </div>
                   <div class="form-floating col mt-3 text-center">
                     <button type="submit" class="btn btn-dark btn-block"><i class="fa fa-sign-in"
                         aria-hidden="true"></i>
@@ -103,7 +107,8 @@
         loginVisible: false,
         cardVisible: true,
         username: '',
-        password: ''
+        password: '',
+        rememberme: false
       },
       methods: {
         toggleLogin() {
@@ -114,7 +119,7 @@
           const formData = {
             username: this.username,
             password: this.password,
-
+            rememberme: this.rememberme
           };
           // Obtén el valor del CSRF token del formulario
           const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
@@ -148,8 +153,8 @@
               }).then(()=>{
                 this.username=""
                 this.password=""
+                this.rememberme=false
               })
-              // Aquí puedes mostrar mensajes de error al usuario
             });
         }
       }
