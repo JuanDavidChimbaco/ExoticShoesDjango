@@ -14,8 +14,8 @@
     <br>
     <div>
         <form action="" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" id="csrf_token">
+            <!-- {% csrf_token %} -->
+            <!-- <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" id="csrf_token"> -->
             <input type="text" name="usuario" id="usuario" placeholder="Usuario">
             <br>
             <br>
@@ -24,14 +24,14 @@
             <br>
             <input type="button" value="Iniciar Sesion" onclick="inicioSesion()">
         </form>
-        {% if mensaje %}
+        <!-- {% if mensaje %}
             <div>
                 Error: {{mensaje}}
             </div>
             <script>
                 alert('Warning')
             </script>
-        {% endif %}
+        {% endif %} -->
     </div>
     <script>
         
