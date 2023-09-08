@@ -8,6 +8,7 @@
   {% csrf_token %}
   <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
   <div class="row justify-content-evenly">
+
     <div class="col-5 mb-3">
       <div class="form-floating pb-2">
         <input type="text" class="form-control" id="txtNombre" name="txtNombre" placeholder="Nombre" required />
@@ -25,11 +26,6 @@
         <input type="number" class="form-control" id="txtPrecio" name="txtPrecio" placeholder="Precio" required />
         <label for="txtPrecio" class="form-label">Precio:</label>
       </div>
-      <div class="form-floating">
-        <input type="number" class="form-control" id="txtCantidad" name="txtCantidad" placeholder="Cantidad al Stock"
-          required />
-        <label for="txtCantidad" class="form-label">Stock:</label>
-      </div>
     </div>
 
     <div class="col-6 mb-3">
@@ -40,15 +36,15 @@
         <label for="cbCategoria" class="form-label">Categoría:</label>
       </div>
       <div class="form-floating">
-        <input type="file" name="fileFoto" id="fileFoto" class="form-control" onchange="mostrarVistaPrevia()"
-          accept="image/*" required multiple />
+        <input type="file" class="form-control" name="fileFoto" id="fileFoto" accept="image/*" onchange="mostrar()"
+        required multiple />
         <label for="fileFoto" class="form-label">Cargar Imagen:</label>
       </div>
     </div>
 
     <div class="col-7 mb-3 text-center">
       <div id="imageContainer">
-        <img id="uploadedImage" alt="Imagen cargada" width="100" height="100" style="display: none"
+        <img id="vistaPrevia" alt="Imagen cargada" width="100" height="100" style="display: none;"
           onclick="vistaImagenFrm()" />
       </div>
     </div>

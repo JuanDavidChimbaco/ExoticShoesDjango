@@ -32,27 +32,27 @@
             </div>
         </div>
         {% if auth_message %}
-            <div class="card">
-                Error: {{auth_message}}
-            </div>
+        <div class="card">
+            Error: {{auth_message}}
+        </div>
         {% endif %}
     </div>
     <script>
         async function inicioSesion() {
             axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
             axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
-            try{
+            try {
                 const response = await axios.post('http://192.168.100.9:8000/api/v1.0/sesion_cliente/', {
                     username: usuario.value,
                     password: pass.value,
                 });
                 message.innerHTML = `<p>${response.data.message}</p>`;
-                setTimeout(function(){
-                    window.location.href = "/inicio_cliente/"; 
+                setTimeout(function () {
+                    window.location.href = "/inicio_cliente/";
                 }, 2000);
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('user', JSON.stringify(response.data.user));
-            } catch (error){
+            } catch (error) {
                 console.error(error)
                 message.innerHTML = `<p>${response.data.error}</p>`;
             }

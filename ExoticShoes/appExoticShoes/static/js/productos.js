@@ -1,17 +1,16 @@
 // obtener una vista previa de la imagen que esta en el input file
-function mostrarVistaPrevia() {
-  var fileInput = document.getElementById("fileFoto");
-  var imagenMostrar = document.getElementById("vistaPreviaFoto");
-
-  var archivo = fileInput.files[0];
-  var lector = new FileReader();
-
-  lector.onload = function (e) {
-    imagenMostrar.src = e.target.result;
-  };
-
+function mostrar() {
+  let archivo = fileFoto.files[0, 2, 3];
   if (archivo) {
+    let lector = new FileReader();
+    lector.onload = function (e) {
+      vistaPrevia.src = e.target.result;
+      vistaPrevia.style.display = 'block';
+    };
     lector.readAsDataURL(archivo);
+  } else {
+    vistaPrevia.src = "";
+    vistaPrvistaPreviaevia.style.display = 'none';
   }
 }
 
@@ -77,13 +76,12 @@ async function obtenerProductos() {
           NombreCat = cat.nombre;
         }
       });
-
       // Formatear el precio con separador de miles y el símbolo COP
       const precioFormateado = new Intl.NumberFormat("es-CO", {
         style: "currency",
         currency: "COP",
       }).format(element.precio);
-
+      // const res = await axios
       data += `<tr>
                   <th scope="row">${index + 1}</th>
                   <td>${element.nombre}</td>
@@ -106,7 +104,7 @@ async function obtenerProductos() {
 }
 
 
-function vistaPrevia(element) {
+function vistaPreviaimagen(element) {
   // Construimos el contenido del cuadro de diálogo de SweetAlert con los datos del producto
   const contenido = `
     <h3>${element.nombre}</h3>
@@ -128,45 +126,30 @@ function load(element) {
   txtNombre.value = element.nombre;
   txtDescripcion.value = element.descripcion;
   txtPrecio.value = element.precio;
-  txtCantidad.value = element.existencias;
   cbCategoria.value = element.categoria;
   vistaPreviaFoto.src = element.foto;
+  vistaPreviaFoto.style.display = 'block';
 }
 
 // Agregar productos a la base de datos
-function agregarPro() {
-  var csrfToken = document.getElementsByName("csrfmiddlewaretoken")[0].value;
-  var fileInput = document.getElementById("fileFoto");
-  var file = fileInput.files[0];
-
+async function agregarPro() {
+  let file = fileFoto.files[0];
+  axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+  axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
   var formData = new FormData();
   formData.append("nombre", txtNombre.value);
   formData.append("descripcion", txtDescripcion.value);
   formData.append("precio", txtPrecio.value);
-  formData.append("existencias", txtCantidad.value);
   formData.append("categoria", cbCategoria.value);
   formData.append("foto", file);
-
-  axios
-    .post("/api/v1.0/productos/", formData, {
-      headers: {
-        "X-CSRFToken": csrfToken,
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then(function (response) {
-      swal.fire({ icon: "success", title: "Producto Agregado" });
-      obtenerProductos();
-      limpiar();
-    })
-    .catch(function (error) {
-      console.error("Error al agregar ", error);
-      swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: `${error.response.data}`,
-      });
+  try {
+    const response = await axios.post("/api/productos/", formData)
+    console.log(response.data);
+  } catch (error) {
+    swal.fire({
+      icon: "error", title: "Oops...", text: error.response.data,
     });
+  }
 }
 
 // Modificar productos a la base de datos
