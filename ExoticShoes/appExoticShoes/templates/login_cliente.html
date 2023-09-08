@@ -4,54 +4,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login Cliente</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body>
-    Inciar Sesion Cliente:
+    <h2 class="text-center">
+        Inciar Sesion Cliente:
+    </h2>
     <br>
     <br>
-    <div>
-        <form action="" method="post">
-            <!-- {% csrf_token %} -->
-            <!-- <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" id="csrf_token"> -->
-            <input type="text" name="usuario" id="usuario" placeholder="Usuario">
-            <br>
-            <br>
-            <input type="password" name="pass" id="pass" placeholder="Contraseña">
-            <br>
-            <br>
-            <input type="button" value="Iniciar Sesion" onclick="inicioSesion()">
-        </form>
-        <!-- {% if mensaje %}
-            <div>
-                Error: {{mensaje}}
+    <div class=" row text-center">
+        <div class="col">
+            <form action="" method="post">
+                <input type="text" name="usuario" id="usuario" placeholder="Usuario">
+                <br>
+                <br>
+                <input type="password" name="pass" id="pass" placeholder="Contraseña">
+                <br>
+                <br>
+                <input type="button" value="Iniciar Sesion" onclick="inicioSesion()">
+            </form>
+            <div id="message">
+
             </div>
-            <script>
-                alert('Warning')
-            </script>
-        {% endif %} -->
+        </div>
+        {% if auth_message %}
+            <div class="card">
+                Error: {{auth_message}}
+            </div>
+        {% endif %}
     </div>
     <script>
-        
-        function inicioSesion() {
+        async function inicioSesion() {
             axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
             axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
-            axios.post('/inicioSesion/', {
-                username: usuario.value,
-                password: pass.value,
-                csrfmiddlewaretoken: csrf_token.value
-            })
-            .then(function (response) {
-                console.log(response.data.message);
+            try{
+                const response = await axios.post('http://192.168.100.9:8000/api/v1.0/sesion_cliente/', {
+                    username: usuario.value,
+                    password: pass.value,
+                });
+                message.innerHTML = `<p>${response.data.message}</p>`;
+                setTimeout(function(){
+                    window.location.href = "/inicio_cliente/"; 
+                }, 2000);
                 localStorage.setItem('token', response.data.token);
-                localStorage.setItem('user', response.data.user);
-                window.location.href = "/Cliente"; 
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+            } catch (error){
+                console.error(error)
+                message.innerHTML = `<p>${response.data.error}</p>`;
+            }
         }
     </script>
 </body>

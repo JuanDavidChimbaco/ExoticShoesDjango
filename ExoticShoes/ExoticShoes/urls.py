@@ -47,9 +47,9 @@ urlpatterns = [
     
     path('api/v1.0/registro_cliente/', registro_cliente_view, name='registro_cliente'),
     path('api/v1.0/sesion_cliente/', views.LoginClienteView.as_view(), name='sesion_cliente'),
+    
     # rutas para la paginacion de productos 
     path('api/v1.0/productos-limit-offset/', producto_list_view, name='productos-limit-offset'),
-   
     
     # rutas para restablecer contraseña (Admin)
     path('validarCorreo/', views.restPasswordRequest , name='validarCorreo'),
@@ -60,8 +60,6 @@ urlpatterns = [
     path('resetPassword/', PasswordResetView.as_view(), name='resetPassword'),
     
     #login de usuarios (Cliente)
-    
-    
     path('registro_cliente/', views.registroCliente, name='registro_cliente'),
     path('login_cliente/', views.loginCliente, name='login_cliente'),
     path('inicio_cliente/', views.inicioCliente, name='inicio_cliente'),
@@ -71,11 +69,11 @@ urlpatterns = [
     path('perfil/', views.perfil_usuario, name='perfil'),
     path('api/v1.0/perfilApi/', views.perfil_usuario_api, name='perfilApi'),
     
-    path('productos/', views.ProductoListCreateView.as_view(), name='producto-list-create'),
-    path('productos/<int:pk>/', views.ProductoDetailView.as_view(), name='producto-detail'),
-    path('imagenes-producto/', views.ImagenProductoListCreateView.as_view(), name='imagenproducto-list-create'),
-    path('tallas/', views.TallaListView.as_view(), name='talla-list-create'),
-    path('productos-con-talla/', views.ProductoConTallaListView.as_view(), name='productocontalla-list-create'),
+    # productos nuevo. 
+    path('api/productos/', views.ProductoListCreateView.as_view(), name='producto-list-create'),
+    path('api/productos/<int:pk>/', views.ProductoDetailView.as_view(), name='producto-detail'),
+    path('api/stock/', views.StockListCreateView.as_view(), name='stock-list-create'),
+    path('api/stock/<int:pk>/', views.StockDetailView.as_view(), name='stock-detail'),
     
 ]
 

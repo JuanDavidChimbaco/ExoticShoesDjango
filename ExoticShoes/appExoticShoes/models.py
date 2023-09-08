@@ -26,28 +26,6 @@ class Categoria(models.Model):
         return self.nombre 
     
 # ================================= Producto ==============================================
-ESTADOPRODUCTO = (
-    (True, 'Activo'),
-    (False, 'Desactivado'),
-)
-class Producto(models.Model):
-    nombre = models.CharField(max_length=45)
-    descripcion = models.CharField(max_length=45)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
-    existencias = models.IntegerField()
-    estado = models.BooleanField(choices=ESTADOPRODUCTO, default=True)
-    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)
-
-    def __str__(self):
-        return self.nombre
-
-class ImagenProducto(models.Model):
-    producto = models.ForeignKey(Producto, related_name='imagenes', on_delete=models.PROTECT)
-    imagen = models.ImageField(upload_to='productos/')
-    
-    def __str__(self):
-        return self.producto.nombre + ' - Imagen'
-
 TALLAS = (
     ('S', 'S'),
     ('M', 'M'),
@@ -65,20 +43,43 @@ TALLAS = (
     ('39', '39'),
     ('40', '40'),
     ('41', '41'),
+    ('unica','Unica')
 )
 class Talla(models.Model):
-    nombre = models.CharField(max_length=3, choices=TALLAS)  # Ejemplo: "S", "M", "L", etc.
+    nombre = models.CharField(max_length=5, choices=TALLAS)  # Ejemplo: "S", "M", "L", etc.
 
     def __str__(self):
         return self.nombre
 
-class ProductoConTalla(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
-    talla = models.ForeignKey(Talla, on_delete=models.PROTECT)
-    existencias = models.IntegerField()
+ESTADOPRODUCTO = (
+    (True, 'Activo'),
+    (False, 'Desactivado'),
+)
+class Producto(models.Model):
+    nombre = models.CharField(max_length=45)
+    descripcion = models.CharField(max_length=45)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
+    estado = models.BooleanField(choices=ESTADOPRODUCTO, default=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)
+    tallas = models.ManyToManyField(Talla)
 
     def __str__(self):
-        return f"{self.producto.nombre} - Talla {self.talla.nombre}"
+        return self.nombre
+
+class ImagenProducto(models.Model):
+    producto = models.ForeignKey(Producto, related_name='imagenes', on_delete=models.PROTECT)
+    imagen = models.ImageField(upload_to='productos/')
+    
+    def __str__(self):
+        return self.producto.nombre + ' - Imagen'
+
+class Stock(models.Model):
+    producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
+    talla = models.ForeignKey(Talla, on_delete=models.PROTECT)
+    cantidad = models.PositiveIntegerField(default=0)  # Cantidad de existencias disponibles
+
+    class Meta:
+        unique_together = ('producto', 'talla')
     
 # ================================= Pedido ============================================== 
 ESTADOPEDIDO = (
@@ -91,7 +92,7 @@ class Pedido(models.Model):
     fechaPedido = models.DateField()
     usuario = models.ForeignKey(Usuario, on_delete=models.PROTECT)
     total = models.FloatField()
-    estadoPedido = models.CharField(max_length=50)
+    estadoPedido = models.CharField(max_length=50, default='pendiente')
         
     def __str__(self):
         return f"Pedido {self.codigoPedido}"

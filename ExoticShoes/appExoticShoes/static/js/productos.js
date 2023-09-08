@@ -19,7 +19,6 @@ function mostrarVistaPrevia() {
 async function NombreCat() {
   try {
     const response = await axios.get("/api/v1.0/categorias/");
-    console.log(response.data);
     localStorage.categoria = JSON.stringify(response.data);
     var opcion = `<option value="0">Seleccione Categoría</option>`;
     response.data.forEach((categoria) => {
@@ -39,16 +38,17 @@ let dataTableIsInitialized = false;
 // Opciones para el DataTable
 const dataTableOptions = {
   dom: 'Bfrtip',
-    buttons: ['copy', 'csv', 'excel', 'pdf', 
-            { extend: 'print',
-              exportOptions: {
-                columns: [0, 1, 2, 3, 4, 5] 
-              }
-            }],
+  buttons: ['copy', 'csv', 'excel', 'pdf',
+    {
+      extend: 'print',
+      exportOptions: {
+        columns: [0, 1, 2, 3, 4, 5]
+      }
+    }],
   columnDefs: [
-      { className: "centered", targets: [0, 1, 2, 3, 4, 5, 6, 7] },
-      { orderable: false, targets: [6, 7] },
-      { searchable: false, targets: [0, 6, 7] }
+    { className: "centered", targets: [0, 1, 2, 3, 4, 5, 6, 7] },
+    { orderable: false, targets: [6, 7] },
+    { searchable: false, targets: [0, 6, 7] }
   ],
   pageLength: 4,
   destroy: true,
@@ -57,7 +57,7 @@ const dataTableOptions = {
 
 const initDataTable = async () => {
   if (dataTableIsInitialized) {
-      dataTable.destroy();
+    dataTable.destroy();
   }
   await obtenerProductos();
   dataTable = $("#tables").DataTable(dataTableOptions);
@@ -67,14 +67,10 @@ const initDataTable = async () => {
 // Obtiene los productos de la base de datos
 async function obtenerProductos() {
   try {
-    var tabla = document.getElementById("tablaPro");
-    var data = "";
-    var NombreCat = "";
-    const response = await axios.get("/api/v1.0/productos");
-    console.log(response);
-
+    let data = "";
+    let NombreCat = "";
+    const response = await axios.get("/api/productos/");
     let categorias = JSON.parse(localStorage.categoria);
-
     response.data.forEach((element, index) => {
       categorias.forEach((cat) => {
         if (cat.id === element.categoria) {
@@ -103,7 +99,7 @@ async function obtenerProductos() {
                   </td>
                 </tr>`;
     });
-    tabla.innerHTML = data;
+    tablaPro.innerHTML = data;
   } catch (error) {
     console.error(error);
   }

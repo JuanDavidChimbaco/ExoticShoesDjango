@@ -13,7 +13,7 @@ from rest_framework_jwt.settings import api_settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.core.mail import send_mail
-from django.db.models import Q
+from django.db.models import Q, Max
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 
@@ -22,9 +22,9 @@ import os
 from datetime import datetime, timedelta
 
 # ================================ App ================================
-from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, UsuariosSerializer,CategoriasSerializer,CartSerializer,
-PagoSerializer,EnvioSerializer,DevolucionesSerializer, PedidoSerializer, DetallePedidoSerializer, ProductoSerializer, ImagenProductoSerializer,TallaSerializer, ProductoConTallaSerializer )
-from .models import Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, Cart, CartItem, ImagenProducto,Talla,ProductoConTalla
+from .serializers import (LoginUsuarioSerializer, RegistroUsuarioSerializer, StockSerializer, UsuariosSerializer,CategoriasSerializer,CartSerializer,
+PagoSerializer,EnvioSerializer,DevolucionesSerializer, PedidoSerializer, DetallePedidoSerializer, ProductoSerializer, ImagenProductoSerializer,TallaSerializer )
+from .models import Stock, Usuario,Categoria, Producto,Pedido,DetallePedido,Pago,Envio,Devolucione, Cart, CartItem, ImagenProducto,Talla
 from .permissions import AllowOnlyGET  , AllowOnlyPOST, IsAdminUser, AllowOnlyPOSTAndUnauthenticated
 from .decorators import admin_required, client_required
 
@@ -32,39 +32,33 @@ from .decorators import admin_required, client_required
 # ======================================== Api Generica de los productos ===========
 
 class ProductoListCreateView(generics.ListCreateAPIView):
+    permission_classes = [AllowAny]
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
+
     def perform_create(self, serializer):
+        # Procesa las tallas y las imágenes antes de guardar el producto
+        tallas_data = self.request.data.get('tallas', [])
+        imagenes_data = self.request.data.get('imagenes', [])
         producto = serializer.save()
-        producto.existencias_total = sum(
-            producto_con_talla.existencias
-            for producto_con_talla in producto.productocontalla_set.all()
-        )
-        producto.save()
+        # Asocia las tallas seleccionadas al producto
+        producto.tallas.set(tallas_data)
+        # Procesa las imágenes y las asocia al producto
+        for imagen_data in imagenes_data:
+            ImagenProducto.objects.create(producto=producto, imagen=imagen_data)
 
 class ProductoDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [AllowAny]
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
-    def perform_update(self, serializer):
-        producto = serializer.save()
-        producto.existencias_total = sum(
-            producto_con_talla.existencias
-            for producto_con_talla in producto.productocontalla_set.all()
-        )
-        producto.save()
+    
+class StockListCreateView(generics.ListCreateAPIView):
+    queryset = Stock.objects.all()
+    serializer_class = StockSerializer
 
-class ImagenProductoListCreateView(generics.ListCreateAPIView):
-    queryset = ImagenProducto.objects.all()
-    serializer_class = ImagenProductoSerializer
-
-class TallaListView(generics.ListCreateAPIView):
-    queryset = Talla.objects.all()
-    serializer_class = TallaSerializer
-
-class ProductoConTallaListView(generics.ListCreateAPIView):
-    queryset = ProductoConTalla.objects.all()
-    serializer_class = ProductoConTallaSerializer
-
+class StockDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Stock.objects.all()
+    serializer_class = StockSerializer
 
 #==================================================================
 # ========================== Api ViewSet ==========================
@@ -133,6 +127,16 @@ class PedidosViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
+    def create(self, request, *args, **kwargs):
+        # Obtener el último código de pedido
+        last_codigo = Pedido.objects.aggregate(Max('codigoPedido'))['codigoPedido__max']
+        if last_codigo:
+            codigo_numero = int(last_codigo[3:]) + 1
+            nuevo_codigo = f'COD{codigo_numero:03d}'
+        else:
+            nuevo_codigo = 'COD001'
+        request.data['codigoPedido'] = nuevo_codigo  # Agregar el código al request data
+        return super().create(request, *args, **kwargs)
 
 
 class PedidoDetailViewSet(viewsets.ModelViewSet):
@@ -183,12 +187,14 @@ class LoginClienteView(APIView):
             if user and user.check_password(password):
                 login(request, user)
                 token, created = Token.objects.get_or_create(user=user)
-                return Response({'token': token.key, 'message': 'Inicio de sesión exitoso', 'user': user}, status=status.HTTP_200_OK)
+                user_data = UsuariosSerializer(user).data
+                return Response({'token': token.key, 'message': 'Inicio de sesión exitoso', 'user': user_data}, status=status.HTTP_200_OK)
             else:
                 return Response({'message': 'Credenciales inválidas'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-            
+
+# ------------------- login Api Administrador   ----------------------------
 @api_view(['POST'])
 @permission_classes([AllowOnlyPOSTAndUnauthenticated])
 def custom_login(request):
@@ -370,7 +376,7 @@ def inicioCliente(request):
 
 def cerrar_sesion(request):
     logout(request)
-    return redirect('/login_cliente/')
+    return redirect('login_cliente/')
 
 
 # ========================================================================

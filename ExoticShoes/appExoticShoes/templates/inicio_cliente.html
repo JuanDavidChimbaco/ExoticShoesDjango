@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>Document</title>
 </head>
 
@@ -13,7 +13,6 @@
     incio Cliente Logueado
     <div id="app">
         <h1>Carrito de Compras</h1>
-
         <div>
             <h2>Productos</h2>
             <button @click="productos()">Mostrar Productos</button>
@@ -34,14 +33,10 @@
             </ul>
             <p>Total: $[[ total ]] </p>
             <button @click="tokens()">mirar token</button>
-                [[ csrf_token ]]
-                <button type="submit" @click="compra()">Comprar</button>
+            <button type="submit" @click="compra()">Comprar</button>
             <p>[[hoy]]</p>
         </div>
-        <form method="post" action="/logout/">
-            {% csrf_token %}
-            <button type="submit">Cerrar sesión</button>
-        </form>
+            <button type="button" @click="logout">Cerrar sesión</button>
     </div>
     <br>
 
@@ -52,10 +47,8 @@
                 products: [],
                 cart: [],
                 hoy:  new Date().toISOString().slice(0, 10),
-                token: '',
                 user: '',
                 pedido: '',
-                csrf_token : csrf_token.value,
             },
             computed: {
                 total: function () {
@@ -88,45 +81,47 @@
                 },
                 tokens:function(){
                     this.token = localStorage.getItem('token');
-                    this.user = localStorage.getItem('user');
+                    this.user = JSON.parse(localStorage.getItem('user'))
+                    console.log(this.user)
+                    console.log(this.token)
                 },
-                compra: function(){
-                    axios.post('/api/v1.0/pedidos/',{
-                        codigoPedido:'3',
-                        fechaPedido: this.hoy,
-                        total:this.total,
-                        usuario: this.user,
-                    },{headers: {
-                        'X-CSRFToken': this.csrfToken, // Incluye el token CSRF en el encabezado
-                    },})
-                    .then(res => {
-                        console.log(res);
-                        this.pedido = res.data.codigoPedido;
-                        this.cart.forEach(item => {
-                            axios.post('/api/v1.0/detallePedidos/',{
-                                cantidad: item.quantity,
-                                subtotal: item.precio * item.quantity,
-                                producto: item.id,
-                                pedido: this.pedido,
-                            },{headers: {
-                                'X-CSRFToken': this.csrfToken, // Incluye el token CSRF en el encabezado
-                            },})
-                            .then(res => {
-                                console.log(res);
-                            })
+                compra:async function(){
+                    axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+                    axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
+                    try{
+                        const response = await axios.post('/api/v1.0/pedidos/',{
+                            fechaPedido: this.hoy,
+                            total:this.total,
+                            usuario: this.user.id,
                         });
-                    })
-                    .catch(err => {
-                        console.error(err);
-                    })
+                        console.log(response.data)
+                        this.pedido = parseInt(response.data.id);
+                        for (const item of this.cart) {
+                            axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+                            axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
+                            try{
+                                const response = await axios.post('/api/v1.0/detallePedidos/',{
+                                    cantidad: item.quantity,
+                                    subtotal: item.precio * item.quantity,
+                                    producto: item.id,
+                                    pedido: this.pedido,
+                                });
+                                console.log(response.data)
+                            }catch (error){
+                                console.error(error)
+                            }
+                        };
+                    } catch (error){
+                        console.error(error)
+                    }
                 },
                 logout: function(){
-                    console.log('cerrar sesion');
-                    axios.post('/logout/',null,{withCredentials: true})
+                    axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+                    axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
+                    axios.post('http://192.168.100.9:8000/custom_logout/',null)
                     .then(res => {
                         localStorage.removeItem('token');
                         localStorage.removeItem('user');
-                        window.location.href = "/inicioCliente";
                     })
                     .catch(err => {
                         console.error('Error al cerrar sesión:', err);

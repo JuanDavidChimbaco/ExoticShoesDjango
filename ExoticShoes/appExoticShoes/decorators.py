@@ -8,7 +8,7 @@ def admin_required(view_func):
                 return view_func(request, *args, **kwargs)
             else:
                 mensaje = "No tienes permisos para acceder a esta página."
-                return render(request, "pageError/ErrorPage.html", {'mensaje':mensaje})
+                return render(request, "pageError/ErrorPage.html", {'auth_messaje':mensaje})
         return redirect("login")
     return _wrapped_view
 
@@ -19,5 +19,5 @@ def client_required(view_func):
                 return view_func(request, *args, **kwargs)
             else:
                 return view_func(request, *args, **kwargs)
-        return render(request,'login_cliente.html',{'mensaje': "No estas autenticado"})
+        return render(request,'login_cliente.html',{'auth_messaje': "No estas autenticado"})
     return _wrapped_view
