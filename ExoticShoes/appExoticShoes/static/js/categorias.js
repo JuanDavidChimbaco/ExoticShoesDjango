@@ -61,11 +61,8 @@ const initDataTable = async () => {
     if (dataTableIsInitialized) {
         dataTable.destroy();
     }
-
     await obtenerCat();
-
     dataTable = $("#tableCat").DataTable(dataTableOptions);
-
     dataTableIsInitialized = true;
 }
 
@@ -78,7 +75,7 @@ async function obtenerCat() {
             data += `<tr>
                         <th scope="row">${index + 1}</th>
                         <td class="align-middle">${element.nombre}</td>
-                        <td><img src="${element.imagenCategoria}" alt="${element.nombre}" width="50" height="50" onclick='vistaImagen("${element.imagenCategoria}")'></td>
+                        <td><img src="${element.imagen}" alt="${element.nombre}" width="50" height="50" onclick='vistaImagen("${element.imagen}")'></td>
                         <td class="align-middle">
                             <input type="radio" name="checkOpcion" id="checkOpcion" onclick='load(${JSON.stringify(element)})' class="form-check-input">
                         </td>
@@ -94,26 +91,22 @@ function load(element) {
     console.log(element);
     this.id = element.id;
     txtNombre.value = element.nombre;
-    uploadedImage.src = element.imagenCategoria;
+    uploadedImage.src = element.imagen;
     uploadedImage.style.display = 'block';
 }
 
 function agregarCat() {
-    var fileInput = document.getElementById("fileFoto");
-    var file = fileInput.files[0];
+    var file = fileFoto.files[0];
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-
     var formData = new FormData();
     formData.append("nombre", txtNombre.value.trim());
-    formData.append("imagenCategoria", file);
-
-    axios
-        .post('/api/v1.0/categorias/', formData,
-            {
-                headers: {
-                    'X-CSRFToken': csrfToken
-                }
-            })
+    formData.append("imagen", file);
+    axios.post('/api/v1.0/categorias/', formData,
+        {
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        })
         .then(function (response) {
             Swal.fire({
                 position: 'center',
@@ -157,11 +150,10 @@ function agregarCat() {
 
 function modificarCat() {
     var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-    console.log(this.id);
-    axios.put(`/api/v1.0/categorias/${this.id}/`, {
-        id: this.id,
-        nombre: txtNombre.value,
-    },
+    var formData = new FormData();
+    formData.append("nombre", txtNombre.value.trim());
+    formData.append("imagen", fileFoto.files[0]);
+    axios.put(`/api/v1.0/categorias/${this.id}/`, formData,
         {
             headers: {
                 'X-CSRFToken': csrfToken

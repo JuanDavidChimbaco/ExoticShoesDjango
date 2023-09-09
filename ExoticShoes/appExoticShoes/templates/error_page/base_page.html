@@ -1,25 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error Page</title>
     <!-- Agrega aquí tus enlaces a hojas de estilo CSS si los tienes -->
 </head>
+
 <body>
     <div class="container">
-        <h1>Error</h1>
-        <p>{{ mensaje }}</p>
-        <p>Pero tranquilo ya arreglaremos eso!</p>
-        <p>
-            <a href="/inicio">Volver a la página principal</a>
-        </p>
-        <!-- Agrega aquí cualquier otro contenido que desees mostrar en la página de error -->
+          <h1>Error</h1>
+          {% block contenido %}
+
+          {% endblock %}
     </div>
 </body>
+
 </html>
-
-
-
-
-

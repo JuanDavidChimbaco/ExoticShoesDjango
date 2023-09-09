@@ -50,11 +50,12 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_categoria` (
   `imagenCategoria` varchar(100) COLLATE utf8mb3_spanish_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.appexoticshoes_categoria: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.appexoticshoes_categoria: ~2 rows (aproximadamente)
 REPLACE INTO `appexoticshoes_categoria` (`id`, `nombre`, `imagenCategoria`) VALUES
-	(6, 'Vestidos', 'categorias/stable-diffusion-xl_2.jpg');
+	(1, 'Ropa', 'categorias/stable-diffusion-xl_4.jpg'),
+	(2, 'Blusas', 'categorias/Camiseta-mujer-blanca.jpg');
 
 -- Volcando estructura para tabla db_tienda.appexoticshoes_detallepedido
 CREATE TABLE IF NOT EXISTS `appexoticshoes_detallepedido` (
@@ -109,12 +110,15 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_imagenproducto` (
   PRIMARY KEY (`id`),
   KEY `appExoticShoes_image_producto_id_40d0e70e_fk_appExotic` (`producto_id`),
   CONSTRAINT `appExoticShoes_image_producto_id_40d0e70e_fk_appExotic` FOREIGN KEY (`producto_id`) REFERENCES `appexoticshoes_producto` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.appexoticshoes_imagenproducto: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.appexoticshoes_imagenproducto: ~5 rows (aproximadamente)
 REPLACE INTO `appexoticshoes_imagenproducto` (`id`, `imagen`, `producto_id`) VALUES
-	(1, 'productos/stable-diffusion-xl_2.jpg', 1),
-	(2, 'productos/stable-diffusion-xl_1.jpg', 1);
+	(1, 'productos/camiseta-blanca-mujer-basica.jpg', 1),
+	(2, 'productos/Camiseta_blanca.jpg', 1),
+	(3, 'productos/Camiseta-mujer-blanca.jpg', 1),
+	(4, 'productos/stable-diffusion-xl_2_1Ux2WdD.jpg', 2),
+	(5, 'productos/stable-diffusion-xl_1_afGWfKZ.jpg', 2);
 
 -- Volcando estructura para tabla db_tienda.appexoticshoes_pago
 CREATE TABLE IF NOT EXISTS `appexoticshoes_pago` (
@@ -153,51 +157,71 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_producto` (
   `nombre` varchar(45) COLLATE utf8mb3_spanish_ci NOT NULL,
   `descripcion` varchar(45) COLLATE utf8mb3_spanish_ci NOT NULL,
   `precio` decimal(10,2) NOT NULL,
-  `existencias` int NOT NULL,
   `estado` tinyint(1) NOT NULL,
   `categoria_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
   KEY `appExoticShoes_produ_categoria_id_54e33dee_fk_appExotic` (`categoria_id`),
   CONSTRAINT `appExoticShoes_produ_categoria_id_54e33dee_fk_appExotic` FOREIGN KEY (`categoria_id`) REFERENCES `appexoticshoes_categoria` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.appexoticshoes_producto: ~0 rows (aproximadamente)
-REPLACE INTO `appexoticshoes_producto` (`id`, `nombre`, `descripcion`, `precio`, `existencias`, `estado`, `categoria_id`) VALUES
-	(1, 'Vestido Largo', 'Vestido Largo Surtido', 100000.00, 10, 1, 6);
+-- Volcando datos para la tabla db_tienda.appexoticshoes_producto: ~2 rows (aproximadamente)
+REPLACE INTO `appexoticshoes_producto` (`id`, `nombre`, `descripcion`, `precio`, `estado`, `categoria_id`) VALUES
+	(1, 'Camiseta', 'camiseta blanca para dama', 35000.00, 1, 1),
+	(2, 'Vestido', 'Vestido Largo', 180000.00, 1, 1);
 
--- Volcando estructura para tabla db_tienda.appexoticshoes_productocontalla
-CREATE TABLE IF NOT EXISTS `appexoticshoes_productocontalla` (
+-- Volcando estructura para tabla db_tienda.appexoticshoes_producto_tallas
+CREATE TABLE IF NOT EXISTS `appexoticshoes_producto_tallas` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `existencias` int NOT NULL,
   `producto_id` bigint NOT NULL,
   `talla_id` bigint NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `appExoticShoes_produ_producto_id_55b557aa_fk_appExotic` (`producto_id`),
-  KEY `appExoticShoes_produ_talla_id_e452754a_fk_appExotic` (`talla_id`),
-  CONSTRAINT `appExoticShoes_produ_producto_id_55b557aa_fk_appExotic` FOREIGN KEY (`producto_id`) REFERENCES `appexoticshoes_producto` (`id`),
-  CONSTRAINT `appExoticShoes_produ_talla_id_e452754a_fk_appExotic` FOREIGN KEY (`talla_id`) REFERENCES `appexoticshoes_talla` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+  UNIQUE KEY `appExoticShoes_producto__producto_id_talla_id_823939e3_uniq` (`producto_id`,`talla_id`),
+  KEY `appExoticShoes_produ_talla_id_4ec11d96_fk_appExotic` (`talla_id`),
+  CONSTRAINT `appExoticShoes_produ_producto_id_de4aebd2_fk_appExotic` FOREIGN KEY (`producto_id`) REFERENCES `appexoticshoes_producto` (`id`),
+  CONSTRAINT `appExoticShoes_produ_talla_id_4ec11d96_fk_appExotic` FOREIGN KEY (`talla_id`) REFERENCES `appexoticshoes_talla` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.appexoticshoes_productocontalla: ~2 rows (aproximadamente)
-REPLACE INTO `appexoticshoes_productocontalla` (`id`, `existencias`, `producto_id`, `talla_id`) VALUES
-	(1, 5, 1, 1),
-	(2, 5, 1, 2),
-	(3, 2, 1, 3);
+-- Volcando datos para la tabla db_tienda.appexoticshoes_producto_tallas: ~6 rows (aproximadamente)
+REPLACE INTO `appexoticshoes_producto_tallas` (`id`, `producto_id`, `talla_id`) VALUES
+	(1, 1, 1),
+	(2, 1, 2),
+	(3, 1, 3),
+	(4, 1, 4),
+	(5, 2, 1),
+	(6, 2, 2);
+
+-- Volcando estructura para tabla db_tienda.appexoticshoes_stock
+CREATE TABLE IF NOT EXISTS `appexoticshoes_stock` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `cantidad` int unsigned NOT NULL,
+  `producto_id` bigint NOT NULL,
+  `talla_id` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `appExoticShoes_stock_producto_id_talla_id_038e2c7a_uniq` (`producto_id`,`talla_id`),
+  KEY `appExoticShoes_stock_talla_id_c7f4a778_fk_appExotic` (`talla_id`),
+  CONSTRAINT `appExoticShoes_stock_producto_id_255d6e52_fk_appExotic` FOREIGN KEY (`producto_id`) REFERENCES `appexoticshoes_producto` (`id`),
+  CONSTRAINT `appExoticShoes_stock_talla_id_c7f4a778_fk_appExotic` FOREIGN KEY (`talla_id`) REFERENCES `appexoticshoes_talla` (`id`),
+  CONSTRAINT `appexoticshoes_stock_chk_1` CHECK ((`cantidad` >= 0))
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+
+-- Volcando datos para la tabla db_tienda.appexoticshoes_stock: ~2 rows (aproximadamente)
+REPLACE INTO `appexoticshoes_stock` (`id`, `cantidad`, `producto_id`, `talla_id`) VALUES
+	(1, 4, 2, 1),
+	(2, 3, 2, 2);
 
 -- Volcando estructura para tabla db_tienda.appexoticshoes_talla
 CREATE TABLE IF NOT EXISTS `appexoticshoes_talla` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(3) COLLATE utf8mb3_spanish_ci NOT NULL,
+  `nombre` varchar(5) COLLATE utf8mb3_spanish_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 -- Volcando datos para la tabla db_tienda.appexoticshoes_talla: ~4 rows (aproximadamente)
 REPLACE INTO `appexoticshoes_talla` (`id`, `nombre`) VALUES
 	(1, 'S'),
 	(2, 'M'),
 	(3, 'L'),
-	(4, 'XL'),
-	(5, 'XXL');
+	(4, 'XL');
 
 -- Volcando estructura para tabla db_tienda.appexoticshoes_usuario
 CREATE TABLE IF NOT EXISTS `appexoticshoes_usuario` (
@@ -212,9 +236,7 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_usuario` (
 
 -- Volcando datos para la tabla db_tienda.appexoticshoes_usuario: ~0 rows (aproximadamente)
 REPLACE INTO `appexoticshoes_usuario` (`user_ptr_id`, `telefono`, `fechaNacimiento`, `direccion`, `fotoPerfil`) VALUES
-	(2, '3167599628', '2000-09-04', 'Carrera 9b', 'perfiles/stable-diffusion-xl_4.jpg'),
-	(7, '3172917178', '1998-09-18', 'Carrera 9', 'perfiles/Kabaneri_RHLqnVo.png'),
-	(8, '3172917178', '1998-09-12', 'Carrera 9', 'perfiles/Kabaneri_FPpLz6R.png');
+	(2, '3167599628', '2000-09-07', 'Carrera 9b', 'perfiles/stable-diffusion-xl_6.jpg');
 
 -- Volcando estructura para tabla db_tienda.authtoken_token
 CREATE TABLE IF NOT EXISTS `authtoken_token` (
@@ -227,9 +249,6 @@ CREATE TABLE IF NOT EXISTS `authtoken_token` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 -- Volcando datos para la tabla db_tienda.authtoken_token: ~0 rows (aproximadamente)
-REPLACE INTO `authtoken_token` (`key`, `created`, `user_id`) VALUES
-	('2183f2fdd29a758f5d91c61ff46ead54fc330ad9', '2023-09-07 03:10:13.801513', 8),
-	('a7a01532bdaf8ecc46a37e4dc6b856f0dfeb4151', '2023-09-07 03:01:56.787829', 7);
 
 -- Volcando estructura para tabla db_tienda.auth_group
 CREATE TABLE IF NOT EXISTS `auth_group` (
@@ -254,9 +273,9 @@ CREATE TABLE IF NOT EXISTS `auth_group_permissions` (
   KEY `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` (`permission_id`),
   CONSTRAINT `auth_group_permissio_permission_id_84c5c92e_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
   CONSTRAINT `auth_group_permissions_group_id_b120cbf9_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.auth_group_permissions: ~52 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.auth_group_permissions: ~48 rows (aproximadamente)
 REPLACE INTO `auth_group_permissions` (`id`, `group_id`, `permission_id`) VALUES
 	(1, 1, 25),
 	(2, 1, 26),
@@ -305,11 +324,7 @@ REPLACE INTO `auth_group_permissions` (`id`, `group_id`, `permission_id`) VALUES
 	(45, 1, 69),
 	(46, 1, 70),
 	(47, 1, 71),
-	(48, 1, 72),
-	(49, 1, 73),
-	(50, 1, 74),
-	(51, 1, 75),
-	(52, 1, 76);
+	(48, 1, 72);
 
 -- Volcando estructura para tabla db_tienda.auth_permission
 CREATE TABLE IF NOT EXISTS `auth_permission` (
@@ -368,46 +383,46 @@ REPLACE INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VAL
 	(42, 'Can change user', 11, 'change_usuario'),
 	(43, 'Can delete user', 11, 'delete_usuario'),
 	(44, 'Can view user', 11, 'view_usuario'),
-	(45, 'Can add producto con talla', 12, 'add_productocontalla'),
-	(46, 'Can change producto con talla', 12, 'change_productocontalla'),
-	(47, 'Can delete producto con talla', 12, 'delete_productocontalla'),
-	(48, 'Can view producto con talla', 12, 'view_productocontalla'),
-	(49, 'Can add pedido', 13, 'add_pedido'),
-	(50, 'Can change pedido', 13, 'change_pedido'),
-	(51, 'Can delete pedido', 13, 'delete_pedido'),
-	(52, 'Can view pedido', 13, 'view_pedido'),
-	(53, 'Can add pago', 14, 'add_pago'),
-	(54, 'Can change pago', 14, 'change_pago'),
-	(55, 'Can delete pago', 14, 'delete_pago'),
-	(56, 'Can view pago', 14, 'view_pago'),
-	(57, 'Can add imagen producto', 15, 'add_imagenproducto'),
-	(58, 'Can change imagen producto', 15, 'change_imagenproducto'),
-	(59, 'Can delete imagen producto', 15, 'delete_imagenproducto'),
-	(60, 'Can view imagen producto', 15, 'view_imagenproducto'),
-	(61, 'Can add envio', 16, 'add_envio'),
-	(62, 'Can change envio', 16, 'change_envio'),
-	(63, 'Can delete envio', 16, 'delete_envio'),
-	(64, 'Can view envio', 16, 'view_envio'),
-	(65, 'Can add devolucione', 17, 'add_devolucione'),
-	(66, 'Can change devolucione', 17, 'change_devolucione'),
-	(67, 'Can delete devolucione', 17, 'delete_devolucione'),
-	(68, 'Can view devolucione', 17, 'view_devolucione'),
-	(69, 'Can add detalle pedido', 18, 'add_detallepedido'),
-	(70, 'Can change detalle pedido', 18, 'change_detallepedido'),
-	(71, 'Can delete detalle pedido', 18, 'delete_detallepedido'),
-	(72, 'Can view detalle pedido', 18, 'view_detallepedido'),
-	(73, 'Can add cart item', 19, 'add_cartitem'),
-	(74, 'Can change cart item', 19, 'change_cartitem'),
-	(75, 'Can delete cart item', 19, 'delete_cartitem'),
-	(76, 'Can view cart item', 19, 'view_cartitem'),
-	(77, 'Can add Token', 20, 'add_token'),
-	(78, 'Can change Token', 20, 'change_token'),
-	(79, 'Can delete Token', 20, 'delete_token'),
-	(80, 'Can view Token', 20, 'view_token'),
-	(81, 'Can add token', 21, 'add_tokenproxy'),
-	(82, 'Can change token', 21, 'change_tokenproxy'),
-	(83, 'Can delete token', 21, 'delete_tokenproxy'),
-	(84, 'Can view token', 21, 'view_tokenproxy');
+	(45, 'Can add pedido', 12, 'add_pedido'),
+	(46, 'Can change pedido', 12, 'change_pedido'),
+	(47, 'Can delete pedido', 12, 'delete_pedido'),
+	(48, 'Can view pedido', 12, 'view_pedido'),
+	(49, 'Can add pago', 13, 'add_pago'),
+	(50, 'Can change pago', 13, 'change_pago'),
+	(51, 'Can delete pago', 13, 'delete_pago'),
+	(52, 'Can view pago', 13, 'view_pago'),
+	(53, 'Can add imagen producto', 14, 'add_imagenproducto'),
+	(54, 'Can change imagen producto', 14, 'change_imagenproducto'),
+	(55, 'Can delete imagen producto', 14, 'delete_imagenproducto'),
+	(56, 'Can view imagen producto', 14, 'view_imagenproducto'),
+	(57, 'Can add envio', 15, 'add_envio'),
+	(58, 'Can change envio', 15, 'change_envio'),
+	(59, 'Can delete envio', 15, 'delete_envio'),
+	(60, 'Can view envio', 15, 'view_envio'),
+	(61, 'Can add devolucione', 16, 'add_devolucione'),
+	(62, 'Can change devolucione', 16, 'change_devolucione'),
+	(63, 'Can delete devolucione', 16, 'delete_devolucione'),
+	(64, 'Can view devolucione', 16, 'view_devolucione'),
+	(65, 'Can add detalle pedido', 17, 'add_detallepedido'),
+	(66, 'Can change detalle pedido', 17, 'change_detallepedido'),
+	(67, 'Can delete detalle pedido', 17, 'delete_detallepedido'),
+	(68, 'Can view detalle pedido', 17, 'view_detallepedido'),
+	(69, 'Can add cart item', 18, 'add_cartitem'),
+	(70, 'Can change cart item', 18, 'change_cartitem'),
+	(71, 'Can delete cart item', 18, 'delete_cartitem'),
+	(72, 'Can view cart item', 18, 'view_cartitem'),
+	(73, 'Can add Token', 19, 'add_token'),
+	(74, 'Can change Token', 19, 'change_token'),
+	(75, 'Can delete Token', 19, 'delete_token'),
+	(76, 'Can view Token', 19, 'view_token'),
+	(77, 'Can add token', 20, 'add_tokenproxy'),
+	(78, 'Can change token', 20, 'change_tokenproxy'),
+	(79, 'Can delete token', 20, 'delete_tokenproxy'),
+	(80, 'Can view token', 20, 'view_tokenproxy'),
+	(81, 'Can add stock', 21, 'add_stock'),
+	(82, 'Can change stock', 21, 'change_stock'),
+	(83, 'Can delete stock', 21, 'delete_stock'),
+	(84, 'Can view stock', 21, 'view_stock');
 
 -- Volcando estructura para tabla db_tienda.auth_user
 CREATE TABLE IF NOT EXISTS `auth_user` (
@@ -424,14 +439,12 @@ CREATE TABLE IF NOT EXISTS `auth_user` (
   `date_joined` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.auth_user: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.auth_user: ~2 rows (aproximadamente)
 REPLACE INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-	(1, 'pbkdf2_sha256$600000$UOXlknYpzUlyOsAVSUgeSV$IhoGMhwh3wglWZkz9Oyv7Fg5GHY66eS5eRfW0aUEgVs=', '2023-09-07 02:43:17.541623', 1, 'admin', '', '', 'dajun318@gmail.com', 1, 1, '2023-09-05 02:37:56.000000'),
-	(2, 'pbkdf2_sha256$600000$MnS9375gi2ehYXLP5FxAce$7jDdG8NY6iBLAN2L3V+NuofRJp2fJtOSJuFACBnKy1I=', '2023-09-06 22:10:37.277827', 0, 'admin2', 'Maira', 'Solano', '30414d63546c42626169@findtempmail.best', 0, 1, '2023-09-05 04:34:36.000000'),
-	(7, 'pbkdf2_sha256$600000$sOVoetMKDvgv99DPvdPdST$XOed9bia1YRlt3aGanac+NmPPBbz7FDVOpZ5E7bwfCQ=', '2023-09-07 03:03:13.558733', 0, 'cliente', 'juan david', 'chimbaco herrera', 'dajun318@gmail.com', 0, 1, '2023-09-07 03:01:56.135302'),
-	(8, 'pbkdf2_sha256$600000$nJX4AaZQDS0RmAPgOLPzLO$1Z7biP6ObwGwWiu3+2xXZIc+Yt6Rsd1ChluWfNXrS1s=', '2023-09-07 03:10:13.796513', 0, 'cliente2', 'juan david', 'chimbaco herrera', 'dajun319@gmail.com', 0, 1, '2023-09-07 03:10:01.218390');
+	(1, 'pbkdf2_sha256$600000$WE9zYI71bE1H5vhAHe6brx$AJeaFdrRC2D+elPe3L0uK2Jh+UO2VieJlbtv0I+4tvA=', '2023-09-08 00:59:39.010129', 1, 'admin', '', '', 'dajun318@gmail.com', 1, 1, '2023-09-07 23:13:21.968585'),
+	(2, 'pbkdf2_sha256$600000$1NzGeWrJDSl66fVBas6D1g$q9iBrIR0GpLGb5z68NvbnyUK7jpm4i38j7kdNQiN6ZQ=', '2023-09-08 01:00:10.555781', 0, 'admin2', 'Maira', 'Solano', 'maira@mail.com', 0, 1, '2023-09-07 23:15:42.000000');
 
 -- Volcando estructura para tabla db_tienda.auth_user_groups
 CREATE TABLE IF NOT EXISTS `auth_user_groups` (
@@ -443,14 +456,11 @@ CREATE TABLE IF NOT EXISTS `auth_user_groups` (
   KEY `auth_user_groups_group_id_97559544_fk_auth_group_id` (`group_id`),
   CONSTRAINT `auth_user_groups_group_id_97559544_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
   CONSTRAINT `auth_user_groups_user_id_6a12ed8b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.auth_user_groups: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.auth_user_groups: ~0 rows (aproximadamente)
 REPLACE INTO `auth_user_groups` (`id`, `user_id`, `group_id`) VALUES
-	(1, 1, 1),
-	(2, 2, 1),
-	(3, 7, 2),
-	(4, 8, 2);
+	(1, 2, 1);
 
 -- Volcando estructura para tabla db_tienda.auth_user_user_permissions
 CREATE TABLE IF NOT EXISTS `auth_user_user_permissions` (
@@ -482,25 +492,23 @@ CREATE TABLE IF NOT EXISTS `django_admin_log` (
   CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.django_admin_log: ~9 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.django_admin_log: ~13 rows (aproximadamente)
 REPLACE INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
-	(1, '2023-09-05 04:29:30.793325', '1', 'admin', 1, '[{"added": {}}]', 3, 1),
-	(2, '2023-09-05 04:29:41.711233', '2', 'cliente', 1, '[{"added": {}}]', 3, 1),
-	(3, '2023-09-05 04:33:05.016231', '1', 'admin', 2, '[{"changed": {"fields": ["Groups"]}}]', 4, 1),
-	(4, '2023-09-05 04:36:04.262044', '2', 'admin2', 1, '[{"added": {}}]', 11, 1),
-	(5, '2023-09-05 19:18:48.455257', '2', 'admin2', 2, '[{"changed": {"fields": ["password"]}}]', 4, 1),
-	(6, '2023-09-05 20:09:28.126020', '2', 'admin2', 2, '[{"changed": {"fields": ["FotoPerfil"]}}]', 11, 1),
-	(7, '2023-09-06 02:58:44.276994', '1', 'S', 1, '[{"added": {}}]', 10, 1),
-	(8, '2023-09-06 02:58:52.517043', '2', 'M', 1, '[{"added": {}}]', 10, 1),
-	(9, '2023-09-06 02:58:58.283709', '3', 'L', 1, '[{"added": {}}]', 10, 1),
-	(10, '2023-09-06 02:59:05.269791', '4', 'XL', 1, '[{"added": {}}]', 10, 1),
-	(11, '2023-09-06 02:59:12.802385', '5', 'XXL', 1, '[{"added": {}}]', 10, 1),
-	(12, '2023-09-07 02:43:36.679208', '4', 'cliente2', 3, '', 4, 1),
-	(13, '2023-09-07 02:43:44.350149', '3', 'cliente', 3, '', 4, 1),
-	(14, '2023-09-07 03:00:04.874550', '5', 'cliente', 3, '', 4, 1),
-	(15, '2023-09-07 03:00:04.879549', '6', 'cliente2', 3, '', 4, 1);
+	(1, '2023-09-07 23:15:15.204526', '1', 'Ropa', 1, '[{"added": {}}]', 8, 1),
+	(2, '2023-09-07 23:16:02.187781', '1', 'admin', 1, '[{"added": {}}]', 3, 1),
+	(3, '2023-09-07 23:16:09.032035', '2', 'cliente', 1, '[{"added": {}}]', 3, 1),
+	(4, '2023-09-07 23:16:48.896740', '2', 'admin2', 1, '[{"added": {}}]', 11, 1),
+	(5, '2023-09-07 23:17:25.213361', '2', 'admin2', 2, '[{"changed": {"fields": ["password"]}}]', 4, 1),
+	(6, '2023-09-07 23:17:30.396992', '2', 'admin2', 2, '[]', 4, 1),
+	(7, '2023-09-07 23:20:24.201909', '1', 'S', 1, '[{"added": {}}]', 10, 1),
+	(8, '2023-09-07 23:20:30.243532', '2', 'M', 1, '[{"added": {}}]', 10, 1),
+	(9, '2023-09-07 23:20:35.306730', '3', 'L', 1, '[{"added": {}}]', 10, 1),
+	(10, '2023-09-07 23:20:41.514827', '4', 'XL', 1, '[{"added": {}}]', 10, 1),
+	(11, '2023-09-07 23:23:17.644161', '1', 'Camiseta', 1, '[{"added": {}}, {"added": {"name": "imagen producto", "object": "Camiseta - Imagen"}}, {"added": {"name": "imagen producto", "object": "Camiseta - Imagen"}}, {"added": {"name": "imagen producto", "object": "Camiseta - Imagen"}}]', 9, 1),
+	(12, '2023-09-07 23:23:42.202174', '1', 'Camiseta', 2, '[{"changed": {"fields": ["Precio"]}}]', 9, 1),
+	(13, '2023-09-07 23:36:32.449073', '2', 'Vestido', 1, '[{"added": {}}, {"added": {"name": "imagen producto", "object": "Vestido - Imagen"}}, {"added": {"name": "imagen producto", "object": "Vestido - Imagen"}}, {"added": {"name": "stock", "object": "Stock object (1)"}}, {"added": {"name": "stock", "object": "Stock object (2)"}}]', 9, 1);
 
 -- Volcando estructura para tabla db_tienda.django_content_type
 CREATE TABLE IF NOT EXISTS `django_content_type` (
@@ -515,23 +523,23 @@ CREATE TABLE IF NOT EXISTS `django_content_type` (
 REPLACE INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 	(1, 'admin', 'logentry'),
 	(7, 'appExoticShoes', 'cart'),
-	(19, 'appExoticShoes', 'cartitem'),
+	(18, 'appExoticShoes', 'cartitem'),
 	(8, 'appExoticShoes', 'categoria'),
-	(18, 'appExoticShoes', 'detallepedido'),
-	(17, 'appExoticShoes', 'devolucione'),
-	(16, 'appExoticShoes', 'envio'),
-	(15, 'appExoticShoes', 'imagenproducto'),
-	(14, 'appExoticShoes', 'pago'),
-	(13, 'appExoticShoes', 'pedido'),
+	(17, 'appExoticShoes', 'detallepedido'),
+	(16, 'appExoticShoes', 'devolucione'),
+	(15, 'appExoticShoes', 'envio'),
+	(14, 'appExoticShoes', 'imagenproducto'),
+	(13, 'appExoticShoes', 'pago'),
+	(12, 'appExoticShoes', 'pedido'),
 	(9, 'appExoticShoes', 'producto'),
-	(12, 'appExoticShoes', 'productocontalla'),
+	(21, 'appExoticShoes', 'stock'),
 	(10, 'appExoticShoes', 'talla'),
 	(11, 'appExoticShoes', 'usuario'),
 	(3, 'auth', 'group'),
 	(2, 'auth', 'permission'),
 	(4, 'auth', 'user'),
-	(20, 'authtoken', 'token'),
-	(21, 'authtoken', 'tokenproxy'),
+	(19, 'authtoken', 'token'),
+	(20, 'authtoken', 'tokenproxy'),
 	(5, 'contenttypes', 'contenttype'),
 	(6, 'sessions', 'session');
 
@@ -542,32 +550,34 @@ CREATE TABLE IF NOT EXISTS `django_migrations` (
   `name` varchar(255) COLLATE utf8mb3_spanish_ci NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.django_migrations: ~22 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.django_migrations: ~24 rows (aproximadamente)
 REPLACE INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
-	(1, 'contenttypes', '0001_initial', '2023-09-05 02:36:41.327122'),
-	(2, 'auth', '0001_initial', '2023-09-05 02:36:41.992649'),
-	(3, 'admin', '0001_initial', '2023-09-05 02:36:42.151444'),
-	(4, 'admin', '0002_logentry_remove_auto_add', '2023-09-05 02:36:42.162438'),
-	(5, 'admin', '0003_logentry_add_action_flag_choices', '2023-09-05 02:36:42.177358'),
-	(6, 'contenttypes', '0002_remove_content_type_name', '2023-09-05 02:36:42.338249'),
-	(7, 'auth', '0002_alter_permission_name_max_length', '2023-09-05 02:36:42.489158'),
-	(8, 'auth', '0003_alter_user_email_max_length', '2023-09-05 02:36:42.626072'),
-	(9, 'auth', '0004_alter_user_username_opts', '2023-09-05 02:36:42.645061'),
-	(10, 'auth', '0005_alter_user_last_login_null', '2023-09-05 02:36:42.737003'),
-	(11, 'auth', '0006_require_contenttypes_0002', '2023-09-05 02:36:42.742001'),
-	(12, 'auth', '0007_alter_validators_add_error_messages', '2023-09-05 02:36:42.751996'),
-	(13, 'auth', '0008_alter_user_username_max_length', '2023-09-05 02:36:42.841914'),
-	(14, 'auth', '0009_alter_user_last_name_max_length', '2023-09-05 02:36:42.949094'),
-	(15, 'auth', '0010_alter_group_name_max_length', '2023-09-05 02:36:43.035547'),
-	(16, 'auth', '0011_update_proxy_permissions', '2023-09-05 02:36:43.045538'),
-	(17, 'auth', '0012_alter_user_first_name_max_length', '2023-09-05 02:36:43.138715'),
-	(18, 'appExoticShoes', '0001_initial', '2023-09-05 02:36:44.308027'),
-	(19, 'authtoken', '0001_initial', '2023-09-05 02:36:44.447301'),
-	(20, 'authtoken', '0002_auto_20160226_1747', '2023-09-05 02:36:44.499267'),
-	(21, 'authtoken', '0003_tokenproxy', '2023-09-05 02:36:44.503788'),
-	(22, 'sessions', '0001_initial', '2023-09-05 02:36:44.548460');
+	(1, 'contenttypes', '0001_initial', '2023-09-07 23:12:39.335986'),
+	(2, 'auth', '0001_initial', '2023-09-07 23:12:39.992190'),
+	(3, 'admin', '0001_initial', '2023-09-07 23:12:40.190704'),
+	(4, 'admin', '0002_logentry_remove_auto_add', '2023-09-07 23:12:40.203696'),
+	(5, 'admin', '0003_logentry_add_action_flag_choices', '2023-09-07 23:12:40.216690'),
+	(6, 'contenttypes', '0002_remove_content_type_name', '2023-09-07 23:12:40.339558'),
+	(7, 'auth', '0002_alter_permission_name_max_length', '2023-09-07 23:12:40.442496'),
+	(8, 'auth', '0003_alter_user_email_max_length', '2023-09-07 23:12:40.571418'),
+	(9, 'auth', '0004_alter_user_username_opts', '2023-09-07 23:12:40.585407'),
+	(10, 'auth', '0005_alter_user_last_login_null', '2023-09-07 23:12:40.766297'),
+	(11, 'auth', '0006_require_contenttypes_0002', '2023-09-07 23:12:40.772293'),
+	(12, 'auth', '0007_alter_validators_add_error_messages', '2023-09-07 23:12:40.786282'),
+	(13, 'auth', '0008_alter_user_username_max_length', '2023-09-07 23:12:40.884097'),
+	(14, 'auth', '0009_alter_user_last_name_max_length', '2023-09-07 23:12:41.004210'),
+	(15, 'auth', '0010_alter_group_name_max_length', '2023-09-07 23:12:41.085724'),
+	(16, 'auth', '0011_update_proxy_permissions', '2023-09-07 23:12:41.096717'),
+	(17, 'auth', '0012_alter_user_first_name_max_length', '2023-09-07 23:12:41.184996'),
+	(18, 'appExoticShoes', '0001_initial', '2023-09-07 23:12:42.212863'),
+	(19, 'appExoticShoes', '0002_producto_tallas_alter_devolucione_pedido_and_more', '2023-09-07 23:12:42.432638'),
+	(20, 'authtoken', '0001_initial', '2023-09-07 23:12:42.550653'),
+	(21, 'authtoken', '0002_auto_20160226_1747', '2023-09-07 23:12:42.595007'),
+	(22, 'authtoken', '0003_tokenproxy', '2023-09-07 23:12:42.600003'),
+	(23, 'sessions', '0001_initial', '2023-09-07 23:12:42.650283'),
+	(24, 'appExoticShoes', '0003_remove_producto_existencias_stock', '2023-09-07 23:34:46.528206');
 
 -- Volcando estructura para tabla db_tienda.django_session
 CREATE TABLE IF NOT EXISTS `django_session` (
@@ -578,29 +588,9 @@ CREATE TABLE IF NOT EXISTS `django_session` (
   KEY `django_session_expire_date_a5c62663` (`expire_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.django_session: ~17 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.django_session: ~1 rows (aproximadamente)
 REPLACE INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-	('06lmw1u6r1fwz9mbifkx0onp94d3v686', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qdi6D:bXGaeMGIGymUNsyJeTwu2oXHsnaZ67cC0ZnK5a06Jk0', '2023-09-06 02:46:57.237145'),
-	('2vfyodswjupjohoht3xesqn8tciw4a8y', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qdet4:DDNHNYLll0gqSn1lm9fFGo8TmJSj6oG6W9_Ng5XzlqE', '2023-09-05 23:21:10.109669'),
-	('3d180hfb5ofah0q5cxv7y9bnsuf0rq8c', '.eJxVjMsOwiAQRf-FtSE8Kkxduu83kGEYpGogKe3K-O_apAvd3nPOfYmA21rC1nkJcxIXocXpd4tID647SHestyap1XWZo9wVedAup5b4eT3cv4OCvXxrdEDKnwc_ZB9ZKWPYGQA0UTmC0WrmzNmmRMmPg2ZnwWAkdgpQaevF-wPb0zfR:1qdikK:1dvsOx1a6KQc6Vgx1U1uklQHDw7G36yoplU1htHip38', '2023-09-06 03:28:24.382298'),
-	('4urifqftgp0dt15hrugz0u7i69ujn8dv', '.eJxVjMsOwiAQRf-FtSE8Kkxduu83kGEYpGogKe3K-O_apAvd3nPOfYmA21rC1nkJcxIXocXpd4tID647SHestyap1XWZo9wVedAup5b4eT3cv4OCvXxrdEDKnwc_ZB9ZKWPYGQA0UTmC0WrmzNmmRMmPg2ZnwWAkdgpQaevF-wPb0zfR:1qdLxR:ykUE3D87_Q9ayekIDjBTY5NKV-Na1fYREHpIT-2mp8s', '2023-09-05 03:08:25.631878'),
-	('6cizmtvh6bfhrc8akxni9bky2h41ebd3', '.eJxVjMsOwiAQRf-FtSE8Kkxduu83kGEYpGogKe3K-O_apAvd3nPOfYmA21rC1nkJcxIXocXpd4tID647SHestyap1XWZo9wVedAup5b4eT3cv4OCvXxrdEDKnwc_ZB9ZKWPYGQA0UTmC0WrmzNmmRMmPg2ZnwWAkdgpQaevF-wPb0zfR:1qddrS:hBM0Mq7hODPJQp1Hjo31_BWhSRUVZBc7F4RKqe-8lHg', '2023-09-05 22:15:26.246535'),
-	('6hdgfqwl1igzcg7in35nwa2ntv30r1fr', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qdeWD:rfV8-iA06tk01xiveHvpz4zqw4iD-ZBwBe9b2u_ov00', '2023-09-05 22:57:33.133588'),
-	('95dwqrp74a4xa5ipobtbwi2tfp8wsxov', '.eJxVjDsOwjAQBe_iGln-JeulpM8ZrPUPB5AtxUmFuDuJlALaNzPvzRxta3FbT4ubI7syYJffzVN4pnqA-KB6bzy0ui6z54fCT9r51GJ63U7376BQL3stwAoCT3I0ZhhS1CgRvBbBSoVS6ZytVyEhopSWbIbRWAK9s5gMxMw-X7ulNwA:1qe5IX:YYyTUNFmrFNNMWShrp0hTmgX4GJ22GbiEfslKsUrfz8', '2023-09-07 11:03:13.564768'),
-	('d0upo48e52l7c1ugjlsxnj90e3hgsjmj', '.eJxVjssOwiAURP-FtSFwb5HSpXu_gfC4WNSAKW2iMf671nSh2zlnJvNk1i3zaJdGk82RDQzY7jfzLlyorCCeXTlVHmqZp-z5qvCNNn6ska6Hzf0bGF0bP-0QNUoTlenB6T4AEaAQIEnrvfBJg0zaG-UoCNljAkQkVCYhdrJT9H3VqLVci6X7LU8PNojXG17fPh4:1qe0jN:Wt6Ak8cBiCdlzIIG80ro4B68PoW5_vMTKfMPqrmpPf8', '2023-09-07 06:10:37.279825'),
-	('dolfpk55hop0in5tsrbdnnl5gw1dqnsh', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qdfzM:qvHjhRfjCUngfbQEuI7YZds0VXj70pZhGZIDgHiDpiM', '2023-09-06 00:31:44.520385'),
-	('ew81x6fq86sg97902s46jvp0hagdq6ke', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qdbaE:YebvlwfYPWfOa5_aJlPfst46ozBxJ8SmUZgfKRMjoAY', '2023-09-05 19:49:30.740973'),
-	('fnk3ptag9k9h052ahqp8fi1e7y9ty57z', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qdhX0:4PfV4DA0nxjJlwsS2k2NY96phi-yg2-i00G73Q-5QQI', '2023-09-06 02:10:34.189868'),
-	('fswnrxsctmpuhtgoa9tft4ku21txipwo', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qddq1:4UwmqvqtP8B_7nYX7yJOIEfV63OAOR0-aKbyuxiO4vo', '2023-09-05 22:13:57.347977'),
-	('h41zv2kne6t9yawzq5ev7fakdkd83prb', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qdh1i:jAyoVblltauhUU79a3mfa2pfYW4kSyAhU-UAP0IG5xc', '2023-09-06 01:38:14.236598'),
-	('jccnucfh2zip67iwjzubuwolwxi5sbt4', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qdcYS:lr7qYOsf_9f7EF4Mj0N9PP7sukjzM37j9li6Yflp9uQ', '2023-09-05 20:51:44.401306'),
-	('jocalt211pecnuo5gusfuu2tqctt425l', '.eJxVjMsOwiAQRf-FtSE8Kkxduu83kGEYpGogKe3K-O_apAvd3nPOfYmA21rC1nkJcxIXocXpd4tID647SHestyap1XWZo9wVedAup5b4eT3cv4OCvXxrdEDKnwc_ZB9ZKWPYGQA0UTmC0WrmzNmmRMmPg2ZnwWAkdgpQaevF-wPb0zfR:1qdNka:IYOag4M5LuPF7RtFFbsTNCox1MK_Flzolbyha81e6OE', '2023-09-05 05:03:16.243916'),
-	('jtih7goefh401m979fwb74bawtd6udbo', '.eJxVjMsOwiAQRf-FtSE8Kkxduu83kGEYpGogKe3K-O_apAvd3nPOfYmA21rC1nkJcxIXocXpd4tID647SHestyap1XWZo9wVedAup5b4eT3cv4OCvXxrdEDKnwc_ZB9ZKWPYGQA0UTmC0WrmzNmmRMmPg2ZnwWAkdgpQaevF-wPb0zfR:1qe4zF:QnTBAjxnwGfq4DX02G4bIHDcLqRXoO8EAgVVRqK2HVw', '2023-09-07 10:43:17.544620'),
-	('konfzwxrf1qezmv0rln0zgkle72s537t', '.eJxVjMsOwiAQRf-FtSE8Kkxduu83kGEYpGogKe3K-O_apAvd3nPOfYmA21rC1nkJcxIXocXpd4tID647SHestyap1XWZo9wVedAup5b4eT3cv4OCvXxrdEDKnwc_ZB9ZKWPYGQA0UTmC0WrmzNmmRMmPg2ZnwWAkdgpQaevF-wPb0zfR:1qe4ZE:RaoqK53D4jPFEGA-ZjLZfUBbPvGUOWWGT0QUlhY-Kgw', '2023-09-07 10:16:24.799534'),
-	('mb29nv7tzmfxwnz1lc1g4bz59jcoghix', '.eJxVjMsOwiAQRf-FtSE8Kkxduu83kGEYpGogKe3K-O_apAvd3nPOfYmA21rC1nkJcxIXocXpd4tID647SHestyap1XWZo9wVedAup5b4eT3cv4OCvXxrdEDKnwc_ZB9ZKWPYGQA0UTmC0WrmzNmmRMmPg2ZnwWAkdgpQaevF-wPb0zfR:1qddsK:oh1pg6F_M8yFkB1P1B7IaX7HM0Gt9zqhWjiXWlngGok', '2023-09-05 22:16:20.368454'),
-	('paqlcsgug2xy8ku9bqspokz0x90m6y46', 'e30:1qe5PJ:ZAfYr2tynrNJ8dcsMTvq4mgK-rGcuJdRtn4Wph_QIio', '2023-09-07 11:10:13.791604'),
-	('ya1ak3d0qs5tnzf96g9xq0i8oj7pn27a', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qdgXG:IgWtZ09dyymrOHxHx_H7DrFHbhwJk5Vel_LqjzgIsH4', '2023-09-06 01:06:46.296358'),
-	('zglzefk3gdkccv6q3asiu6835kvwqt1d', '.eJxVjEEOwiAQRe_C2hCYKQIu3fcMzQCDVA0kpV0Z765NutDtf-_9l5hoW8u0dV6mOYmLAHH63QLFB9cdpDvVW5Ox1XWZg9wVedAux5b4eT3cv4NCvXzrmCxqn4x3QNZFYAZUCjRbe1YhW9DZBm-Io9IOMyAio_EZcdCDYRDvD8r1NuE:1qdfVq:_xVlylbBKxQssRxtTNpq6wjtpSu5lT-plMKZmoWATz4', '2023-09-06 00:01:14.956839');
+	('q9hy0sb7etnx2i7iuqgqnvun6g9w07bo', '.eJxVjkEOwiAURO_C2hAoCKVL956BfP4HixowpU00xrtrTRe6nfdmMk_mYZlHv7Q4-UxsYB3b_WYB8BLLCugM5VQ51jJPOfBV4Rtt_FgpXg-b-zcwQhs_7aCTAANSKUs9uqCIMBhBWjjoEtq0l6l3KlktHSYJEixoE40NlDrC76sWW8u1-Hi_5enBBvF6A7dBP_o:1qePr0:GHwjIH4M4SUWOdRNVAv-ARM9PyD0BjsXJSjAuLqTvX8', '2023-09-08 09:00:10.559777');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
