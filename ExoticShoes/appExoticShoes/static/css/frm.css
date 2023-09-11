@@ -29,3 +29,11 @@
     width: 30px;
     z-index: 1;
 }
+
+#formularioAgregar{
+    display: none;
+}
+
+#vistaPrevia{
+    cursor: pointer;
+}

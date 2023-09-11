@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    Stock,
+    # Stock,
     Usuario,
     Categoria,
     Producto,
@@ -32,23 +32,41 @@ class CategoriasSerializer(serializers.ModelSerializer):
 
 
 # ---------------------- productos ------------------------
+class CategoriaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = "__all__"
+
+
+class ProductoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Producto
+        fields = "__all__"
+
+
 class TallaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Talla
         fields = "__all__"
 
-class StockSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Stock
-        fields = "__all__"
 
-class ProductoSerializer(serializers.ModelSerializer):
-    tallas = TallaSerializer(many=True, read_only=True)
-    stock = StockSerializer(many=True, read_only=True, source="stock_set")
+# class TallaSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Talla
+#         fields = "__all__"
 
-    class Meta:
-        model = Producto
-        fields = "__all__"
+# class StockSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Stock
+#         fields = "__all__"
+
+# class ProductoSerializer(serializers.ModelSerializer):
+#     tallas = TallaSerializer(many=True, read_only=True)
+#     stock = StockSerializer(many=True, read_only=True, source="stock_set")
+
+#     class Meta:
+#         model = Producto
+#         fields = "__all__"
 
 
 # ------------------- pedidos ---------------------------

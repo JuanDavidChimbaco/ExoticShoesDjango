@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    Stock,
+    # Stock,
     Usuario,
     Categoria,
     Producto,
@@ -28,28 +28,32 @@ class UsuarioAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(Categoria)
-class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "imagen")
+admin.site.register(Categoria)
+admin.site.register(Producto)
+admin.site.register(Talla)
+
+# @admin.register(Categoria)
+# class CategoriaAdmin(admin.ModelAdmin):
+#     list_display = ("nombre", "imagen")
 
 
-class TallaAdmin(admin.ModelAdmin):
-    list_display = ("nombre",)
+# class TallaAdmin(admin.ModelAdmin):
+#     list_display = ("nombre",)
 
 
-class StockInline(admin.TabularInline):
-    model = Stock
-    extra = 1
+# class StockInline(admin.TabularInline):
+#     model = Stock
+#     extra = 1
 
 
-class ProductoAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "descripcion")
-    inlines = [StockInline]  # Agregamos la inline para Stock
-    filter_horizontal = ("tallas",)
+# class ProductoAdmin(admin.ModelAdmin):
+#     list_display = ("nombre", "descripcion")
+#     inlines = [StockInline]  # Agregamos la inline para Stock
+#     filter_horizontal = ("tallas",)
 
 
-admin.site.register(Talla, TallaAdmin)
-admin.site.register(Producto, ProductoAdmin)
+# admin.site.register(Talla, TallaAdmin)
+# admin.site.register(Producto, ProductoAdmin)
 
 
 @admin.register(Pedido)

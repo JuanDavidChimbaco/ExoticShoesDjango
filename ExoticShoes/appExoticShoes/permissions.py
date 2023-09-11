@@ -10,12 +10,7 @@ class AllowOnlyPOST(permissions.BasePermission):
         # Solo permite solicitudes POST
         return request.method == 'POST'
     
-class AllowOnlyPOSTAndUnauthenticated(permissions.BasePermission):
+class AllowOnlyAdminGroup(permissions.BasePermission):
     def has_permission(self, request, view):
-        if request.method == 'POST':
-            return True
-        return not request.user.is_authenticated
-    
-class IsAdminUser(permissions.BasePermission):
-    def has_permission(self, request, view):
-        return request.user.groups.filter(name='admin').exists() and not request.user.groups.filter(name='staff').exists()
+        # Verificar si el usuario está autenticado y pertenece al grupo "admin"
+        return request.user.is_authenticated and request.user.groups.filter(name='admin').exists()

@@ -26,67 +26,93 @@ class Categoria(models.Model):
         return self.nombre
 
 
-# ====================================== Talla ======================
-TALLAS = (
-    ("S", "S"),
-    ("M", "M"),
-    ("L", "L"),
-    ("XL", "XL"),
-    ("XXL", "XXL"),
-    ("28", "28"),
-    ("30", "30"),
-    ("32", "32"),
-    ("34", "34"),
-    ("35", "35"),
-    ("36", "36"),
-    ("37", "37"),
-    ("38", "38"),
-    ("39", "39"),
-    ("40", "40"),
-    ("41", "41"),
-    ("unica", "Unica"),
-)
-
-
-class Talla(models.Model):
-    nombre = models.CharField(
-        max_length=5, choices=TALLAS
-    )  # Ejemplo: "S", "M", "L", etc.
-
-    def __str__(self):
-        return self.nombre
-
-
-# ================================= Producto ==============================================
-ESTADOPRODUCTO = (
-    (True, "Activo"),
-    (False, "Desactivado"),
-)
+# ============================== prueba productos ===========================
 
 
 class Producto(models.Model):
-    nombre = models.CharField(max_length=45)
-    descripcion = models.CharField(max_length=45)
+    nombre = models.CharField(max_length=255)
+    descripcion = models.TextField()
     precio = models.DecimalField(max_digits=10, decimal_places=2)
-    estado = models.BooleanField(choices=ESTADOPRODUCTO, default=True)
-    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)
-    imagen = models.ImageField(upload_to="productos/")
-    tallas = models.ManyToManyField(Talla)
+    imagen = models.ImageField(upload_to="productos/", blank=True, null=True)
+    estado = models.BooleanField(default=True)
+    categoria = models.ForeignKey(Categoria, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nombre
 
 
-# ============================= Stock ================================
-class Stock(models.Model):
-    producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
-    talla = models.ForeignKey(Talla, on_delete=models.PROTECT)
-    cantidad = models.PositiveIntegerField(
-        default=0
-    )  # Cantidad de existencias disponibles
+class Talla(models.Model):
+    talla = models.CharField(max_length=10)
+    cantidad = models.IntegerField()
+    producto = models.ForeignKey(
+        Producto, related_name="tallas", on_delete=models.CASCADE
+    )
 
-    class Meta:
-        unique_together = ("producto", "talla")
+    def __str__(self):
+        return self.nombre
+
+
+# ====================================== Talla ======================
+# TALLAS = (
+#     ("S", "S"),
+#     ("M", "M"),
+#     ("L", "L"),
+#     ("XL", "XL"),
+#     ("XXL", "XXL"),
+#     ("28", "28"),
+#     ("30", "30"),
+#     ("32", "32"),
+#     ("34", "34"),
+#     ("35", "35"),
+#     ("36", "36"),
+#     ("37", "37"),
+#     ("38", "38"),
+#     ("39", "39"),
+#     ("40", "40"),
+#     ("41", "41"),
+#     ("unica", "Unica"),
+# )
+
+
+# class Talla(models.Model):
+#     nombre = models.CharField(
+#         max_length=5, choices=TALLAS
+#     )  # Ejemplo: "S", "M", "L", etc.
+
+#     def __str__(self):
+#         return self.nombre
+
+
+# # ================================= Producto ==============================================
+# ESTADOPRODUCTO = (
+#     (True, "Activo"),
+#     (False, "Desactivado"),
+# )
+
+
+# class Producto(models.Model):
+#     nombre = models.CharField(max_length=45)
+#     descripcion = models.CharField(max_length=45)
+#     precio = models.DecimalField(max_digits=10, decimal_places=2)
+#     estado = models.BooleanField(choices=ESTADOPRODUCTO, default=True)
+#     categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT)
+#     imagen = models.ImageField(upload_to="productos/")
+#     tallas = models.ManyToManyField(Talla)
+
+#     def __str__(self):
+#         return self.nombre
+
+
+# # ============================= Stock ================================
+# class Stock(models.Model):
+#     producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
+#     talla = models.ForeignKey(Talla, on_delete=models.PROTECT)
+#     cantidad = models.PositiveIntegerField(
+#         default=0
+#     )  # Cantidad de existencias disponibles
+
+#     class Meta:
+#         unique_together = ("producto", "talla")
 
 
 # ================================= Pedido ==============================================
@@ -111,6 +137,7 @@ class Pedido(models.Model):
 class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedido, on_delete=models.PROTECT)
     producto = models.ForeignKey(Producto, on_delete=models.PROTECT)
+    talla = models.ForeignKey(Talla, on_delete=models.PROTECT)
     cantidad = models.IntegerField()
     subtotal = models.FloatField()
 
@@ -189,7 +216,7 @@ class Devolucione(models.Model):
 # ================================= Carrito ==============================================
 class Cart(models.Model):
     products = models.ManyToManyField(Producto, through="CartItem")
-    
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.PROTECT)

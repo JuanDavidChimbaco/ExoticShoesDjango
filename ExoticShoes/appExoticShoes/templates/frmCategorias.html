@@ -16,7 +16,7 @@
         <div class="form-floating">
           <input type="text" class="form-control" id="txtNombre" name="txtNombre" placeholder="Nombre Categorias"
             required>
-          <label for="txtNombre" class="form-label">Nombre de la Categorías:</label>
+          <label for="txtNombre" class="form-label"><small>Nombre de la Categorías: </small></label>
         </div>
       </div>
     </div>
@@ -37,7 +37,8 @@
       <div class="col mb-3">
         <div id="imageContainer">
           <!-- <div id="fakeBtn"><i class="fa-solid fa-pen"></i><input type="file" class="lapis" name="fileFoto" id="fileFoto" accept="image/*" onchange="imagen()" required></div> -->
-          <img id="uploadedImage" alt="Imagen cargada" width="100" height="100" style="display: none;">
+          <img id="uploadedImage" alt="Imagen cargada" width="100" height="100" style="display: none;"
+            onclick="vistaImagenFrm()">
         </div>
       </div>
     </div>

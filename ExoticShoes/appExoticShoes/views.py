@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.authtoken.models import Token
 from rest_framework_jwt.settings import api_settings
@@ -25,7 +25,7 @@ from datetime import datetime, timedelta
 from .serializers import (
     LoginUsuarioSerializer,
     RegistroUsuarioSerializer,
-    StockSerializer,
+    # StockSerializer,
     UsuariosSerializer,
     CategoriasSerializer,
     CartSerializer,
@@ -35,9 +35,11 @@ from .serializers import (
     PedidoSerializer,
     DetallePedidoSerializer,
     ProductoSerializer,
+    CategoriaSerializer,
+    TallaSerializer,
 )
 from .models import (
-    Stock,
+    # Stock,
     Usuario,
     Categoria,
     Producto,
@@ -47,46 +49,66 @@ from .models import (
     Envio,
     Devolucione,
     Cart,
+    Talla,
+    # TALLAS,
 )
-from .permissions import (
-    AllowOnlyGET,
-    AllowOnlyPOST,
-    IsAdminUser,
-    AllowOnlyPOSTAndUnauthenticated,
-)
+from .permissions import AllowOnlyGET, AllowOnlyPOST, AllowOnlyAdminGroup
 from .decorators import admin_required, client_required
 
 # ==================================================================================
 # ======================================== Api Generica de los productos ===========
+class ProductoPagination(PageNumberPagination):
+    page_size = 10  # Número de productos por página
+    page_size_query_param = 'page_size'
+    max_page_size = 50  # Límite máximo de productos por página
+
+class CategoriaViewSet(viewsets.ModelViewSet):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
 
 
-class ProductoListCreateView(generics.ListCreateAPIView):
-    permission_classes = [AllowAny]
+class ProductoPaginationViewSet(viewsets.ModelViewSet):
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+    pagination_class = ProductoPagination  # Asigna la paginación personalizada
+    
+class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
 
-    def perform_create(self, serializer):
-        # Procesa las tallas antes de guardar el producto
-        tallas_data = self.request.data.get("tallas", [])
-        producto = serializer.save()
-        # Asocia las tallas seleccionadas al producto
-        producto.tallas.set(tallas_data)
+
+class TallaViewSet(viewsets.ModelViewSet):
+    queryset = Talla.objects.all()
+    serializer_class = TallaSerializer
 
 
-class ProductoDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [AllowAny]
-    queryset = Producto.objects.all()
-    serializer_class = ProductoSerializer
+# class ProductoListCreateView(generics.ListCreateAPIView):
+#     permission_classes = [AllowOnlyAdminGroup]
+#     queryset = Producto.objects.all()
+#     serializer_class = ProductoSerializer
+
+#     def perform_create(self, serializer):
+#         # Procesa las tallas antes de guardar el producto
+#         tallas_data = self.request.data.get("tallas", [])
+#         producto = serializer.save()
+#         # Asocia las tallas seleccionadas al producto
+#         producto.tallas.set(tallas_data)
 
 
-class StockListCreateView(generics.ListCreateAPIView):
-    queryset = Stock.objects.all()
-    serializer_class = StockSerializer
+# class ProductoDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     permission_classes = [AllowOnlyGET]
+#     queryset = Producto.objects.all()
+#     serializer_class = ProductoSerializer
 
 
-class StockDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Stock.objects.all()
-    serializer_class = StockSerializer
+# class StockListCreateView(generics.ListCreateAPIView):
+#     queryset = Stock.objects.all()
+#     serializer_class = StockSerializer
+
+
+# class StockDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Stock.objects.all()
+#     serializer_class = StockSerializer
 
 
 # ==================================================================
@@ -127,7 +149,7 @@ class RegistroClienteViewSet(viewsets.ModelViewSet):
 
 
 class CategoriasViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [AllowOnlyAdminGroup]
     queryset = Categoria.objects.all()
     serializer_class = CategoriasSerializer
 
@@ -240,7 +262,7 @@ class LoginClienteView(APIView):
                 login(request, user)
                 token, created = Token.objects.get_or_create(user=user)
                 user_data = UsuariosSerializer(user).data
-                return Response(
+                response = Response(
                     {
                         "token": token.key,
                         "message": "Inicio de sesión exitoso",
@@ -248,34 +270,38 @@ class LoginClienteView(APIView):
                     },
                     status=status.HTTP_200_OK,
                 )
+                response.set_cookie("token", token.key)
+                return response
             else:
                 return Response(
                     {"message": "Credenciales inválidas"},
-                    status=status.HTTP_400_BAD_REQUEST,
+                    status=status.HTTP_401_UNAUTHORIZED,
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # ------------------- login Api Administrador   ----------------------------
 @api_view(["POST"])
-@permission_classes([AllowOnlyPOSTAndUnauthenticated])
+@permission_classes([AllowOnlyPOST])
 def custom_login(request):
     username = request.data.get("username")
     password = request.data.get("password")
     rememberMe = request.data.get("rememberme")
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
+    user = authenticate(
+        request, username=username, password=password
+    )  # se encarga de autenticar los datos que llegan
+    if user is None:
+        return Response(
+            {"message": "Credenciales incorrectas"}, status=status.HTTP_401_UNAUTHORIZED
+        )
+    else:
+        login(request, user)  # crea una sessionid con ese usuario
         if rememberMe:
             request.session.set_expiry(2592000)  # 30 días en segundos
         else:
             request.session.set_expiry(0)  # Duración predeterminada
         return Response(
             {"message": "Inicio de sesión exitoso"}, status=status.HTTP_200_OK
-        )
-    else:
-        return Response(
-            {"message": "Credenciales incorrectas"}, status=status.HTTP_401_UNAUTHORIZED
         )
 
 
@@ -374,7 +400,7 @@ class PasswordResetView(APIView):
 
 
 def redirect_to_login(request):
-    return redirect("login")
+    return redirect("dashboard")
 
 
 def index(request):
@@ -430,6 +456,11 @@ def categorias(request):
 @admin_required
 def productos(request):
     return render(request, "frmProductos.html", {})
+
+
+@admin_required
+def tallas(request):
+    return render(request, "frmTallas.html", {})
 
 
 @admin_required

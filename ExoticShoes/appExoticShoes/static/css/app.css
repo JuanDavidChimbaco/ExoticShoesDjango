@@ -1,12 +1,3 @@
 body{
     background-color: rgb(226, 226, 226);
 }
-
-section{
-    min-height: l00vh;
-    max-height: l00vh;
-}
-
-div.contenedor {
-    max-width: fit-content;
-}
