@@ -49,7 +49,7 @@ class Talla(models.Model):
     )
 
     def __str__(self):
-        return self.nombre
+        return  f"{self.producto.nombre} Talla: {self.talla}"
 
 
 # ====================================== Talla ======================

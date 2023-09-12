@@ -2,69 +2,67 @@
     <div class="col">
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-fixed-top navbar-brand" href="/dashboard"><i class="fa-solid fa-house fa-2x"></i> Panel</a>
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
+                <a class="navbar-fixed-top navbar-brand" href="/dashboard"><i class="fa-solid fa-house fa-2x"></i>
+                    Panel</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <i class="fa fa-duotone fa-boxes-packing fa-2x"></i>
                                 Productos
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" href="/frmCategorias"
-                                        >Categorías &nbsp &nbsp &nbsp<i class="fa-sharp fa-solid fa-bars fa-2x"></i
-                                    ></a>
+                                    <a class="dropdown-item" href="/frmCategorias">Categorías &nbsp &nbsp &nbsp<i
+                                            class="fa-sharp fa-solid fa-bars fa-2x"></i></a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="/frmProductos"
-                                        >Productos &nbsp &nbsp &nbsp<i class="fa-sharp fa-solid fa-shirt fa-2x"></i
-                                    ></a>
+                                    <a class="dropdown-item" href="/frmProductos">Productos &nbsp &nbsp &nbsp<i
+                                            class="fa-sharp fa-solid fa-shirt fa-2x"></i></a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="/frmTallas"
-                                        >Tallas Por Producto &nbsp &nbsp &nbsp<i class="fa-sharp fa-solid fa-shirt fa-2x"></i
-                                    ></a>
+                                    <a class="dropdown-item" href="/frmTallas">Tallas producto &nbsp &nbsp &nbsp<i
+                                            class="fa-sharp fa-solid fa-list fa-2x"></i></a>
                                 </li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/frmPedidos"><i class="fa-sharp fa-solid fa-bag-shopping fa-2x"></i> Pedidos</a>
+                            <a class="nav-link" href="/frmPedidos"><i
+                                    class="fa-sharp fa-solid fa-bag-shopping fa-2x"></i> Pedidos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/frmPagos"><i class="fa-solid fa-wallet fa-2x"></i> Pagos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/frmEnvios"><i class="fa-sharp fa-solid fa-truck-fast fa-2x"></i> Envíos</a>
+                            <a class="nav-link" href="/frmEnvios"><i class="fa-sharp fa-solid fa-truck-fast fa-2x"></i>
+                                Envíos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/frmDevoluciones"><i class="fa-solid fa-box fa-2x"></i> Devoluciones</a>
+                            <a class="nav-link" href="/frmDevoluciones"><i class="fa-solid fa-box fa-2x"></i>
+                                Devoluciones</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav mb-2 mb-lg-0 mx-2">
                         <li class="nav-item">
                             <div class="dropdown-center">
-                                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
                                     <i class="fa-solid fa-user fa-2x"></i> Mi cuenta
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li class="nav-item">
-                                        <a class="dropdown-item" href="{% url 'perfil' %}">Ver Perfil &nbsp; <i class="fa-regular fa-user"></i></a>
+                                        <a class="dropdown-item" href="{% url 'perfil' %}">Ver Perfil &nbsp; <i
+                                                class="fa-regular fa-user"></i></a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="dropdown-item" href="{% url 'logout' %}"
-                                            >Cerrar Sesión &nbsp; <i class="fa-solid fa-arrow-right-from-bracket"></i
-                                        ></a>
+                                        <a class="dropdown-item" href="{% url 'logout' %}">Cerrar Sesión &nbsp; <i
+                                                class="fa-solid fa-arrow-right-from-bracket"></i></a>
                                     </li>
                                 </ul>
                             </div>

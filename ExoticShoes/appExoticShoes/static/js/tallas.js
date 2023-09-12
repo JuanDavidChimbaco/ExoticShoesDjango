@@ -14,90 +14,80 @@ const dataTableOptions = {
             extend: 'print',
             exportOptions: {
                 stripHtml: false,
-                columns: [0, 1, 2, 3, 4],
+                columns: [0, 1, 2, 3],
             },
         },
     ],
     columDefs: [
         {className: 'centered', targets: [0, 1, 2, 3, 4]},
-        {orderable: false, targets: [5]},
-        {searchable: false, targets: [0, 5]},
+        {orderable: false, targets: [4]},
+        {searchable: false, targets: [0, 4]},
     ],
     pageLength: 4,
     destroy: true,
     responsive: true,
+    info: false, // Desactiva la información de entradas
 };
 
-const initDataTable = async () => {
+async function initDataTable() {
     if (dataTableIsInitialized) {
         dataTable.destroy();
     }
-    await getProducts();
-    dataTable = $('#tablaProducto').DataTable(dataTableOptions);
+    await getSizes();
+    dataTable = $('#tableTalla').DataTable(dataTableOptions);
     dataTableIsInitialized = true;
-};
-
-async function getCategory() {
-    try {
-        const response = await axios.get('/api/v1.0/categorias/');
-        localStorage.categoria = JSON.stringify(response.data);
-        let opcion = `<option value="0">Seleccione una Categoría</option>`;
-        response.data.forEach((element) => {
-            opcion += `<option value="${element.id}">${element.nombre}</option>`;
-        });
-        cbCategoria.innerHTML = opcion;
-    } catch (error) {
-        console.error(error);
-    }
 }
 
 async function getProducts() {
     try {
         const response = await axios.get('/api/v1.0/productos/');
-        let categorias = JSON.parse(localStorage.categoria);
-        let categoryName = '';
-        let data = '';
-        response.data.forEach((element, index) => {
-            categorias.forEach((categoria) => {
-                if (categoria.id === element.categoria) {
-                    categoryName = categoria.nombre;
-                }
-            });
-            // Formatear el precio con separador de miles y el símbolo COP
-            const precioFormateado = new Intl.NumberFormat('es-CO', {
-                style: 'currency',
-                currency: 'COP',
-            }).format(element.precio);
-            data += `<tr>
-                    <th scope="row">${index + 1}</th>
-                    <td>${element.nombre}</td>
-                    <td>${element.descripcion}</td>
-                    <td>${precioFormateado}</td>
-                    <td>${categoryName}</td>
-                    <td class="align-middle text-center">
-                        <div>
-                            <input type="radio" name="checkOpcion" onclick='getProductById(${element.id})' class="form-check-input" title="Seleccionar">
-                        </div> 
-                    </td>
-                </tr>`;
+        localStorage.productos = JSON.stringify(response.data);
+        let opcion = `<option value="0">Seleccione una producto</option>`;
+        response.data.forEach((element) => {
+            opcion += `<option value="${element.id}">${element.nombre}</option>`;
         });
-        tablaContent.innerHTML = data;
+        cbProducto.innerHTML = opcion;
     } catch (error) {
         console.error(error);
     }
 }
 
-async function addProducts() {
+async function getSizes() {
+    try {
+        const response = await axios.get('/api/v1.0/tallas/');
+        let products = JSON.parse(localStorage.productos);
+        let productMap = {};
+        products.forEach((product) => {
+            productMap[product.id] = product.nombre;
+        });
+        let data = '';
+        response.data.forEach((element, index) => {
+            let productName = productMap[element.producto];
+            data += `<tr>
+                    <th scope="row">${index + 1}</th>
+                    <td>${element.talla}</td>
+                    <td>${element.cantidad}</td>
+                    <td>${productName}</td>
+                    <td class="align-middle text-center">
+                        <input type="radio" name="checkOpcion" onclick='getSizesById(${JSON.stringify(element)})' class="form-check-input" title="Seleccionar">
+                    </td>
+                </tr>`;
+        });
+        tableContent.innerHTML = data;
+    } catch (error) {
+        console.error(error);
+        showError(error);
+    }
+}
+
+async function addSizes() {
     var errorMessages = [];
-    axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
-    axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
+    axios.defaults.xsrfCookieName = 'csrftoken';
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken';
     var formData = new FormData();
-    formData.append('nombre', txtNombre.value);
-    formData.append('descripcion', txtDescripcion.value);
-    formData.append('precio', txtPrecio.value);
-    formData.append('categoria', cbCategoria.value);
-    formData.append('estado', 'true');
-    formData.append('imagen', fileFoto.files[0]);
+    formData.append('talla', txtTalla.value.trim().toUpperCase());
+    formData.append('cantidad', txtCantidad.value);
+    formData.append('producto', cbProducto.value);
     if (emptyFields()) {
         Swal.fire({
             position: 'center',
@@ -109,64 +99,32 @@ async function addProducts() {
         });
     } else {
         try {
-            const response = await axios.post('/api/v1.0/productos/', formData);
+            const response = await axios.post('/api/v1.0/tallas/', formData);
             Swal.fire({
                 position: 'center',
                 icon: 'success',
-                title: 'Producto agregado correctamente',
+                title: 'Talla agregada correctamente',
                 showConfirmButton: true,
                 allowOutsideClick: false,
                 timer: 2000,
             });
-            getProducts();
             clean();
+            await getSizes();
         } catch (error) {
             console.error(error);
-            for (var key in error.response.data) {
-                if (error.response.data.hasOwnProperty(key)) {
-                    var mensajes = error.response.data[key];
-                    if (typeof mensajes === 'string') {
-                        errorMessages.push(mensajes);
-                    } else if (mensajes instanceof Array) {
-                        for (var i = 0; i < mensajes.length; i++) {
-                            errorMessages.push(mensajes[i]);
-                        }
-                    }
-                }
-            }
-            if (errorMessages.length > 0) {
-                var errorMessageList = '<ul class="list-group list-group-numbered">';
-                for (var j = 0; j < errorMessages.length; j++) {
-                    errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
-                }
-                errorMessageList += '</ul>';
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'Oops...',
-                    html: errorMessageList,
-                    showConfirmButton: true,
-                    allowOutsideClick: false,
-                    timer: 5000,
-                });
-            }
-            errorMessages = [];
+            showError(error);
         }
     }
 }
 
-async function modifyProducts() {
+async function editSizes() {
     var errorMessages = [];
     axios.defaults.xsrfCookieName = 'csrftoken';
     axios.defaults.xsrfHeaderName = 'X-CSRFToken';
     var formularioData = new FormData();
-    formularioData.append('nombre', txtNombre.value);
-    formularioData.append('descripcion', txtDescripcion.value);
-    formularioData.append('precio', txtPrecio.value);
-    formularioData.append('categoria', cbCategoria.value);
-    formularioData.append('estado', 'true');
-    formularioData.append('foto', fileFoto.files[0]);
-
+    formularioData.append('talla', txtTalla.value.trim().toUpperCase());
+    formularioData.append('cantidad', txtCantidad.value);
+    formularioData.append('producto', cbProducto.value);
     if (emptyFields()) {
         Swal.fire({
             position: 'center',
@@ -178,7 +136,7 @@ async function modifyProducts() {
         });
     } else {
         try {
-            const response = await axios.put(`/api/v1.0/productos/${this.id}/`, formularioData);
+            const response = await axios.put(`/api/v1.0/tallas/${this.id}/`, formularioData);
             Swal.fire({
                 position: 'center',
                 icon: 'success',
@@ -187,43 +145,15 @@ async function modifyProducts() {
                 allowOutsideClick: false,
                 timer: 2000,
             });
-            getProducts();
             clean();
+            await getSizes();
         } catch (error) {
-            for (var key in error.response.data) {
-                if (error.response.data.hasOwnProperty(key)) {
-                    var mensajes = error.response.data[key];
-                    if (typeof mensajes === 'string') {
-                        errorMessages.push(mensajes);
-                    } else if (mensajes instanceof Array) {
-                        for (var i = 0; i < mensajes.length; i++) {
-                            errorMessages.push(mensajes[i]);
-                        }
-                    }
-                }
-            }
-            if (errorMessages.length > 0) {
-                var errorMessageList = '<ul class="list-group list-group-numbered">';
-                for (var j = 0; j < errorMessages.length; j++) {
-                    errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
-                }
-                errorMessageList += '</ul>';
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'Oops...',
-                    html: errorMessageList,
-                    showConfirmButton: true,
-                    allowOutsideClick: false,
-                    timer: 5000,
-                });
-            }
-            errorMessages = [];
+            showError(error);
         }
     }
 }
 
-async function deleteProducts() {
+async function deleteSizes() {
     var errorMessages = [];
     axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
     axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
@@ -241,91 +171,66 @@ async function deleteProducts() {
             Swal.fire({
                 position: 'center',
                 icon: 'warning',
-                title: 'No ha selecionado un producto para eliminar',
+                title: 'No ha selecionado una talla para eliminar',
                 showConfirmButton: true,
                 allowOutsideClick: false,
                 timer: 1500,
             });
         } else {
             try {
-                const response = await axios.delete(`/api/v1.0/productos/${this.id}/`);
-                Swal.fire('Borrado!', 'Su producto ha sido borrado.', 'success');
-                getProducts();
+                const response = await axios.delete(`/api/v1.0/tallas/${this.id}/`);
+                Swal.fire('Borrado!', 'Su talla ha sido borrada.', 'success');
                 clean();
+                await getSizes();
             } catch (error) {
-                for (var key in error.response.data) {
-                    if (error.response.data.hasOwnProperty(key)) {
-                        var mensajes = error.response.data[key];
-                        if (typeof mensajes === 'string') {
-                            errorMessages.push(mensajes);
-                        } else if (mensajes instanceof Array) {
-                            for (var i = 0; i < mensajes.length; i++) {
-                                errorMessages.push(mensajes[i]);
-                            }
-                        }
-                    }
-                }
-                if (errorMessages.length > 0) {
-                    var errorMessageList = '<ul class="list-group list-group-numbered">';
-                    for (var j = 0; j < errorMessages.length; j++) {
-                        errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
-                    }
-                    errorMessageList += '</ul>';
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Oops...',
-                        html: errorMessageList, // Utilizamos "html" para insertar la lista como HTML
-                        showConfirmButton: true,
-                        allowOutsideClick: false,
-                        timer: 5000,
-                    });
+                showError(error);
+            }
+        }
+    }
+}
+
+function showError(error) {
+    for (var key in error.response.data) {
+        if (error.response.data.hasOwnProperty(key)) {
+            var mensajes = error.response.data[key];
+            if (typeof mensajes === 'string') {
+                errorMessages.push(mensajes);
+            } else if (mensajes instanceof Array) {
+                for (var i = 0; i < mensajes.length; i++) {
+                    errorMessages.push(mensajes[i]);
                 }
             }
         }
-        errorMessages = [];
     }
-}
-
-async function getProductById(id) {
-    this.id = id;
-    try {
-        const response = await axios.get(`/api/v1.0/productos/${id}`);
-        console.log(response.data);
-        txtNombre.value = response.data.nombre;
-        txtDescripcion.value = response.data.descripcion;
-        txtPrecio.value = response.data.precio;
-        cbCategoria.value = response.data.categoria;
-        vistaPrevia.src = response.data.imagen;
-        vistaPrevia.style.display = 'block';
-    } catch (error) {}
-}
-
-async function view() {
-    const file = fileFoto.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            vistaPrevia.src = e.target.result;
-            vistaPrevia.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    } else {
-        vistaPrevia.src = e.target.result;
-        vistaPrevia.style.display = 'none';
+    if (errorMessages.length > 0) {
+        var errorMessageList = '<ul class="list-group list-group-numbered">';
+        for (var j = 0; j < errorMessages.length; j++) {
+            errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
+        }
+        errorMessageList += '</ul>';
+        Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Oops...',
+            html: errorMessageList,
+            showConfirmButton: true,
+            allowOutsideClick: false,
+            timer: 5000,
+        });
     }
+    errorMessages = [];
 }
 
-function viewImageFrm() {
-    url = vistaPrevia.src;
-    Swal.fire({
-        imageUrl: url,
-        imageAlt: 'Custom image',
-    });
+function getSizesById(element) {
+    this.id = element.id;
+    console.log(element);
+    txtTalla.value = element.talla;
+    txtCantidad.value = element.cantidad;
+    cbProducto.value = element.producto;
 }
 
 function emptyFields() {
-    if (txtNombre.value === '' || txtDescripcion.value === '' || txtPrecio.value === '' || (cbCategoria.value === 0 && !fileFoto.files.length)) {
+    if (txtTalla.value === '' || txtCantidad.value === '' || cbProducto.value === 0) {
         return true;
     } else {
         return false;
@@ -334,12 +239,9 @@ function emptyFields() {
 
 function clean() {
     this.id = '';
-    txtNombre.value = '';
-    txtDescripcion.value = '';
-    txtPrecio.value = '';
-    cbCategoria.value = 0;
-    fileFoto.value = '';
-    vistaPrevia.style.display = 'none';
+    txtTalla.value = '';
+    txtCantidad.value = '';
+    cbProducto.value = 0;
     var radioButtons = document.getElementsByName('checkOpcion');
     radioButtons.forEach(function (radioButton) {
         radioButton.checked = false;
@@ -348,5 +250,5 @@ function clean() {
 
 window.addEventListener('load', async () => {
     await initDataTable();
-    await getCategory();
+    await getProducts();
 });
