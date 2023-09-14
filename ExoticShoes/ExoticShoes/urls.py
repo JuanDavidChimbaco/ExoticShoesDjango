@@ -68,7 +68,6 @@ urlpatterns = [
     # perfil de usuario(Admin)
     path("perfil/", views.perfil_usuario, name="perfil"),
     path("api/v1.0/perfilApi/", views.perfil_usuario_api, name="perfilApi"),
-    path("error", views.custom_404, name="error"),
 ]
 handler404 = 'appExoticShoes.views.custom_404'
 

@@ -3,68 +3,68 @@
 
 <div id="app">
     <div v-if="!editing">
-      <h1>{{ userProfile.name }}</h1>
-      <p>Correo Electrónico: {{ userProfile.email }}</p>
-      <p>Teléfono: {{ userProfile.phone }}</p>
-      <button @click="editProfile">Editar</button>
+        <h1>{{ userProfile.name }}</h1>
+        <p>Correo Electrónico: {{ userProfile.email }}</p>
+        <p>Teléfono: {{ userProfile.phone }}</p>
+        <button @click="editProfile">Editar</button>
     </div>
     <div v-else>
-      <h1>Editar Perfil</h1>
-      <form @submit.prevent="saveProfile">
-        <label for="name">Nombre:</label>
-        <input type="text" id="name" v-model="editedProfile.name">
-        <br>
-        <label for="email">Correo Electrónico:</label>
-        <input type="text" id="email" v-model="editedProfile.email">
-        <br>
-        <label for="phone">Teléfono:</label>
-        <input type="text" id="phone" v-model="editedProfile.phone">
-        <br>
-        <button type="submit">Guardar</button>
-        <button @click="cancelEdit">Cancelar</button>
-      </form>
+        <h1>Editar Perfil</h1>
+        <form @submit.prevent="saveProfile">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" v-model="editedProfile.name">
+            <br>
+            <label for="email">Correo Electrónico:</label>
+            <input type="text" id="email" v-model="editedProfile.email">
+            <br>
+            <label for="phone">Teléfono:</label>
+            <input type="text" id="phone" v-model="editedProfile.phone">
+            <br>
+            <button type="submit">Guardar</button>
+            <button @click="cancelEdit">Cancelar</button>
+        </form>
     </div>
-  </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
     new Vue({
-      el: '#app',
-      data: {
-        userProfile: {}, // Datos del usuario
-        editedProfile: {}, // Datos editados
-        editing: false // Bandera para controlar la vista
-      },
-      mounted() {
-        // Hacer una solicitud GET para obtener los datos del usuario
-        axios.get('URL_DE_TU_API')
-          .then(response => {
-            this.userProfile = response.data;
-          })
-          .catch(error => {
-            console.error('Error al obtener los datos del usuario:', error);
-          });
-      },
-      methods: {
-        editProfile() {
-          // Copiar los datos del usuario a editedProfile para la edición
-          this.editedProfile = { ...this.userProfile };
-          this.editing = true;
+        el: '#app',
+        data: {
+            userProfile: {}, // Datos del usuario
+            editedProfile: {}, // Datos editados
+            editing: false // Bandera para controlar la vista
         },
-        saveProfile() {
-          // Aquí puedes hacer una solicitud PUT para guardar los cambios en la URL correspondiente
-          // Luego, actualiza this.userProfile con los datos guardados
-          // Aquí asumimos que la solicitud fue exitosa y actualizamos los datos directamente
-          this.userProfile = { ...this.editedProfile };
-          this.editing = false;
+        mounted() {
+            // Hacer una solicitud GET para obtener los datos del usuario
+            axios.get('/perfilApi/')
+                .then(response => {
+                    this.userProfile = response.data;
+                })
+                .catch(error => {
+                    console.error('Error al obtener los datos del usuario:', error);
+                });
         },
-        cancelEdit() {
-          this.editing = false;
+        methods: {
+            editProfile() {
+                // Copiar los datos del usuario a editedProfile para la edición
+                this.editedProfile = { ...this.userProfile };
+                this.editing = true;
+            },
+            saveProfile() {
+                // Aquí puedes hacer una solicitud PUT para guardar los cambios en la URL correspondiente
+                // Luego, actualiza this.userProfile con los datos guardados
+                // Aquí asumimos que la solicitud fue exitosa y actualizamos los datos directamente
+                this.userProfile = { ...this.editedProfile };
+                this.editing = false;
+            },
+            cancelEdit() {
+                this.editing = false;
+            }
         }
-      }
     });
-  </script>
+</script>
 <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
 <div id="app">
     <div class="text-bg-dark text-center">
@@ -218,7 +218,7 @@
     </div> -->
 
 
-    <!-- <script>
+<!-- <script>
         let user = {}
         $(document).ready(function () {
             // Obtener los datos del usuario al cargar la página

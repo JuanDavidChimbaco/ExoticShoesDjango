@@ -41,7 +41,9 @@ async function initDataTable() {
 async function getProducts() {
     try {
         const response = await axios.get('/api/v1.0/productos/');
+        console.log(response);
         localStorage.productos = JSON.stringify(response.data);
+        // localStorage.setItem('productos', response.data);
         let opcion = `<option value="0">Seleccione una producto</option>`;
         response.data.forEach((element) => {
             opcion += `<option value="${element.id}">${element.nombre}</option>`;
@@ -55,21 +57,25 @@ async function getProducts() {
 async function getSizes() {
     try {
         const response = await axios.get('/api/v1.0/tallas/');
-        let products = JSON.parse(localStorage.productos);
-        let productMap = {};
-        products.forEach((product) => {
-            productMap[product.id] = product.nombre;
-        });
+        console.log(localStorage.productos);
+        let products = JSON.parse(localStorage.getItem('productos'));
+        let nameProduct = '';
         let data = '';
-        response.data.forEach((element, index) => {
-            let productName = productMap[element.producto];
+        response.data.forEach((talla, index) => {
+            console.log(talla);
+            products.forEach((product) => {
+                console.log(product);
+                if (product.id === talla.producto) {
+                    nameProduct = product.nombre;
+                }
+            });
             data += `<tr>
                     <th scope="row">${index + 1}</th>
-                    <td>${element.talla}</td>
-                    <td>${element.cantidad}</td>
-                    <td>${productName}</td>
+                    <td>${talla.talla}</td>
+                    <td>${talla.cantidad}</td>
+                    <td>${nameProduct}</td>
                     <td class="align-middle text-center">
-                        <input type="radio" name="checkOpcion" onclick='getSizesById(${JSON.stringify(element)})' class="form-check-input" title="Seleccionar">
+                        <input type="radio" name="checkOpcion" onclick='getSizesById(${JSON.stringify(talla)})' class="form-check-input" title="Seleccionar">
                     </td>
                 </tr>`;
         });

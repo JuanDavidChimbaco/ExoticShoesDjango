@@ -59,23 +59,22 @@ class UsuariosViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuariosSerializer
     
-    
-class CategoriaViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowOnlyAdminGroup]
-    queryset = Categoria.objects.all()
-    serializer_class = CategoriaSerializer
-    
 
 class ProductoPagination(PageNumberPagination):
     page_size = 10  # Número de productos por página
     page_size_query_param = 'page_size'
     max_page_size = 50  # Límite máximo de productos por página
     
-
+    
 class ProductoPaginationViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
-    pagination_class = ProductoPagination  # Asigna la paginación personalizada
+    pagination_class = ProductoPagination  # Asigna la paginación personalizada 
+    
+class CategoriaViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowOnlyAdminGroup]
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer    
     
     
 class ProductoViewSet(viewsets.ModelViewSet):
@@ -204,7 +203,7 @@ def custom_login(request):
             request.session.set_expiry(0)  # Duración predeterminada
         return Response({"message": "Inicio de sesión exitoso"}, status=status.HTTP_200_OK)
 
-
+# ---[perfil api ]---
 @admin_required
 @api_view(["GET", "PUT"])
 @permission_classes([IsAuthenticated])

@@ -50,25 +50,6 @@ class TallaSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-# class TallaSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Talla
-#         fields = "__all__"
-
-# class StockSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Stock
-#         fields = "__all__"
-
-# class ProductoSerializer(serializers.ModelSerializer):
-#     tallas = TallaSerializer(many=True, read_only=True)
-#     stock = StockSerializer(many=True, read_only=True, source="stock_set")
-
-#     class Meta:
-#         model = Producto
-#         fields = "__all__"
-
-
 # ------------------- pedidos ---------------------------
 class PedidoSerializer(serializers.ModelSerializer):
     class Meta:

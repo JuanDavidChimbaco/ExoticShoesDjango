@@ -88,7 +88,7 @@ ROOT_URLCONF = 'ExoticShoes.urls'
 SESSION_COOKIE_AGE = 8 * 60 * 60 # 8 horas
 
 # la sesion se cierra si se cierra el navegador (True, para activar): 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 TEMPLATES = [
     {
@@ -183,7 +183,8 @@ CORS_ALLOWED_ORIGINS = [
     # el del sena red 4 
     "http://10.192.66.170",
     # el del sena 
-    "http://192.168.56.1:8000"
+    "http://192.168.56.1:8000",
+    "http://10.192.66.185"
 ]
 
 
