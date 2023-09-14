@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from datetime import timedelta
 from pathlib import Path
+from dotenv import load_dotenv
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-)7%zbdyx4$76k7in8f2r%m83t)m&xfem!1#!f$&%uctw!y9aro'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -140,7 +141,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-#AUTH_USER_MODEL = "appGestionInventario.User"
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -189,15 +189,14 @@ CORS_ALLOWED_ORIGINS = [
 
 # Configuración para enviar correos utilizando SMTP (Simple Mail Transfer Protocol)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-from dotenv import load_dotenv
 load_dotenv()
 
 EMAIL_HOST = 'smtp.gmail.com'  # Ejemplo para Gmail
 EMAIL_PORT = 587  # Puerto para Gmail
 EMAIL_USE_TLS = True  # Usar TLS (True para Gmail)
 EMAIL_USE_SSL = False  # No usar SSL (False para Gmail)
-EMAIL_HOST_USER = os.getenv('EMAIL_SENDER')  # Tu dirección de correo
-EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_SENDER')  # Tu contraseña de correo
+EMAIL_HOST_USER = os.getenv('EMAIL_SENDER')  # Dirección de correo
+EMAIL_HOST_PASSWORD = os.getenv('PASSWORD_SENDER')  # Contraseña de correo
 
 # Opcional: Configuración para manejar correos en el entorno de desarrollo
 if DEBUG:

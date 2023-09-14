@@ -5,15 +5,12 @@ from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 from appExoticShoes.views import (
-    ProductosListView,
     PasswordResetRequestView,
     PasswordResetView,
-    custom_404_view,
     CategoriaViewSet,
     ProductoViewSet,
     TallaViewSet,
 )
-
 from appExoticShoes import views
 
 
@@ -21,9 +18,6 @@ from appExoticShoes import views
 router = DefaultRouter()
 router.register(r"usuarios", views.UsuariosViewSet, basename="usuarios")
 router.register(r"carrito", views.CartViewSet, basename="carrito")
-# router.register(r"categorias", views.CategoriasViewSet, basename="categorias")
-# router.register(r"productos", views.ProductosViewSet, basename="productos")
-router.register(r"productos-filtrados",views.ProductosFiltradosPorCategoriaViewSet,basename="productos-filtrados",)
 router.register(r"pedidos", views.PedidosViewSet, basename="pedidos")
 router.register(r"detallePedidos", views.PedidoDetailViewSet, basename="detallePedido")
 router.register(r"pago", views.PagoViewSet, basename="pago")
@@ -35,7 +29,6 @@ router.register(r"productosPagination", views.ProductoPaginationViewSet)
 router.register(r"tallas", TallaViewSet)
 
 # lista de productos para la vista del cliente
-producto_list_view = ProductosListView.as_view({"get": "list"})
 registro_cliente_view = views.RegistroClienteViewSet.as_view({"post": "create"})
 
 urlpatterns = [
@@ -59,9 +52,6 @@ urlpatterns = [
     path("api/v1.0/registro_cliente/", registro_cliente_view, name="registro_cliente"),
     path("api/v1.0/sesion_cliente/", views.LoginClienteView.as_view(),name="sesion_cliente",),
     
-    # rutas para la paginacion de productos
-    path("api/v1.0/productos-limit-offset/",producto_list_view,name="productos-limit-offset",),
-    
     # rutas para restablecer contraseña (Admin)
     path("validarCorreo/", views.restPasswordRequest, name="validarCorreo"),
     path("nuevaContra/", views.restPassword, name="nuevaContra"),
@@ -78,15 +68,9 @@ urlpatterns = [
     # perfil de usuario(Admin)
     path("perfil/", views.perfil_usuario, name="perfil"),
     path("api/v1.0/perfilApi/", views.perfil_usuario_api, name="perfilApi"),
-    
-    # productos nuevo.
-    # path('api/productos/', views.ProductoListCreateView.as_view(), name='producto-list-create'),
-    # path('api/productos/<int:pk>/', views.ProductoDetailView.as_view(), name='producto-detail'),
-    # path('api/stock/', views.StockListCreateView.as_view(), name='stock-list-create'),
-    # path('api/stock/<int:pk>/', views.StockDetailView.as_view(), name='stock-detail'),
+    path("error", views.custom_404, name="error"),
 ]
-
-# handler404 = custom_404_view
+handler404 = 'appExoticShoes.views.custom_404'
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

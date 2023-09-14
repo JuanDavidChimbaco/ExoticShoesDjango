@@ -51,7 +51,7 @@ async function obtenerCat() {
         const response = await axios.get('/api/v1.0/categorias/');
         let data = '';
         response.data.forEach((element, index) => {
-            data+=` <tr>
+            data += ` <tr>
                         <th scope="row">${index + 1}</th>
                         <td class="align-middle">${element.nombre}</td>
                         <td>
