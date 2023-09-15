@@ -179,7 +179,7 @@ CORS_ALLOWED_ORIGINS = [
     # el de mi casa
     "http://192.168.100.9:8080",
     # "http://127.0.0.1:50963",
-    # "http://localhost:50963",
+    "http://localhost:3000",
     # el del sena red 4 
     "http://10.192.66.170",
     # el del sena 

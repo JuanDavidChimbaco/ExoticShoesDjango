@@ -1,3 +1,2 @@
 from .settings import * 
-
-USE_TZ = True
+USE_TZ = False
