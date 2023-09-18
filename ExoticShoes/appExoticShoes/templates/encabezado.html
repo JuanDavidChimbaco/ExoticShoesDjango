@@ -1,14 +1,16 @@
-<div class="row bg-dark">
+{% load static %}
+<div class="row bg-dark d-flex justify-content-center">
+     <div class="col align-item-center">
+          <img src="{% static 'images/image.png' %}" alt="logo" width="100" class="p-2">
+     </div>
      <div class="col-9">
-          <h1 class="display-4 font-weight-bold text-light">
-               Gestión de inventario - Adrile Boutique
+          <h1 class="display-4 font-weight-bold text-light pt-2" id="titulo">
+               Gestión Inventario - Adrile Boutique
           </h1>
      </div>
-     <div class="col-3">
-
+     <div class="col">
           <h1 class="display-4 font-weight-bold text-light">
-               <i class="fas fa-shoe-prints" style="size: 5rem;"></i>
+               <i class="fas fa-shoe-prints"></i>
           </h1>
-
      </div>
 </div>

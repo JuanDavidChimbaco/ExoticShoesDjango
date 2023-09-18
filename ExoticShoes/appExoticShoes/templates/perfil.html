@@ -3,14 +3,17 @@
 
 <div id="app">
     <div v-if="!editing">
-        <h1>{{ userProfile.name }}</h1>
-        <p>Correo Electrónico: {{ userProfile.email }}</p>
-        <p>Teléfono: {{ userProfile.phone }}</p>
+        <h1>[[ userProfile.username ]]</h1>
+        <p>Correo Electrónico: [[ userProfile.email ]]</p>
+        <p>Teléfono: [[ userProfile.phone ]]</p>
         <button @click="editProfile">Editar</button>
     </div>
     <div v-else>
         <h1>Editar Perfil</h1>
         <form @submit.prevent="saveProfile">
+            <label for="name">Usuario:</label>
+            <input type="text" id="user" v-model="editedProfile.username" onfocus="">
+            <br>
             <label for="name">Nombre:</label>
             <input type="text" id="name" v-model="editedProfile.name">
             <br>
@@ -38,14 +41,16 @@
         },
         mounted() {
             // Hacer una solicitud GET para obtener los datos del usuario
-            axios.get('/perfilApi/')
+            axios.get('/api/v1.0/perfilApi/')
                 .then(response => {
                     this.userProfile = response.data;
+                    console.log(this.userProfile)
                 })
                 .catch(error => {
                     console.error('Error al obtener los datos del usuario:', error);
                 });
         },
+        delimiters: ['[[', ']]'],
         methods: {
             editProfile() {
                 // Copiar los datos del usuario a editedProfile para la edición

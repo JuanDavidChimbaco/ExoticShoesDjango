@@ -37,3 +37,19 @@
 #vistaPrevia{
     cursor: pointer;
 }
+
+#link{
+    cursor: pointer;
+}
+
+#titulo{
+    cursor: default !important;
+}
+
+#titulo:hover{
+    cursor: default !important;
+}
+
+body {
+    cursor: default; 
+}

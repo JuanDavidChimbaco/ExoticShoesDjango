@@ -44,21 +44,26 @@ async function obtenerPed() {
         if (!response.data) {
             tabla.innerHTML = "<tr><td colspan='5'>No se encontraron pedidos.</td></tr>";
         } else {
-            response.data.forEach((element, index) => {
+            for (const element of response.data) {
+                // Obtener el nombre del usuario haciendo otra solicitud a la API de usuarios
+                const usuarioResponse = await axios.get(`/api/v1.0/usuarios/${element.usuario}`);
+                const nombreUsuario = usuarioResponse.data.username;
+                console.log(usuarioResponse);
+
                 data += `<tr>
-                      <th scope="row">${index + 1}</th>
-                      <td>COD000${element.id}</td>
+                      <th scope="row">${element.id}</th>
+                      <td>COD000${element.coodigoPedido}</td>
                       <td>${element.fechaPedido}</td>
-                      <td>${element.usuario}</td>
+                      <td>${nombreUsuario}</td>
+                      <td>${element.total}</td>
                       <td>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="detallePedidos('${element.id}')">
                           Detalles
                         </button>
                       </td>
                    </tr>`;
-            });
+            }
         }
-
         table.innerHTML = data;
     } catch (error) {
         console.error(error);
