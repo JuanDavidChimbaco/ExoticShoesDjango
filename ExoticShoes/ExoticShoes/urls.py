@@ -67,7 +67,7 @@ urlpatterns = [
     
     # perfil de usuario(Admin)
     path("perfil/", views.perfil_usuario, name="perfil"),
-    path("api/v1.0/perfilApi/", views.perfil_usuario_api, name="perfilApi"),
+    path("api/v1.0/perfilApi/", views.PerfilUsuarioAPIView.as_view(), name="perfilApi"),
 ]
 handler404 = 'appExoticShoes.views.custom_404'
 

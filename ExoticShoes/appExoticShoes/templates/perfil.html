@@ -5,7 +5,8 @@
     <div v-if="!editing">
         <h1>[[ userProfile.username ]]</h1>
         <p>Correo Electrónico: [[ userProfile.email ]]</p>
-        <p>Teléfono: [[ userProfile.phone ]]</p>
+        <p>Nombre: [[ userProfile.first_name ]]</p>
+        <p>Teléfono: [[ userProfile.telefono ]]</p>
         <button @click="editProfile">Editar</button>
     </div>
     <div v-else>
@@ -15,7 +16,7 @@
             <input type="text" id="user" v-model="editedProfile.username" onfocus="">
             <br>
             <label for="name">Nombre:</label>
-            <input type="text" id="name" v-model="editedProfile.name">
+            <input type="text" id="name" v-model="editedProfile.first_name" pattern="[a-zA-Z]+">
             <br>
             <label for="email">Correo Electrónico:</label>
             <input type="text" id="email" v-model="editedProfile.email">
@@ -61,6 +62,13 @@
                 // Aquí puedes hacer una solicitud PUT para guardar los cambios en la URL correspondiente
                 // Luego, actualiza this.userProfile con los datos guardados
                 // Aquí asumimos que la solicitud fue exitosa y actualizamos los datos directamente
+                axios.put('/api/v1.0/perfilApi/')
+                    .then(response => {
+                        console.log('Perfil editado');
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    })
                 this.userProfile = { ...this.editedProfile };
                 this.editing = false;
             },

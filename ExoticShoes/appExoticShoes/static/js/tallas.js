@@ -43,7 +43,6 @@ async function getProducts() {
         const response = await axios.get('/api/v1.0/productos/');
         console.log(response);
         localStorage.productos = JSON.stringify(response.data);
-        // localStorage.setItem('productos', response.data);
         let opcion = `<option value="0">Seleccione una producto</option>`;
         response.data.forEach((element) => {
             opcion += `<option value="${element.id}">${element.nombre}</option>`;
@@ -57,14 +56,12 @@ async function getProducts() {
 async function getSizes() {
     try {
         const response = await axios.get('/api/v1.0/tallas/');
-        console.log(localStorage.productos);
         let products = JSON.parse(localStorage.getItem('productos'));
+        console.log(products);
         let nameProduct = '';
         let data = '';
         response.data.forEach((talla, index) => {
-            console.log(talla);
             products.forEach((product) => {
-                console.log(product);
                 if (product.id === talla.producto) {
                     nameProduct = product.nombre;
                 }
@@ -189,13 +186,14 @@ async function deleteSizes() {
                 clean();
                 await getSizes();
             } catch (error) {
-                showError(error);
+                showError(JSON.stringify(error));
             }
         }
     }
 }
 
 function showError(error) {
+    console.log(error);
     for (var key in error.response.data) {
         if (error.response.data.hasOwnProperty(key)) {
             var mensajes = error.response.data[key];

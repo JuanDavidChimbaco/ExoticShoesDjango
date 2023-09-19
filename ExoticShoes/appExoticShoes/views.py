@@ -204,37 +204,23 @@ def custom_login(request):
         return Response({"message": "Inicio de sesión exitoso"}, status=status.HTTP_200_OK)
 
 # ---[perfil api ]---
-@admin_required
-@api_view(["GET", "PUT"])
-@permission_classes([IsAuthenticated])
-def perfil_usuario_api(request):
-    usuario = request.user
-    if request.method == "GET":
-        # Obtener datos del usuario
-        usename = usuario.username
-        nombre = usuario.first_name
-        apellido = usuario.last_name
-        email = usuario.email
-        data = {
-            "nombre": nombre,
-            "apellido": apellido,
-            "email": email,
-            "username": usename,
-        }
-        return Response(data)
-    elif request.method == "PUT":
-        # Actualizar datos del usuario
-        nuevo_nombre = request.data.get("nombre")
-        nuevo_apellido = request.data.get("apellido")
-        nuevo_email = request.data.get("email")
-        if nuevo_nombre:
-            usuario.first_name = nuevo_nombre
-        if nuevo_apellido:
-            usuario.last_name = nuevo_apellido
-        if nuevo_email:
-            usuario.email = nuevo_email
-        usuario.save()
-    return Response(status=status.HTTP_204_NO_CONTENT)
+class PerfilUsuarioAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # Recuperar el perfil del usuario autenticado
+        usuario = Usuario.objects.get(pk=request.user.pk)
+        serializer = UsuariosSerializer(usuario)
+        return Response(serializer.data)
+
+    def put(self, request):
+        # Actualizar el perfil del usuario autenticado
+        usuario = request.user
+        serializer = UsuariosSerializer(usuario, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # -------------------------- para testear ----------------------------
