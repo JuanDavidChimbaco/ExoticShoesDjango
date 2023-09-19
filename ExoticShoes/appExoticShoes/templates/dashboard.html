@@ -1,10 +1,12 @@
 {% extends 'index.html' %} {% block contenido %}
-<div>
-    <h2 class="d-flex mt-3 bg-dark text-white justify-content-center align-content-cente rounded">
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/frm.css' %}">
+<div class="panelColor rounded">
+    <h2 class="d-flex mt-3 text-white justify-content-center align-content-cente rounded" id="titulo">
         Panel de control
     </h2>
 </div>
-<div class="row">
+<div class="row ">
     <div class="col-md-6 col-lg-3 mb-4">
         <a href="/frmCategorias" class="card text-center text-decoration-none">
             <div class="card-body shadow">

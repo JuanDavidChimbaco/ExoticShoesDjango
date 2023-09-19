@@ -125,7 +125,7 @@ class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
 
 
 class PedidosViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
     def create(self, request, *args, **kwargs):
@@ -206,7 +206,6 @@ def custom_login(request):
 # ---[perfil api ]---
 class PerfilUsuarioAPIView(APIView):
     permission_classes = [IsAuthenticated]
-
     def get(self, request):
         # Recuperar el perfil del usuario autenticado
         usuario = Usuario.objects.get(pk=request.user.pk)
@@ -355,16 +354,16 @@ def custom_logout(request):
 # ================================ Cliente ====================================
 
 def loginCliente(request):
-    return render(request, "login_cliente.html", {})
+    return render(request, "cliente/login_cliente.html", {})
 
 
 def registroCliente(request):
-    return render(request, "registro_cliente.html", {})
+    return render(request, "cliente/registro_cliente.html", {})
 
 
 @client_required
 def inicioCliente(request):
-    return render(request, "inicio_cliente.html", {})
+    return render(request, "cliente/inicio_cliente.html", {})
 
 
 def cerrar_sesion(request):

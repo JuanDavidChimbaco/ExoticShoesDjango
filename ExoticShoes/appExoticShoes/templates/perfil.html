@@ -42,6 +42,8 @@
         },
         mounted() {
             // Hacer una solicitud GET para obtener los datos del usuario
+            axios.defaults.xsrfCookieName = 'csrftoken';
+            axios.defaults.xsrfHeaderName = 'X-CSRFToken';
             axios.get('/api/v1.0/perfilApi/')
                 .then(response => {
                     this.userProfile = response.data;
@@ -62,6 +64,8 @@
                 // Aquí puedes hacer una solicitud PUT para guardar los cambios en la URL correspondiente
                 // Luego, actualiza this.userProfile con los datos guardados
                 // Aquí asumimos que la solicitud fue exitosa y actualizamos los datos directamente
+                axios.defaults.xsrfCookieName = 'csrftoken';
+                axios.defaults.xsrfHeaderName = 'X-CSRFToken';
                 axios.put('/api/v1.0/perfilApi/')
                     .then(response => {
                         console.log('Perfil editado');

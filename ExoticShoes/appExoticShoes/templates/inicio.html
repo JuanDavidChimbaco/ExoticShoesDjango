@@ -39,7 +39,7 @@
               <a class="card text-center text-decoration-none card-button" v-show="cardVisible">
                 <div class="card-body">
                   <i class="fa-solid fa-user fa-bounce fa-2xl"></i>
-                  <h5 class="card-title mt-3">Iniciar Sesión</h5>
+                  <h5 class="card-title mt-3 canter">Iniciar Sesión</h5>
                 </div>
               </a>
             </div>
@@ -48,7 +48,7 @@
             <div class="card shadow cardLogin" v-show="loginVisible">
 
               <div class="card-header bg-dark text-white">
-                <h4 class="text-center mt-2"><i class="fa fa-solid fa-user fa-2xl"></i>&nbsp;Administrador</h4>
+                <h4 class="text-center mt-2 canter"><i class="fa fa-solid fa-user fa-2xl"></i>&nbsp;Administrador</h4>
               </div>
 
               <div class="card-body">
@@ -72,7 +72,7 @@
                     <label class="form-check-label" for="remember_me">Recuérdame</label>
                   </div>
                   <div class="form-floating col mt-3 text-center">
-                    <button type="submit" class="btn btn-dark btn-block"><i class="fa fa-sign-in"
+                    <button type="submit" class="btn btn-dark btn-block canter2"><i class="fa fa-sign-in"
                         aria-hidden="true"></i>
                       &nbsp; Iniciar Sesión</button>
                   </div>
@@ -133,10 +133,10 @@
               Swal.fire({
                 position: 'center',
                 icon: 'success',
-                iconColor: '#000',
+                iconColor: '#2ECC71',
                 title: '¡Genial! ' + response.data.message,
                 showConfirmButton: true,
-                confirmButtonColor: '#000',
+                confirmButtonColor: '#17202A',
                 allowOutsideClick: false,
               }).then(() => {
                 window.location.href = "{% url 'dashboard' %}";

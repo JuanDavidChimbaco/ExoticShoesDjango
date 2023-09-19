@@ -1,3 +1,5 @@
+@import url('fonts.css');
+
 #imageContainer{
     display: inline-block;
     position: relative;
@@ -44,6 +46,7 @@
 
 #titulo{
     cursor: default !important;
+    font-family: canter-bold;
 }
 
 #titulo:hover{
@@ -52,4 +55,66 @@
 
 body {
     cursor: default; 
+}
+
+.fa-shoe-prints{
+    color: #ea2b7b;
+}
+
+.footerColor{
+    background-color: #ea2b7b;
+}
+
+.panelColor{
+    background-color: #ea2b7b;
+}
+
+.buttons{
+    background-color: #ea2b7b;
+    color: #FFF;
+    transition: .5s;
+}
+.buttons:hover{
+    background-color: #ffffff;
+    color: #ea2b7b;
+    font-size: large;
+    transition: .5s;
+    border-color: #ea2b7b;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #ea2b7b;
+    border-radius: 5px;
+}
+.contenedor-buttons{
+    height: 50px;
+}
+
+
+.shadow{
+    box-shadow: 5px 5px 5px 1px rgba(114, 114, 114, 0.5) !important;
+    border-radius: 5px;
+}
+
+.linxD{
+    background: red;
+}
+
+.card{
+    transition: all 0.5s;
+}
+
+.card:hover{
+    transform: translateY(10px);
+    color: #FFF;
+    background: #ea2b7b;
+}
+
+.nav-link{
+    transition: all 0.5s;
+}
+
+.linxD:hover{
+    color: #ea2b7b;
+    letter-spacing: 5px;
 }
