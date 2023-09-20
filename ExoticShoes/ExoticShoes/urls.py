@@ -65,6 +65,7 @@ urlpatterns = [
     path("login_cliente/", views.loginCliente, name="login_cliente"),
     path("inicio_cliente/", views.inicioCliente, name="inicio_cliente"),
     path("custom_logout/", views.cerrar_sesion, name="custom_logout"),
+    path("inicio_tienda/", views.inicio_Tienda, name="inicio_tienda"),
     
     # perfil de usuario(Admin)
     path("perfil/", views.perfil_usuario, name="perfil"),

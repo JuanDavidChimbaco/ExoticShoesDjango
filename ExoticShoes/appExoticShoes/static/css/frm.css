@@ -58,32 +58,32 @@ body {
 }
 
 .fa-shoe-prints{
-    color: #ea2b7b;
+    color: #FFCCE0;
 }
 
 .footerColor{
-    background-color: #ea2b7b;
+    background-color: #FFCCE0;
 }
 
 .panelColor{
-    background-color: #ea2b7b;
+    background-color: #FFCCE0;
 }
 
 .buttons{
-    background-color: #ea2b7b;
+    background-color: #FFCCE0;
     color: #FFF;
     transition: .5s;
 }
 .buttons:hover{
     background-color: #ffffff;
-    color: #ea2b7b;
+    color: #FFCCE0;
     font-size: large;
     transition: .5s;
-    border-color: #ea2b7b;
+    border-color: #FFCCE0;
 }
 
 .dropdown-item.active, .dropdown-item:active {
-    background-color: #ea2b7b;
+    background-color: #FFCCE0;
     border-radius: 5px;
 }
 .contenedor-buttons{
@@ -96,7 +96,15 @@ body {
 }
 
 .linxD{
-    background: red;
+    border-radius: 5px;
+    text-align: center;
+    width: 9rem;
+}
+
+.linxD:hover{
+    background-color: #FFCCE0;
+    border-radius: 5px;
+    letter-spacing: 2px;
 }
 
 .card{
@@ -106,19 +114,35 @@ body {
 .card:hover{
     transform: translateY(10px);
     color: #FFF;
-    background: #ea2b7b;
+    background: #FFCCE0;
 }
 
 .nav-link{
     transition: all 0.5s;
 }
 
-.linxD:hover{
-    color: #ea2b7b;
-    letter-spacing: 5px;
-}
-
 .perfil{
     border: 1px !important;
     border-color: black;
+}
+
+.uwu{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    transition: all 0.5s;
+    border-radius: 5px;
+}
+
+.uwu:hover{
+    background: #FFCCE0;
+}
+
+.uwu i{
+    transition: all 0.5s;
+}
+
+.uwu:hover i{
+    scale: 150%;
 }

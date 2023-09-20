@@ -146,9 +146,10 @@ class PedidosViewSet(viewsets.ModelViewSet):
 
 
 class PedidoDetailViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     queryset = DetallePedido.objects.all()
     serializer_class = DetallePedidoSerializer
+    
 
 
 class PagoViewSet(viewsets.ModelViewSet):
@@ -356,7 +357,11 @@ def custom_logout(request):
 
 
 # ============================================================================
-# ================================ Cliente ====================================
+# ================================ Cliente Tienda ====================================
+
+
+def inicio_Tienda(request):
+    return render(request, "tienda/index.html",{})
 
 def loginCliente(request):
     return render(request, "cliente/login_cliente.html", {})

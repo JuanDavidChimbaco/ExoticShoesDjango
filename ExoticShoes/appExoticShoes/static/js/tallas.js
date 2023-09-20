@@ -23,7 +23,7 @@ const dataTableOptions = {
         {orderable: false, targets: [4]},
         {searchable: false, targets: [0, 4]},
     ],
-    pageLength: 4,
+    pageLength: 10,
     destroy: true,
     responsive: true,
     info: false, // Desactiva la información de entradas

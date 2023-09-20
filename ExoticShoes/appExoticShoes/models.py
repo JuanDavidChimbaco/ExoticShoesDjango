@@ -28,8 +28,6 @@ class Categoria(models.Model):
 
 
 # ============================== prueba productos ===========================
-
-
 class Producto(models.Model):
     nombre = models.CharField(max_length=255)
     descripcion = models.TextField()
@@ -65,7 +63,7 @@ class Pedido(models.Model):
     codigoPedido = models.CharField(max_length=45, unique=True)
     fechaPedido = models.DateField()
     usuario = models.ForeignKey(Usuario, on_delete=models.PROTECT)
-    total = models.FloatField()
+    total = models.DecimalField(max_digits=10, decimal_places=2)
     estadoPedido = models.CharField(max_length=50, default="pendiente")
 
     def __str__(self):
@@ -80,7 +78,7 @@ class DetallePedido(models.Model):
     subtotal = models.FloatField()
 
     def __str__(self):
-        return f"Detalle de pedido {self.pedido.codigoPedido}"
+        return f"Detalle del pedido #{self.pedido.id} - Producto: {self.producto.nombre}, Talla: {self.talla.talla}, Cantidad: {self.cantidad}"
 
 
 # ================================= Pago ==============================================

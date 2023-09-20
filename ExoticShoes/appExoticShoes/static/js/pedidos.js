@@ -32,7 +32,7 @@ const initDataTable = async () => {
         dataTable.destroy();
     }
     await obtenerPed();
-    dataTable = $('#tablaPro').DataTable(dataTableOptions);
+    dataTable = $('#tablaPed').DataTable(dataTableOptions);
     dataTableIsInitialized = true;
 };
 
@@ -52,7 +52,7 @@ async function obtenerPed() {
 
                 data += `<tr>
                       <th scope="row">${element.id}</th>
-                      <td>COD000${element.coodigoPedido}</td>
+                      <td>${element.codigoPedido}</td>
                       <td>${element.fechaPedido}</td>
                       <td>${nombreUsuario}</td>
                       <td>${element.total}</td>
@@ -77,10 +77,10 @@ async function detallePedidos(id) {
         const response = await axios.get(`/api/v1.0/detallePedidos/${id}/`);
         console.log(response);
         const response2 = await axios.get(`/api/v1.0/productos/${response.data.producto}/`);
-        console.log(response2);
+        const response3 = await axios.get(`/api/v1.0/pedidos/${response.data.producto}/`);
         data = `<tr>
                   <th scope="row">${response.data.id}</th>
-                  <td>COD000${response.data.pedido}</td>
+                  <td>${response3.data.codigoPedido}</td>
                   <td>${response2.data.nombre}</td>
                   <td>${response.data.cantidad}</td>
                   <td>${response.data.subtotal}</td>
