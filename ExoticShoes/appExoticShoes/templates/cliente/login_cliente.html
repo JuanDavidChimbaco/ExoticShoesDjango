@@ -42,10 +42,11 @@
             axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
             axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
             try {
-                const response = await axios.post('http://192.168.100.9:8000/api/v1.0/sesion_cliente/', {
+                const response = await axios.post('/api/v1.0/sesion_cliente/', {
                     username: usuario.value,
                     password: pass.value,
                 });
+                console.log(response)
                 message.innerHTML = `<p>${response.data.message}</p>`;
                 setTimeout(function () {
                     window.location.href = "/inicio_cliente/";

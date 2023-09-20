@@ -12,6 +12,7 @@
   <form>
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div class="row">
+
       <div class="col mb-3">
         <div class="form-floating">
           <input type="text" class="form-control" id="txtNombre" name="txtNombre" placeholder="Nombre Categorias"
@@ -19,6 +20,16 @@
           <label for="txtNombre" class="form-label"><small>Nombre de la Categorías: </small></label>
         </div>
       </div>
+
+      <div class="col mb-3">
+        <div class="form-floating">
+          <select name="" id="cbCategoriaPadre" class="form-select">
+            <!-- categorias -->
+          </select>
+          <label for="cbCategoriaPadre">Categoria Padre(Opcional): </label>
+        </div>
+      </div>
+
     </div>
 
     <div class="row">
@@ -69,6 +80,7 @@
           <th>#</th>
           <th>Categoría</th>
           <th>Imagen</th>
+          <th>Cat. Padre(Opcional)</th>
           <th>Seleccionar</th>
         </tr>
       </thead>

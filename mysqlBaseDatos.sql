@@ -48,14 +48,22 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_categoria` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) COLLATE utf8mb3_spanish_ci NOT NULL,
   `imagen` varchar(100) COLLATE utf8mb3_spanish_ci DEFAULT NULL,
+  `categoria_padre_id` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `nombre` (`nombre`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+  UNIQUE KEY `nombre` (`nombre`),
+  KEY `appExoticShoes_categ_categoria_padre_id_c7afb6da_fk_appExotic` (`categoria_padre_id`),
+  CONSTRAINT `appExoticShoes_categ_categoria_padre_id_c7afb6da_fk_appExotic` FOREIGN KEY (`categoria_padre_id`) REFERENCES `appexoticshoes_categoria` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.appexoticshoes_categoria: ~1 rows (aproximadamente)
-REPLACE INTO `appexoticshoes_categoria` (`id`, `nombre`, `imagen`) VALUES
-	(1, 'Ropa', 'categorias/ropa.jpg'),
-	(2, 'Herramientas', 'categorias/herramientas_Z4ZKgdN.jpg');
+-- Volcando datos para la tabla db_tienda.appexoticshoes_categoria: ~7 rows (aproximadamente)
+REPLACE INTO `appexoticshoes_categoria` (`id`, `nombre`, `imagen`, `categoria_padre_id`) VALUES
+	(1, 'Ropa', 'categorias/ropa.jpg', NULL),
+	(3, 'Lociones', 'categorias/locion_qiIDfmY.jpeg', NULL),
+	(9, 'Calzado', 'categorias/calzado.jpg', NULL),
+	(10, 'Blusas', 'categorias/blusa-kanara_msrjdmH.jpg', 1),
+	(11, 'Accesosios', 'categorias/accesorios.jpg', NULL),
+	(12, 'Pantalones', 'categorias/pantalones.jpg', 1),
+	(13, 'Tenis', 'categorias/tenisDama.jpg', 9);
 
 -- Volcando estructura para tabla db_tienda.appexoticshoes_detallepedido
 CREATE TABLE IF NOT EXISTS `appexoticshoes_detallepedido` (
@@ -74,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_detallepedido` (
   CONSTRAINT `FK_appexoticshoes_detallepedido_appexoticshoes_talla` FOREIGN KEY (`talla_id`) REFERENCES `appexoticshoes_talla` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.appexoticshoes_detallepedido: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.appexoticshoes_detallepedido: ~1 rows (aproximadamente)
 REPLACE INTO `appexoticshoes_detallepedido` (`id`, `cantidad`, `subtotal`, `pedido_id`, `producto_id`, `talla_id`) VALUES
 	(1, 3, 83.4, 1, 1, 2);
 
@@ -138,11 +146,12 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_pedido` (
   UNIQUE KEY `codigoPedido` (`codigoPedido`),
   KEY `appExoticShoes_pedid_usuario_id_22d781f1_fk_appExotic` (`usuario_id`),
   CONSTRAINT `appExoticShoes_pedid_usuario_id_22d781f1_fk_appExotic` FOREIGN KEY (`usuario_id`) REFERENCES `appexoticshoes_usuario` (`user_ptr_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.appexoticshoes_pedido: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.appexoticshoes_pedido: ~0 rows (aproximadamente)
 REPLACE INTO `appexoticshoes_pedido` (`id`, `codigoPedido`, `fechaPedido`, `total`, `estadoPedido`, `usuario_id`) VALUES
-	(1, 'COD001', '2023-09-10', 150000, 'pendiente', 2);
+	(1, 'COD001', '2023-09-10', 150000, 'pendiente', 2),
+	(2, 'COD002', '2023-09-19', 72800, 'pendiente', 2);
 
 -- Volcando estructura para tabla db_tienda.appexoticshoes_producto
 CREATE TABLE IF NOT EXISTS `appexoticshoes_producto` (
@@ -156,20 +165,12 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_producto` (
   PRIMARY KEY (`id`),
   KEY `appExoticShoes_produ_categoria_id_54e33dee_fk_appExotic` (`categoria_id`),
   CONSTRAINT `appExoticShoes_produ_categoria_id_54e33dee_fk_appExotic` FOREIGN KEY (`categoria_id`) REFERENCES `appexoticshoes_categoria` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.appexoticshoes_producto: ~10 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.appexoticshoes_producto: ~4 rows (aproximadamente)
 REPLACE INTO `appexoticshoes_producto` (`id`, `nombre`, `descripcion`, `precio`, `imagen`, `estado`, `categoria_id`) VALUES
-	(1, 'Blusa kanara', 'Blusas Kanaras colores blanco y negro', 27800.00, 'productos/blusa-kanara.jpg', 1, 1),
-	(10, 'martillo stanley', 'martillo con mango de madera y punta de metal', 15000.00, 'productos/martillo_2IJrg5w.jpg', 0, 2),
-	(11, 'taladro', 'taladro dewald multi', 15000.00, 'productos/taladro.jpg', 1, 2),
-	(12, 'blusa Negra', 'blusas', 15000.00, 'productos/blusa-kanara_i474Pkv.jpg', 1, 1),
-	(13, 'dfsad', 'sdf', 3232432.00, '', 1, 1),
-	(14, 'dfsasadsadfsd', 'sdf', 3232432.00, '', 1, 1),
-	(15, 'dfe', 'sdf', 3232432.00, '', 1, 1),
-	(16, '432ffsfd', 'sdf', 3232432.00, '', 1, 1),
-	(17, 'sadfsdaf', 'sadfsdaf', 2342323.00, '', 1, 2),
-	(18, 'opik,ouijpmkoj', 'sadfsdaf', 2342323.00, '', 1, 2);
+	(1, 'Blusa kanara', 'Blusas Kanaras colores blanco y negro', 27800.00, 'productos/blusa-kanara.jpg', 1, 10),
+	(12, 'blusa Negra', 'blusas', 15000.00, 'productos/blusa-kanara_i474Pkv.jpg', 1, 10);
 
 -- Volcando estructura para tabla db_tienda.appexoticshoes_talla
 CREATE TABLE IF NOT EXISTS `appexoticshoes_talla` (
@@ -180,13 +181,13 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_talla` (
   PRIMARY KEY (`id`),
   KEY `appExoticShoes_talla_producto_id_ef02f00b_fk_appExotic` (`producto_id`),
   CONSTRAINT `appExoticShoes_talla_producto_id_ef02f00b_fk_appExotic` FOREIGN KEY (`producto_id`) REFERENCES `appexoticshoes_producto` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.appexoticshoes_talla: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.appexoticshoes_talla: ~4 rows (aproximadamente)
 REPLACE INTO `appexoticshoes_talla` (`id`, `talla`, `cantidad`, `producto_id`) VALUES
-	(1, 'S', 5, 1),
 	(2, 'M', 2, 1),
-	(3, 'S', 3, 11);
+	(24, 'L', 3, 1),
+	(25, 'XL', 4, 1);
 
 -- Volcando estructura para tabla db_tienda.appexoticshoes_usuario
 CREATE TABLE IF NOT EXISTS `appexoticshoes_usuario` (
@@ -199,9 +200,10 @@ CREATE TABLE IF NOT EXISTS `appexoticshoes_usuario` (
   CONSTRAINT `appExoticShoes_usuario_user_ptr_id_deccbb7e_fk_auth_user_id` FOREIGN KEY (`user_ptr_id`) REFERENCES `auth_user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.appexoticshoes_usuario: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.appexoticshoes_usuario: ~0 rows (aproximadamente)
 REPLACE INTO `appexoticshoes_usuario` (`user_ptr_id`, `telefono`, `fechaNacimiento`, `direccion`, `fotoPerfil`) VALUES
-	(2, '3168885906', '1975-12-10', 'Carrera 9a', 'perfiles/cliente.png');
+	(2, '3168885906', '1975-12-10', 'Carrera 9a', 'perfiles/avatar_1.png'),
+	(3, '3172917178', '1998-09-18', 'Carrera 9', 'perfiles/avatar_2.png');
 
 -- Volcando estructura para tabla db_tienda.authtoken_token
 CREATE TABLE IF NOT EXISTS `authtoken_token` (
@@ -214,6 +216,8 @@ CREATE TABLE IF NOT EXISTS `authtoken_token` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 -- Volcando datos para la tabla db_tienda.authtoken_token: ~0 rows (aproximadamente)
+REPLACE INTO `authtoken_token` (`key`, `created`, `user_id`) VALUES
+	('bee001936dcd37aa901d0abe0156bfa8c04ace46', '2023-09-19 23:14:18.525669', 2);
 
 -- Volcando estructura para tabla db_tienda.auth_group
 CREATE TABLE IF NOT EXISTS `auth_group` (
@@ -392,12 +396,13 @@ CREATE TABLE IF NOT EXISTS `auth_user` (
   `date_joined` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.auth_user: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.auth_user: ~3 rows (aproximadamente)
 REPLACE INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
-	(1, 'pbkdf2_sha256$600000$UYLpzzfrgVKa21t8x3fojW$QIiBRQsri8/mlNZFW2nv9SsmlA19xsa55rHbPgL52oA=', '2023-09-11 00:42:45.236961', 1, 'admin', '', '', 'dajun318@gmail.com', 1, 1, '2023-09-10 18:53:41.000000'),
-	(2, 'pbkdf2_sha256$600000$wnkb1wepDprRkfzyR7mwwP$EXjggzCMyfQaGE87NNhShTZYcI+oZErrBy7CTV/YShI=', NULL, 0, 'cliente', 'Jaime', 'Chimbaco', 'jaimechimbaco1@gmail.com', 0, 1, '2023-09-10 19:00:58.000000');
+	(1, 'pbkdf2_sha256$600000$UYLpzzfrgVKa21t8x3fojW$QIiBRQsri8/mlNZFW2nv9SsmlA19xsa55rHbPgL52oA=', '2023-09-19 21:20:27.563890', 1, 'admin', '', '', 'dajun318@gmail.com', 1, 1, '2023-09-10 18:53:41.000000'),
+	(2, 'pbkdf2_sha256$600000$wnkb1wepDprRkfzyR7mwwP$EXjggzCMyfQaGE87NNhShTZYcI+oZErrBy7CTV/YShI=', '2023-09-19 23:14:18.509629', 0, 'cliente', 'Jaime', 'Chimbaco', 'jaimechimbaco1@gmail.com', 0, 1, '2023-09-10 19:00:58.000000'),
+	(3, 'pbkdf2_sha256$600000$GFEohzYFSmcbTKI0XRXfDt$u2s5KbYnbQ6rm7ot3dR1BsVUN46lUhJIwchp6tf2AMI=', '2023-09-20 01:13:17.936596', 0, 'dajun', 'juan david', 'chimbaco herrera', 'dajun318@gmail.com', 0, 1, '2023-09-19 00:55:27.000000');
 
 -- Volcando estructura para tabla db_tienda.auth_user_groups
 CREATE TABLE IF NOT EXISTS `auth_user_groups` (
@@ -409,12 +414,13 @@ CREATE TABLE IF NOT EXISTS `auth_user_groups` (
   KEY `auth_user_groups_group_id_97559544_fk_auth_group_id` (`group_id`),
   CONSTRAINT `auth_user_groups_group_id_97559544_fk_auth_group_id` FOREIGN KEY (`group_id`) REFERENCES `auth_group` (`id`),
   CONSTRAINT `auth_user_groups_user_id_6a12ed8b_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 -- Volcando datos para la tabla db_tienda.auth_user_groups: ~2 rows (aproximadamente)
 REPLACE INTO `auth_user_groups` (`id`, `user_id`, `group_id`) VALUES
 	(1, 1, 1),
-	(2, 2, 2);
+	(2, 2, 2),
+	(3, 3, 1);
 
 -- Volcando estructura para tabla db_tienda.auth_user_user_permissions
 CREATE TABLE IF NOT EXISTS `auth_user_user_permissions` (
@@ -446,9 +452,9 @@ CREATE TABLE IF NOT EXISTS `django_admin_log` (
   CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`),
   CONSTRAINT `django_admin_log_chk_1` CHECK ((`action_flag` >= 0))
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.django_admin_log: ~10 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.django_admin_log: ~16 rows (aproximadamente)
 REPLACE INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
 	(1, '2023-09-10 18:54:18.660765', '1', 'admin', 1, '[{"added": {}}]', 3, 1),
 	(2, '2023-09-10 18:54:27.008657', '2', 'cliente', 1, '[{"added": {}}]', 3, 1),
@@ -462,7 +468,15 @@ REPLACE INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`
 	(10, '2023-09-10 19:03:45.469480', '1', 'Pedido COD001', 1, '[{"added": {}}]', 12, 1),
 	(11, '2023-09-10 19:11:22.657201', '1', 'Detalle de pedido COD001', 1, '[{"added": {}}]', 16, 1),
 	(12, '2023-09-10 19:11:55.642711', '1', 'Pago 1', 1, '[{"added": {}}]', 13, 1),
-	(13, '2023-09-10 19:12:24.285630', '1', 'Envio object (1)', 1, '[{"added": {}}]', 14, 1);
+	(13, '2023-09-10 19:12:24.285630', '1', 'Envio object (1)', 1, '[{"added": {}}]', 14, 1),
+	(14, '2023-09-19 00:56:07.300824', '3', 'admin2', 1, '[{"added": {}}]', 10, 1),
+	(15, '2023-09-19 00:56:18.967156', '3', 'admin2', 2, '[{"changed": {"fields": ["FotoPerfil"]}}]', 10, 1),
+	(16, '2023-09-19 00:58:34.867447', '3', 'admin2', 2, '[{"changed": {"fields": ["password"]}}]', 4, 1),
+	(17, '2023-09-19 00:58:40.776220', '3', 'admin2', 2, '[]', 4, 1),
+	(18, '2023-09-19 00:59:23.612036', '3', 'admin3', 2, '[{"changed": {"fields": ["Username"]}}]', 4, 1),
+	(19, '2023-09-19 21:54:53.101270', '2', 'cliente', 2, '[{"changed": {"fields": ["FotoPerfil"]}}]', 10, 1),
+	(20, '2023-09-19 21:55:23.045675', '3', 'dajun', 2, '[{"changed": {"fields": ["Username"]}}]', 10, 1),
+	(21, '2023-09-19 21:59:39.551345', '3', 'dajun', 2, '[{"changed": {"fields": ["FotoPerfil"]}}]', 10, 1);
 
 -- Volcando estructura para tabla db_tienda.django_content_type
 CREATE TABLE IF NOT EXISTS `django_content_type` (
@@ -502,7 +516,7 @@ CREATE TABLE IF NOT EXISTS `django_migrations` (
   `name` varchar(255) COLLATE utf8mb3_spanish_ci NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
 -- Volcando datos para la tabla db_tienda.django_migrations: ~22 rows (aproximadamente)
 REPLACE INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
@@ -529,7 +543,8 @@ REPLACE INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 	(21, 'authtoken', '0003_tokenproxy', '2023-09-10 18:53:17.488832'),
 	(22, 'sessions', '0001_initial', '2023-09-10 18:53:17.538186'),
 	(23, 'appExoticShoes', '0002_rename_nombre_talla_talla', '2023-09-10 21:08:03.396873'),
-	(24, 'appExoticShoes', '0003_alter_producto_imagen', '2023-09-10 22:30:59.542626');
+	(24, 'appExoticShoes', '0003_alter_producto_imagen', '2023-09-10 22:30:59.542626'),
+	(25, 'appExoticShoes', '0004_categoria_categoria_padre', '2023-09-20 01:17:58.313257');
 
 -- Volcando estructura para tabla db_tienda.django_session
 CREATE TABLE IF NOT EXISTS `django_session` (
@@ -540,14 +555,25 @@ CREATE TABLE IF NOT EXISTS `django_session` (
   KEY `django_session_expire_date_a5c62663` (`expire_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish_ci;
 
--- Volcando datos para la tabla db_tienda.django_session: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla db_tienda.django_session: ~15 rows (aproximadamente)
 REPLACE INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+	('3ilk79gnk98n8y7xpeknzol6q40be13d', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qhKvs:aOcYFubOJf_fc2QoCHUUMTgVeR_P5B13XF-plD1p75w', '2023-09-16 10:21:16.405031'),
 	('470lq45a6ibvdk6egmrh7uod90w8swmp', '.eJxVjEsOAiEQBe_C2pBu-YlL956BQDfIqIFkmFkZ766TzEK3r6reS4S4LjWsI89hYnEWKA6_W4r0yG0DfI_t1iX1tsxTkpsidzrktXN-Xnb376DGUb-1R6BUcjYWFRbUcNI2ok_OEngsilMxGlwpDKCQnE6GGCF71HRk78T7A9eaN5I:1qfPiG:wkFS0LoZhxoOms0YLqebg1pmYwbgAH8Y8apyuH5C2FU', '2023-09-11 03:03:16.992363'),
 	('51ypwc2t5pgoaf40k4ttof3y1kkidtch', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qfTqL:-U7758p4HYspE_IMLL8THN_Ha06RQOwuN8djvppey30', '2023-09-11 07:27:53.981336'),
 	('9eocejsjkkr70o5i33mv00yiyg79m1tl', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qfR1y:ZdlVkNNOfu7jhsj8aFrVIvVdNWuSxjz25n2NANoS7H0', '2023-09-11 04:27:42.097923'),
 	('9n741i1pijvb4n6yq50f2rk7jd17fep5', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qfRdj:dXDGurcjKPLEv2BUZq_JbyYYysuuh_Ka7TeR91rywFQ', '2023-09-11 05:06:43.596118'),
+	('b77sd7ewqukdp8ivksyst173wwugubnc', '.eJxVjEsOAiEQBe_C2pBu-YlL956BQDfIqIFkmFkZ766TzEK3r6reS4S4LjWsI89hYnEWKA6_W4r0yG0DfI_t1iX1tsxTkpsidzrktXN-Xnb376DGUb-1R6BUcjYWFRbUcNI2ok_OEngsilMxGlwpDKCQnE6GGCF71HRk78T7A9eaN5I:1qgc23:-7ve_liACDD-_JYK9Y1_LYgA9laTLO6q-7Eqdmw2kBU', '2023-09-14 10:24:39.590363'),
+	('ef4kgjilvkuhv44n0mm9se6lt69bw131', '.eJxVjEsOAiEQBe_C2pBu-YlL956BQDfIqIFkmFkZ766TzEK3r6reS4S4LjWsI89hYnEWKA6_W4r0yG0DfI_t1iX1tsxTkpsidzrktXN-Xnb376DGUb-1R6BUcjYWFRbUcNI2ok_OEngsilMxGlwpDKCQnE6GGCF71HRk78T7A9eaN5I:1qii8x:Src6L-2qORc5UZA73n71jDBd9ojbQMOXpOBPl89IIYs', '2023-09-20 05:20:27.566107'),
+	('jhksq0ozs77y78l0wk1urpfa59edifhm', '.eJxVjEEOwiAQRe_C2hBamQ7t0r1nIAwwFjVgSptojHe3TbrQ7X_vv7ewbplHu9Q42RTEII7i8LuR87eYNxCuLl-K9CXPUyK5KXKnVZ5LiPfT7v4FRlfH9R0RlTYA2EB7hA40gVdaaSZvGuo7REIGbJkCRNNzoJWB4cCK2Zh-i9ZYayrZxucjTS8xqM8XXKY-3A:1qiP70:aS6y876nUseEfKcaLidsauU66h5D4QKrDssHHOJliXo', '2023-09-19 09:01:10.755543'),
+	('lfq1yv4nocjmow6s9p3ennqco0598oj0', '.eJxVjEsOAiEQBe_C2pBu-YlL956BQDfIqIFkmFkZ766TzEK3r6reS4S4LjWsI89hYnEWKA6_W4r0yG0DfI_t1iX1tsxTkpsidzrktXN-Xnb376DGUb-1R6BUcjYWFRbUcNI2ok_OEngsilMxGlwpDKCQnE6GGCF71HRk78T7A9eaN5I:1qg4uZ:EU5KXpe-Stj52yLd_9aK8yqWif3CvTR1_j_3cnS7Mio', '2023-09-12 23:02:43.308809'),
+	('ni6vydfqahdj4gyj5zh4zyrfkgyda41n', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qg4cC:Qh_AOds_uUxtiWyyEongl3FtAtSll-CBGrm0pCMgnJ4', '2023-09-12 22:43:44.290512'),
+	('q84d1lxuosoab5wq0mtg0et96yz6ivgu', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qg4cC:Qh_AOds_uUxtiWyyEongl3FtAtSll-CBGrm0pCMgnJ4', '2023-09-12 22:43:44.667283'),
 	('q8ryr5pf0g1yyvjaofvn6j6m6fydr4qc', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qfTfv:V1wVAmhfWMht1mHWlulcjuRIIsDuESNqzjQGkf-bq1U', '2023-09-11 07:17:07.925692'),
-	('w5truqka7ppc8nhejwekqnqvg620pd03', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qfV0n:LWNSKOvgek6KJ0BgLb26HQUr6meTC8iFNwW8-mIF0JE', '2023-09-11 08:42:45.240324');
+	('trdksjmr8qyby519nmzyvto286wy3y9j', '.eJxVjEEOwiAQRe_C2hBamQ7t0r1nIAwwFjVgSptojHe3TbrQ7X_vv7ewbplHu9Q42RTEII7i8LuR87eYNxCuLl-K9CXPUyK5KXKnVZ5LiPfT7v4FRlfH9R0RlTYA2EB7hA40gVdaaSZvGuo7REIGbJkCRNNzoJWB4cCK2Zh-i9ZYayrZxucjTS8xqM8XXKY-3A:1qilmH:MNET9VP2CvvQ-2hXcXMd-XEi7qKtYW4krLRYkp4oDuE', '2023-09-20 09:13:17.939594'),
+	('ug1skh05va2n7u7nd8h6qc3n1kqtrxro', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qiK6x:vFtiQLWRdKBWdD04tiv5gHV6ztOzd92RvKdIg8Xh-pY', '2023-09-19 03:40:47.546001'),
+	('w5truqka7ppc8nhejwekqnqvg620pd03', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qfV0n:LWNSKOvgek6KJ0BgLb26HQUr6meTC8iFNwW8-mIF0JE', '2023-09-11 08:42:45.240324'),
+	('wy2lo4id491d0tb47pjzk9sshxabcumq', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qgXia:skXqWerQpvtaYaBU_WTrhJJ8ucCHHcBuTmKtIaHmuVg', '2023-09-14 05:48:16.596524'),
+	('zofvzwhz64btmk8ndeua3v73v4zywxjq', '.eJxVjEEOwiAQRe_C2pAZS4t06d4zEGAGixow0CYa4921SRe6_e_99xLWLfNkl8bVJhKjQLH73bwLV84roIvL5yJDyXNNXq6K3GiTp0J8O27uX2Bybfq-DULwkbkfsMOICg5qcGi8HgIYjB352CvQMRJAh0Er3wdCYIMq7MnoNdq4tVSy5cc91acY4f0BeVg-zw:1qhIbQ:Z97p-3OpMFs70y8I4n6tX45yaNWlslhxv06RzX9IAy0', '2023-09-16 07:52:00.054201');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

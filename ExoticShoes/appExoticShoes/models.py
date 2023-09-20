@@ -21,6 +21,7 @@ class Usuario(User):
 class Categoria(models.Model):
     nombre = models.CharField(max_length=45, unique=True)
     imagen = models.ImageField(upload_to="categorias/", blank=True, null=True)
+    categoria_padre = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nombre

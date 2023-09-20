@@ -1,6 +1,23 @@
 {% extends 'error_page/base_page.html' %}
+
+{% block contenido %}
 <p>{{ auth_messaje }}</p>
 <p>Ingresa con una cuenta de Administrador</p>
 <p>
-    <a href="/inicio">Ir al Login</a>
+    <a href="/inicio" onclick="logout()">Ir al Login</a>
 </p>
+<script>
+    function logout() {
+        axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+        axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
+        axios.post('/custom_logout/', null)
+            .then(res => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+            })
+            .catch(err => {
+                console.error('Error al cerrar sesión:', err);
+            })
+    }
+</script>
+{% endblock %}

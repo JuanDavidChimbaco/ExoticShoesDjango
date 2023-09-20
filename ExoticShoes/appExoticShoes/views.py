@@ -82,6 +82,11 @@ class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
     
+class ProductoViewSet2(viewsets.ModelViewSet):
+    permission_classes = [AllowOnlyGET]
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+    
 
 class TallaViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyAdminGroup]

@@ -90,7 +90,6 @@ body {
     height: 50px;
 }
 
-
 .shadow{
     box-shadow: 5px 5px 5px 1px rgba(114, 114, 114, 0.5) !important;
     border-radius: 5px;
@@ -117,4 +116,9 @@ body {
 .linxD:hover{
     color: #ea2b7b;
     letter-spacing: 5px;
+}
+
+.perfil{
+    border: 1px !important;
+    border-color: black;
 }

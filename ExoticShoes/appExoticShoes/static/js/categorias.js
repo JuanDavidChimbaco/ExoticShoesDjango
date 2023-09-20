@@ -32,7 +32,7 @@ const dataTableOptions = {
             targets: [0, 3],
         },
     ],
-    pageLength: 4,
+    pageLength: 10,
     destroy: true,
     responsive: true,
 };
@@ -41,22 +41,26 @@ const initDataTable = async () => {
     if (dataTableIsInitialized) {
         dataTable.destroy();
     }
-    await obtenerCat();
+    await listarCat();
     dataTable = $('#tableCat').DataTable(dataTableOptions);
     dataTableIsInitialized = true;
 };
 
-async function obtenerCat() {
+async function listarCat() {
     try {
         const response = await axios.get('/api/v1.0/categorias/');
         let data = '';
+        localStorage.categorias = JSON.stringify(response.data);
+        console.log(response);
         response.data.forEach((element, index) => {
+            const categoriaPadre = obtenerNombreCategoriaPadre(element.categoria_padre);
             data += ` <tr>
                         <th scope="row">${index + 1}</th>
                         <td class="align-middle">${element.nombre}</td>
                         <td>
                             <img src="${element.imagen}" alt="${element.nombre}" width="50" height="50" onclick='vistaImagen("${element.imagen}")'>
                         </td>
+                        <td>${categoriaPadre}</td>
                         <td class="align-middle">
                             <input type="radio" name="checkOpcion" id="checkOpcion" onclick='load(${JSON.stringify(element)})' class="form-check-input">
                         </td>
@@ -67,17 +71,19 @@ async function obtenerCat() {
 }
 
 async function agregarCat() {
-    var file = fileFoto.files[0];
-    var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+    axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF;
     var formData = new FormData();
-    formData.append('nombre', txtNombre.value.trim());
-    formData.append('imagen', file);
+    if (cbCategoriaPadre.selectedIndex > 0) {
+        formData.append('nombre', txtNombre.value.trim());
+        formData.append('imagen', fileFoto.files[0]);
+        formData.append('categoria_padre', cbCategoriaPadre.value);
+    } else {
+        formData.append('nombre', txtNombre.value.trim());
+        formData.append('imagen', fileFoto.files[0]);
+    }
     try {
-        const response = await axios.post('/api/v1.0/categorias/', formData, {
-            headers: {
-                'X-CSRFToken': csrfToken,
-            },
-        });
+        const response = await axios.post('/api/v1.0/categorias/', formData);
         Swal.fire({
             position: 'center',
             icon: 'success',
@@ -86,7 +92,7 @@ async function agregarCat() {
             allowOutsideClick: false,
             timer: 2000,
         });
-        obtenerCat();
+        listarCat();
         limpiar();
     } catch (error) {
         var errorMessages = [];
@@ -118,8 +124,9 @@ async function agregarCat() {
 }
 
 async function modificarCat() {
+    axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF;
     var errorMessages = [];
-    var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
     var formData = new FormData();
     if (!fileFoto.files.length) {
         formData.append('nombre', txtNombre.value.trim());
@@ -139,11 +146,7 @@ async function modificarCat() {
         });
     } else {
         try {
-            const response = await axios.put(`/api/v1.0/categorias/${this.id}/`, formData, {
-                headers: {
-                    'X-CSRFToken': csrfToken,
-                },
-            });
+            const response = await axios.put(`/api/v1.0/categorias/${this.id}/`, formData);
             Swal.fire({
                 position: 'center',
                 icon: 'success',
@@ -152,44 +155,17 @@ async function modificarCat() {
                 allowOutsideClick: false,
                 timer: 1500,
             });
-            obtenerCat();
+            listarCat();
             limpiar();
         } catch (error) {
-            for (var key in error.response.data) {
-                if (error.response.data.hasOwnProperty(key)) {
-                    var mensajes = error.response.data[key];
-                    if (typeof mensajes === 'string') {
-                        errorMessages.push(mensajes);
-                    } else if (mensajes instanceof Array) {
-                        for (var i = 0; i < mensajes.length; i++) {
-                            errorMessages.push(mensajes[i]);
-                        }
-                    }
-                }
-            }
-            if (errorMessages.length > 0) {
-                var errorMessageList = '<ul class="list-group list-group-numbered">';
-                for (var j = 0; j < errorMessages.length; j++) {
-                    errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
-                }
-                errorMessageList += '</ul>';
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'Oops...',
-                    html: errorMessageList, // Utilizamos "html" para insertar la lista como HTML
-                    showConfirmButton: true,
-                    allowOutsideClick: false,
-                    timer: 5000,
-                });
-            }
+            listaErrores(error.response.data);
         }
-        errorMessages = [];
     }
 }
 
 async function eliminarCat() {
-    var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+    axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF;
     try {
         const result = await Swal.fire({
             title: 'Eliminar ?',
@@ -212,36 +188,69 @@ async function eliminarCat() {
                 });
             } else {
                 try {
-                    const response = await axios.delete(`/api/v1.0/categorias/${this.id}/`, {
-                        headers: {
-                            'X-CSRFToken': csrfToken,
-                        },
-                    });
+                    const response = await axios.delete(`/api/v1.0/categorias/${this.id}/`);
                     Swal.fire('Borrado!', 'Su categoria ha sido borrada.', 'success');
                     obtenerCat();
                     limpiar();
                 } catch (error) {
-                    var errorMessageList = `<ul class="list-group list-group-numbered">
-                                                <li class="list-group-item">${error.response.data.detail}</li>
-                                            </ul>`;
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Oops...',
-                        html: errorMessageList, // Utilizamos "html" para insertar la lista como HTML
-                        showConfirmButton: true,
-                        allowOutsideClick: false,
-                        timer: 5000,
-                    });
+                    listaErrores(error.response.data);
                 }
             }
         }
     } catch (error) {}
 }
 
+function listaErrores(error) {
+    for (var key in error) {
+        if (error.response.data.hasOwnProperty(key)) {
+            var mensajes = error.response.data[key];
+            if (typeof mensajes === 'string') {
+                errorMessages.push(mensajes);
+            } else if (mensajes instanceof Array) {
+                for (var i = 0; i < mensajes.length; i++) {
+                    errorMessages.push(mensajes[i]);
+                }
+            }
+        }
+    }
+    if (errorMessages.length > 0) {
+        var errorMessageList = '<ul class="list-group list-group-numbered">';
+        for (var j = 0; j < errorMessages.length; j++) {
+            errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
+        }
+        errorMessageList += '</ul>';
+        Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Oops...',
+            html: errorMessageList, // Utilizamos "html" para insertar la lista como HTML
+            showConfirmButton: true,
+            allowOutsideClick: false,
+            timer: 5000,
+        });
+    }
+}
+
+function obtenerNombreCategoriaPadre(idCategoriaPadre) {
+    const categorias = JSON.parse(localStorage.categorias);
+    const categoria = categorias.find((c) => c.id === idCategoriaPadre);
+    return categoria ? categoria.nombre : 'N/A';
+}
+
+function obtenerCat() {
+    let categorias = JSON.parse(localStorage.categorias);
+    console.log(categorias);
+    let opcion = `<option value="0">Seleccione categoria padre</option>`;
+    categorias.forEach((item) => {
+        opcion += `<option value="${item.id}">${item.nombre}</option>`;
+    });
+    cbCategoriaPadre.innerHTML = opcion;
+}
+
 function load(element) {
     this.id = element.id;
     txtNombre.value = element.nombre;
+    cbCategoriaPadre.value = element.categoria_padre;
     uploadedImage.src = element.imagen;
     uploadedImage.style.display = 'block';
 }
@@ -290,4 +299,5 @@ function limpiar() {
 
 window.addEventListener('load', async () => {
     await initDataTable();
+    obtenerCat();
 });

@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <title>Document</title>
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <title>Tienda</title>
 </head>
 
 <body>
@@ -16,12 +20,24 @@
         <div>
             <h2>Productos</h2>
             <button @click="productos()">Mostrar Productos</button>
-            <div v-for="(product,index) in products">
-                [[ product.nombre ]] $[[ product.precio ]]
-                <button @click="addToCart(index)">Agregar al carrito</button>
+            <h1>Lista de Productos</h1>
+            <div class="card" v-for="(producto,index) in products" :key="index">
+                <div class="card-body">
+                    <h5 class="card-title">[[ producto.nombre ]]</h5>
+                    <p class="card-text">Precio: [[ producto.precio ]]</p>
+                    <p class="card-text">Descripción: [[ producto.descripcion ]]</p>
+                    <p>Tallas disponibles:</p>
+                    <!-- <ul>
+                        <li v-for="talla in producto.tallas">
+                            {{ talla.nombre }} - Cantidad disponible: {{ talla.cantidad_disponible }}
+                        </li>
+                    </ul> -->
+                    <button @click="comprarProducto(producto.id)" class="btn btn-primary">Comprar</button>
+                </div>
             </div>
         </div>
 
+        <button @click="addToCart(index)">Agregar al carrito</button>
         <div>
             <h2>Carrito de Compras</h2>
             <ul>
@@ -36,7 +52,7 @@
             <button type="submit" @click="compra()">Comprar</button>
             <p>[[hoy]]</p>
         </div>
-            <button type="button" @click="logout">Cerrar sesión</button>
+        <button type="button" @click="logout">Cerrar sesión</button>
     </div>
     <br>
 
@@ -46,7 +62,7 @@
             data: {
                 products: [],
                 cart: [],
-                hoy:  new Date().toISOString().slice(0, 10),
+                hoy: new Date().toISOString().slice(0, 10),
                 user: '',
                 pedido: '',
             },
@@ -69,29 +85,28 @@
                     this.cart.splice(index, 1);
                 },
                 productos: function () {
-                    axios.get('/api/v1.0/productos/')
-                    .then(res => {
-                        res.data.forEach(producto => {
-                            this.products.push(producto);
-                        });
-                    })
-                    .catch(err => {
-                        console.error(err);
-                    })
+                    axios.get('/api/v1.0/productos2/')
+                        .then(res => {
+                            this.products = res.data
+                            console.log(this.products)
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        })
                 },
-                tokens:function(){
+                tokens: function () {
                     this.token = localStorage.getItem('token');
                     this.user = JSON.parse(localStorage.getItem('user'))
                     console.log(this.user)
                     console.log(this.token)
                 },
-                compra:async function(){
+                compra: async function () {
                     axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
                     axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
-                    try{
-                        const response = await axios.post('/api/v1.0/pedidos/',{
+                    try {
+                        const response = await axios.post('/api/v1.0/pedidos/', {
                             fechaPedido: this.hoy,
-                            total:this.total,
+                            total: this.total,
                             usuario: this.user.id,
                         });
                         console.log(response.data)
@@ -99,36 +114,36 @@
                         for (const item of this.cart) {
                             axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
                             axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
-                            try{
-                                const response = await axios.post('/api/v1.0/detallePedidos/',{
+                            try {
+                                const response = await axios.post('/api/v1.0/detallePedidos/', {
                                     cantidad: item.quantity,
                                     subtotal: item.precio * item.quantity,
                                     producto: item.id,
                                     pedido: this.pedido,
                                 });
                                 console.log(response.data)
-                            }catch (error){
+                            } catch (error) {
                                 console.error(error)
                             }
                         };
-                    } catch (error){
+                    } catch (error) {
                         console.error(error)
                     }
                 },
-                logout: function(){
+                logout: function () {
                     axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
                     axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
-                    axios.post('http://192.168.100.9:8000/custom_logout/',null)
-                    .then(res => {
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
-                    })
-                    .catch(err => {
-                        console.error('Error al cerrar sesión:', err);
-                    })
+                    axios.post('/custom_logout/', null)
+                        .then(res => {
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                        })
+                        .catch(err => {
+                            console.error('Error al cerrar sesión:', err);
+                        })
                 },
-                formatearfecha: function(){
-                        
+                formatearfecha: function () {
+
                 }
             },
             delimiters: ['[[', ']]'],

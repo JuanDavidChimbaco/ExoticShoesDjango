@@ -25,6 +25,7 @@ router.register(r"envio", views.EnvioViewSet, basename="envio")
 router.register(r"devoluciones", views.DevolucionesViewSet, basename="devoluciones")
 router.register(r"categorias", CategoriaViewSet)
 router.register(r"productos", ProductoViewSet)
+router.register(r"productos2", views.ProductoViewSet2)
 router.register(r"productosPagination", views.ProductoPaginationViewSet)
 router.register(r"tallas", TallaViewSet)
 
