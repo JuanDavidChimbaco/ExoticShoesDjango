@@ -1,33 +1,148 @@
 {% extends 'index.html' %} {% block contenido %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/frm.css' %}">
-<div id="app" class="rounded p-3 d-flex justify-content-center">
-    <div v-if="!editing" class="bg-secondary rounded text-center p-2">
-        <img :src="userProfile.fotoPerfil" alt=""
-            class="rounded-circle border border-1 border-dark mt-2 bg-body-tertiary">
-        <h1>[[ userProfile.username ]]</h1>
-        <p>Correo Electrónico: [[ userProfile.email ]]</p>
-        <p>Nombre: [[ userProfile.first_name ]]</p>
-        <p>Teléfono: [[ userProfile.telefono ]]</p>
-        <button @click="editProfile" class="btn btn-outline-dark">Editar</button>
+<div id="app">
+    <div class="row rounded p-3 d-flex justify-content-center">
+        <div class="col">
+
+        </div>
+    </div>
+    <div v-if="!editing" class="bg-white rounded p-2">
+        <div class="row">
+            <div class="col d-flex align-items-center justify-content-center">
+                <img :src="userProfile.fotoPerfil" alt="" class="rounded-circle border border-1 border-dark"
+                    width="100">
+            </div>
+            <div class="col">
+                <div class="d-grid align-items-center justify-content-center">
+                    <h1>[[ userProfile.username ]]</h1>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>Correo Electrónico: [[ userProfile.email ]]</p>
+                    </div>
+                    <div class="col">
+                        <p>Nombre: [[ userProfile.first_name ]]</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>Apellido: [[ userProfile.last_name ]]</p>
+                    </div>
+                    <div class="col">
+                        <p> Fecha Naciemiento: [[ userProfile.fechaNacimiento ]]</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>Teléfono: [[ userProfile.telefono ]]</p>
+                    </div>
+                    <div class="col">
+                        <p> Dirección: [[ userProfile.direccion ]]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            <button @click="editProfile" class="btn links">Editar</button>
+        </div>
     </div>
     <div v-else>
         <h1>Editar Perfil</h1>
         <form @submit.prevent="saveProfile">
-            <label for="name">Usuario:</label>
-            <input type="text" id="user" v-model="editedProfile.username">
-            <br>
-            <label for="name">Nombre:</label>
-            <input type="text" id="name" v-model="editedProfile.first_name">
-            <br>
-            <label for="email">Correo Electrónico:</label>
-            <input type="text" id="email" v-model="editedProfile.email">
-            <br>
-            <label for="phone">Teléfono:</label>
-            <input type="text" id="phone" v-model="editedProfile.telefono">
-            <br>
-            <button type="submit">Guardar</button>
-            <button @click="cancelEdit">Cancelar</button>
+            <div class="row d-flex">
+                <div class="col">
+                    <div class="image-upload text-center mb-3">
+                        <label for="fileFoto">
+                            <img :src="userProfile.fotoPerfil" alt="" width="100" height="100" class="rounded"
+                                id="uploadedImage">
+                        </label>
+                        <input type="file" name="fileFoto" id="fileFoto" ref="fileFoto" placeholder="Seleccione Imagen"
+                            accept="image/*" alt="Clik para subir Imagen" title="Click aquí para subir tu foto"
+                            @change="viewImage">
+                    </div>
+                </div>
+                <div class="col d-grid align-items-center">
+                    <div class="form-floating mb-3">
+                        <input type="text" id="user" v-model="editedProfile.username" placeholder="usuario"
+                            class="form-control">
+                        <label for="name" class="form-label">Usuario:</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" id="name" v-model="editedProfile.first_name" placeholder="nombre"
+                            class="form-control">
+                        <label for="name" class="form-label">Nombre:</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" id="last" v-model="editedProfile.last_name" placeholder="apellido"
+                            class="form-control">
+                        <label for="last" class="form-label">Apellido:</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" id="email" v-model="editedProfile.email" placeholder="correo"
+                            class="form-control">
+                        <label for="email" class="form-label">Correo Electrónico:</label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" id="phone" v-model="editedProfile.telefono" placeholder="telefono"
+                            class="form-control">
+                        <label for="phone" class="form-label">Teléfono:</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="text" id="address" v-model="editedProfile.direccion" placeholder="direccion"
+                            class="form-control">
+                        <label for="address" class="form-label">Direccion: </label>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="date" id="dateBorn" v-model="editedProfile.fechaNacimiento"
+                            placeholder="fechaNacimiento" class="form-control">
+                        <label for="dateBorn" class="form-label">Fecha de Nacimiento: </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <p>Click en la imagen para modificar la foto.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-floating mb-3">
+                        <input type="password" id="password" v-model="editedProfile.password" placeholder="contraseña"
+                            class="form-control">
+                        <label for="password" class="form-label">Contraseña: </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col text-center">
+                    <button type="submit" class="btn links">Guardar</button>&nbsp;
+                    <button @click="cancelEdit" class="btn links">Cancelar</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>
@@ -40,20 +155,20 @@
         data: {
             userProfile: {}, // Datos del usuario
             editedProfile: {}, // Datos editados
-            editing: false // Bandera para controlar la vista
+            editing: false, // Bandera para controlar la vista
+            fileFoto: null
         },
-        mounted() {
+        async mounted() {
             // Hacer una solicitud GET para obtener los datos del usuario
             axios.defaults.xsrfCookieName = 'csrftoken';
             axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-            axios.get('/api/v1.0/perfilApi/')
-                .then(response => {
-                    this.userProfile = response.data;
-                    console.log(this.userProfile)
-                })
-                .catch(error => {
-                    console.error('Error al obtener los datos del usuario:', error);
-                });
+            try {
+                const response = await axios.get('/api/v1.0/perfilApi/');
+                this.userProfile = response.data;
+                console.log(this.userProfile)
+            } catch (error) {
+                console.error('Error al obtener los datos del usuario:', error);
+            }
         },
         delimiters: ['[[', ']]'],
         methods: {
@@ -62,250 +177,55 @@
                 this.editedProfile = { ...this.userProfile };
                 this.editing = true;
             },
-            saveProfile() {
+            async saveProfile() {
                 // Aquí puedes hacer una solicitud PUT para guardar los cambios en la URL correspondiente
                 // Luego, actualiza this.userProfile con los datos guardados
                 // Aquí asumimos que la solicitud fue exitosa y actualizamos los datos directamente
                 axios.defaults.xsrfCookieName = 'csrftoken';
                 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-                axios.put('/api/v1.0/perfilApi/', this.editedProfile)
-                    .then(response => {
-                        console.log('Perfil editado');
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    })
+
+                const formData = new FormData();
+                formData.append('username', this.editedProfile.username);
+                formData.append('first_name', this.editedProfile.first_name);
+                formData.append('last_name', this.editedProfile.last_name);
+                formData.append('email', this.editedProfile.email);
+                formData.append('telefono', this.editedProfile.telefono);
+                formData.append('direccion', this.editedProfile.direccion);
+                formData.append('fechaNacimiento', this.editedProfile.fechaNacimiento);
+                formData.append('password', this.editedProfile.password);
+                // Verifica si se ha seleccionado un archivo
+                console.log(this.$refs.fileFoto.files.length)
+                if (this.$refs.fileFoto.files.length) {
+                    this.editedProfile.fotoPerfil = this.$refs.fileFoto.files[0];
+                    // Agrega la imagen solo si se ha seleccionado un archivo
+                    formData.append('fotoPerfil', this.editedProfile.fotoPerfil);
+                }
+                try {
+                    const response = await axios.put('/api/v1.0/perfilApi/', formData)
+                    console.log('Perfil editado');
+                } catch (error) {
+                    console.error(error.data);
+                }
                 this.userProfile = { ...this.editedProfile };
                 this.editing = false;
             },
             cancelEdit() {
                 this.editing = false;
+            },
+            viewImage() {
+                let img = fileFoto.files[0];
+                console.log(img);
+                if (img) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        uploadedImage.src = e.target.result;
+                        uploadedImage.style.display = 'block';
+                    };
+                    reader.readAsDataURL(img);
+                }
             }
         }
     });
 </script>
-<!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
-<div id="app">
-    <div class="text-bg-dark text-center">
-        <h1>Mi Perfil de Usuario</h1>
-        <div id="">
-            <div class="d-flex justify-content-center mb-4">
-                <div class="card text-bg-secondary" style="width: 18rem;">
-                    <img src="{% static 'images/programador.png'%}" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title"><span id="username"></span></h5>
-                        <p class="card-text">Nombre: <small><span id="nombre"></span></small></p>
-                        <p class="card-text">Apellido: <small><span id="apellido"></span></small></p>
-                        <p class="card-text">Correo: <small><span id="email"></span></small></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button id="editarBtn" class="btn btn-secondary mx-3">Editar</button>
-        <button id="cancelarBtn" class="btn btn-primary">Cancelar</button>
-
-        <div id="formulario" style="display: none;">
-            <div class="d-flex justify-content-center">
-                <div>
-                    <div class="form-floating mt-3">
-                        <input type="text" id="nuevoNombre" placeholder="Nuevo nombre" name="nombre" v-model="nuevoNombre" class="form-control">
-                        <label for="nombre" class="form-label">Nombre:</label>
-                    </div>
-                    <div class="form-floating mt-3">
-                        <input type="text" id="nuevoApellido" placeholder="Nuevo apellido" name="apellido" v-model="nuevoApellido" class="form-control">
-                        <label for="apellido" class="form-label">Apellido:</label>
-                    </div>
-                    <div class="form-floating mt-3">
-                        <input type="email" id="nuevoEmail" placeholder="Nuevo correo" name="email" v-model="nuevoEmail" class="form-control">
-                        <label for="email" class="form-label">Correo:</label>
-                    </div>
-                    <div class="form-actions text-center mt-3">
-                        <button @click="guardarCambios" class="btn btn-primary">Guardar Cambios</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Inicializa la aplicación Vue.js
-    new Vue({
-        el: '#app',
-        data: {
-            nuevoNombre: '',
-            nuevoApellido: '',
-            nuevoEmail: '',
-            user: {}
-        },
-        mounted() {
-            // Obtener los datos del usuario al cargar la página
-            $.get('/perfilApi/', (data) => {
-                this.user = data;
-                this.nuevoNombre = data.nombre;
-                this.nuevoApellido = data.apellido;
-                this.nuevoEmail = data.email;
-            });
-        },
-        methods: {
-            editarPerfil() {
-                // Habilitar la edición de datos al hacer clic en el botón "Editar"
-                $('#perfil').hide();
-                $('#formulario').show();
-            },
-            cancelarEdicion() {
-                // Cancelar la edición y volver a mostrar el perfil
-                $('#perfil').show();
-                $('#formulario').hide();
-                this.nuevoNombre = this.user.nombre;
-                this.nuevoApellido = this.user.apellido;
-                this.nuevoEmail = this.user.email;
-            },
-            guardarCambios() {
-                // Enviar los datos actualizados al servidor al hacer clic en "Guardar Cambios"
-                const csrfToken = this.getCookie('csrftoken');
-                $.ajax({
-                    url: '/perfilApi/',
-                    type: 'PUT',
-                    data: {
-                        nombre: this.nuevoNombre,
-                        apellido: this.nuevoApellido,
-                        email: this.nuevoEmail
-                    },
-                    headers: {
-                        'X-CSRFToken': csrfToken
-                    },
-                    success: () => {
-                        // Actualizar la interfaz de usuario con los nuevos datos
-                        $('#nombre').text(this.nuevoNombre);
-                        $('#apellido').text(this.nuevoApellido);
-                        $('#email').text(this.nuevoEmail);
-
-                        // Ocultar el formulario de edición y mostrar el perfil nuevamente
-                        $('#formulario').hide();
-                        $('#perfil').show();
-                    }
-                });
-            },
-            getCookie(name) {
-                const value = `;${document.cookie}`;
-                const parts = value.split(`;${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }
-        }
-    });
-</script> -->
-
-<!-- <div class="text-bg-dark text-center"> 
-    <h1>Mi Perfil de Usuario</h1>
-    <div id="perfil" >
-        <div class="d-flex justify-content-center mb-4">
-            <div class="card text-bg-secondary" style="width: 18rem;">
-                <img src="{% static 'images/programador.png'%}" class="card-img-top" alt="...">
-                <div class="card-body">
-                  <h5 class="card-title"><span id="username"></span></h5>
-                  <p class="card-text">Nombre: <small><span id="nombre"></span></small></p>
-                  <p class="card-text">Apellido: <small><span id="apellido"></span></small></p>
-                  <p class="card-text">Correo: <small><span id="email"></span></small></p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <button id="editarBtn" class="btn btn-secondary mx-3">Editar</button>
-    <button id="cancelarBtn" class="btn btn-primary">Cancelar</button>
-
-    <div id="formulario" style="display: none;" >
-        <div class="d-flex justify-content-center">
-            <div>
-                <div class="form-floating mt-3">
-                    <input type="text" id="nuevoNombre" placeholder="Nuevo nombre" name="nombre" value="{{ nombre }}" class="form-control">
-                    <label for="nombre" class="form-label">Nombre:</label>
-                </div>
-                <div class="form-floating mt-3">
-                    <input type="text" id="nuevoApellido" placeholder="Nuevo apellido" name="apellido" value="{{ apellido }}" class="form-control">
-                    <label for="apellido" class="form-label">Apellido:</label>
-                </div>
-                <div class="form-floating mt-3">
-                    <input type="email" id="nuevoEmail" placeholder="Nuevo correo" name="email" value="{{ email }}" class="form-control">
-                    <label for="email" class="form-label">Correo:</label>
-                </div>
-                <div class="form-actions text-center mt-3">
-                    <button id="guardarBtn" class="btn btn-primary">Guardar Cambios</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
-
-<!-- <script>
-        let user = {}
-        $(document).ready(function () {
-            // Obtener los datos del usuario al cargar la página
-            $.get('/perfilApi/', function (data) {
-                $('#nombre').text(data.nombre);
-                $('#apellido').text(data.apellido);
-                $('#email').text(data.email);
-                $('#username').text(data.username);
-                $('#foto').text(data.profile_image);
-                user = data;
-            });
-
-            // Habilitar la edición de datos al hacer clic en el botón "Editar"
-            $('#editarBtn').click(function () {
-                $('#perfil').hide();
-                $('#formulario').show();
-            });
-
-            $('#cancelarBtn').click(function () {
-                $('#perfil').show();
-                $('#formulario').hide();
-                $('#nuevoNombre').val(user.nombre);
-                $('#nuevoApellido').val(user.apellido);
-                $('#nuevoEmail').val(user.email);
-            });
-
-            // Enviar los datos actualizados al servidor al hacer clic en "Guardar Cambios"
-            $('#guardarBtn').click(function () {
-                const nuevoNombre = $('#nuevoNombre').val();
-                const nuevoApellido = $('#nuevoApellido').val();
-                const nuevoEmail = $('#nuevoEmail').val();
-
-                // Obtener el token CSRF de las cookies
-                const csrfToken = getCookie('csrftoken');
-                console.log(csrfToken);
-
-                $.ajax({
-                    url: '/perfilApi/',
-                    type: 'PUT',
-                    data: {
-                        nombre: nuevoNombre,
-                        apellido: nuevoApellido,
-                        email: nuevoEmail
-                    },
-                    headers: {
-                        'X-CSRFToken': csrfToken // Agregar el token CSRF al encabezado
-                    },
-                    success: function () {
-                        // Actualizar la interfaz de usuario con los nuevos datos
-                        $('#nombre').text(nuevoNombre);
-                        $('#apellido').text(nuevoApellido);
-                        $('#email').text(nuevoEmail);
-
-                        // Ocultar el formulario de edición y mostrar el perfil nuevamente
-                        $('#formulario').hide();
-                        $('#perfil').show();
-                    }
-                });
-            });
-
-            // Función para obtener el valor de una cookie por su nombre
-            function getCookie(name) {
-                const value = `;${document.cookie}`;
-                console.log(value);
-                const parts = value.split(`;${name}=`);
-                if (parts.length === 2) return parts.pop().split(';').shift();
-            }
-        });
-    </script> -->
 </div>
 {% endblock %}

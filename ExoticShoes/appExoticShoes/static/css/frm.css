@@ -158,3 +158,28 @@ body {
     transition: .5s;
     border-color: #FFCCE0;
 }
+
+.links{
+    border-radius: 5px;
+    text-align: center;
+    width: 9rem;
+    transition: all 0.5s;
+}
+
+.links:hover{
+    background-color: #FFCCE0;
+    border-radius: 5px;
+    letter-spacing: 2px;
+    transition: all 0.5s;
+}
+
+.image-upload > input{
+    display: none;
+}
+
+.image-upload img
+{
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}
