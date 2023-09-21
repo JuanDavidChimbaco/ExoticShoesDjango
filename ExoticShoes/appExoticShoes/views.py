@@ -82,7 +82,7 @@ class ProductoViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
     
-class ProductoViewSet2(viewsets.ModelViewSet):
+class ProductoViewSetCliente(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyGET]
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
@@ -151,6 +151,13 @@ class PedidoDetailViewSet(viewsets.ModelViewSet):
     serializer_class = DetallePedidoSerializer
     
 
+class DetallePedidoPorPedidoView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = DetallePedidoSerializer
+    def get_queryset(self):
+        pedido_id = self.kwargs['pedido_id']  # Obtener el ID del pedido desde la URL
+        return DetallePedido.objects.filter(pedido__id=pedido_id)
+    
 
 class PagoViewSet(viewsets.ModelViewSet):
     queryset = Pago.objects.all()

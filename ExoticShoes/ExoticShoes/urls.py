@@ -25,7 +25,7 @@ router.register(r"envio", views.EnvioViewSet, basename="envio")
 router.register(r"devoluciones", views.DevolucionesViewSet, basename="devoluciones")
 router.register(r"categorias", CategoriaViewSet)
 router.register(r"productos", ProductoViewSet)
-router.register(r"productos2", views.ProductoViewSet2)
+router.register(r"productos2", views.ProductoViewSetCliente)
 router.register(r"productosPagination", views.ProductoPaginationViewSet)
 router.register(r"tallas", TallaViewSet)
 
@@ -70,6 +70,9 @@ urlpatterns = [
     # perfil de usuario(Admin)
     path("perfil/", views.perfil_usuario, name="perfil"),
     path("api/v1.0/perfilApi/", views.PerfilUsuarioAPIView.as_view(), name="perfilApi"),
+    
+    # filtros 
+    path('api/v1.0/pedidos/<int:pedido_id>/detalles/', views.DetallePedidoPorPedidoView.as_view(), name='detallepedido-por-pedido'),
 ]
 handler404 = 'appExoticShoes.views.custom_404'
 

@@ -76,7 +76,7 @@ async function getProducts() {
                     <td>${categoryName}</td>
                     <td class="align-middle text-center">
                         <div>
-                            <input type="radio" name="checkOpcion" onclick='getProductById(${element.id})' class="form-check-input" title="Seleccionar">
+                            <input type="radio" name="checkOpcion" onclick='getProductById(${JSON.stringify(element)})' class="form-check-input" title="Seleccionar">
                         </div> 
                     </td>
                 </tr>`;
@@ -121,51 +121,23 @@ async function addProducts() {
             getProducts();
             clean();
         } catch (error) {
-            console.error(error);
-            for (var key in error.response.data) {
-                if (error.response.data.hasOwnProperty(key)) {
-                    var mensajes = error.response.data[key];
-                    if (typeof mensajes === 'string') {
-                        errorMessages.push(mensajes);
-                    } else if (mensajes instanceof Array) {
-                        for (var i = 0; i < mensajes.length; i++) {
-                            errorMessages.push(mensajes[i]);
-                        }
-                    }
-                }
-            }
-            if (errorMessages.length > 0) {
-                var errorMessageList = '<ul class="list-group list-group-numbered">';
-                for (var j = 0; j < errorMessages.length; j++) {
-                    errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
-                }
-                errorMessageList += '</ul>';
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'Oops...',
-                    html: errorMessageList,
-                    showConfirmButton: true,
-                    allowOutsideClick: false,
-                    timer: 5000,
-                });
-            }
-            errorMessages = [];
+            listError(error);
         }
     }
 }
 
 async function modifyProducts() {
-    var errorMessages = [];
     axios.defaults.xsrfCookieName = 'csrftoken';
     axios.defaults.xsrfHeaderName = 'X-CSRFToken';
     var formularioData = new FormData();
+    if (fileFoto.files.length) {
+        formularioData.append('imagen', fileFoto.files[0]);
+    }
     formularioData.append('nombre', txtNombre.value);
     formularioData.append('descripcion', txtDescripcion.value);
     formularioData.append('precio', txtPrecio.value);
     formularioData.append('categoria', cbCategoria.value);
     formularioData.append('estado', 'true');
-    formularioData.append('foto', fileFoto.files[0]);
 
     if (emptyFields()) {
         Swal.fire({
@@ -190,41 +162,12 @@ async function modifyProducts() {
             getProducts();
             clean();
         } catch (error) {
-            for (var key in error.response.data) {
-                if (error.response.data.hasOwnProperty(key)) {
-                    var mensajes = error.response.data[key];
-                    if (typeof mensajes === 'string') {
-                        errorMessages.push(mensajes);
-                    } else if (mensajes instanceof Array) {
-                        for (var i = 0; i < mensajes.length; i++) {
-                            errorMessages.push(mensajes[i]);
-                        }
-                    }
-                }
-            }
-            if (errorMessages.length > 0) {
-                var errorMessageList = '<ul class="list-group list-group-numbered">';
-                for (var j = 0; j < errorMessages.length; j++) {
-                    errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
-                }
-                errorMessageList += '</ul>';
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'Oops...',
-                    html: errorMessageList,
-                    showConfirmButton: true,
-                    allowOutsideClick: false,
-                    timer: 5000,
-                });
-            }
-            errorMessages = [];
+            listError(error);
         }
     }
 }
 
 async function deleteProducts() {
-    var errorMessages = [];
     axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
     axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
     const res = await Swal.fire({
@@ -253,55 +196,24 @@ async function deleteProducts() {
                 getProducts();
                 clean();
             } catch (error) {
-                for (var key in error.response.data) {
-                    if (error.response.data.hasOwnProperty(key)) {
-                        var mensajes = error.response.data[key];
-                        if (typeof mensajes === 'string') {
-                            errorMessages.push(mensajes);
-                        } else if (mensajes instanceof Array) {
-                            for (var i = 0; i < mensajes.length; i++) {
-                                errorMessages.push(mensajes[i]);
-                            }
-                        }
-                    }
-                }
-                if (errorMessages.length > 0) {
-                    var errorMessageList = '<ul class="list-group list-group-numbered">';
-                    for (var j = 0; j < errorMessages.length; j++) {
-                        errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
-                    }
-                    errorMessageList += '</ul>';
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'error',
-                        title: 'Oops...',
-                        html: errorMessageList, // Utilizamos "html" para insertar la lista como HTML
-                        showConfirmButton: true,
-                        allowOutsideClick: false,
-                        timer: 5000,
-                    });
-                }
+                listError(error);
             }
         }
-        errorMessages = [];
     }
 }
 
-async function getProductById(id) {
-    this.id = id;
-    try {
-        const response = await axios.get(`/api/v1.0/productos/${id}`);
-        console.log(response.data);
-        txtNombre.value = response.data.nombre;
-        txtDescripcion.value = response.data.descripcion;
-        txtPrecio.value = response.data.precio;
-        cbCategoria.value = response.data.categoria;
-        vistaPrevia.src = response.data.imagen;
-        vistaPrevia.style.display = 'block';
-    } catch (error) {}
+function getProductById(element) {
+    this.id = element.id;
+    console.log(element);
+    txtNombre.value = element.nombre;
+    txtDescripcion.value = element.descripcion;
+    txtPrecio.value = element.precio;
+    cbCategoria.value = element.categoria;
+    vistaPrevia.src = element.imagen;
+    vistaPrevia.style.display = 'block';
 }
 
-async function view() {
+function view() {
     const file = fileFoto.files[0];
     if (file) {
         const reader = new FileReader();
@@ -313,6 +225,38 @@ async function view() {
     } else {
         vistaPrevia.src = e.target.result;
         vistaPrevia.style.display = 'none';
+    }
+}
+
+function listError(error) {
+    var errorMessages = [];
+    for (var key in error.response.data) {
+        if (error.response.data.hasOwnProperty(key)) {
+            var mensajes = error.response.data[key];
+            if (typeof mensajes === 'string') {
+                errorMessages.push(mensajes);
+            } else if (mensajes instanceof Array) {
+                for (var i = 0; i < mensajes.length; i++) {
+                    errorMessages.push(mensajes[i]);
+                }
+            }
+        }
+    }
+    if (errorMessages.length > 0) {
+        var errorMessageList = '<ul class="list-group list-group-numbered">';
+        for (var j = 0; j < errorMessages.length; j++) {
+            errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
+        }
+        errorMessageList += '</ul>';
+        Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: 'Oops...',
+            html: errorMessageList,
+            showConfirmButton: true,
+            allowOutsideClick: false,
+            timer: 5000,
+        });
     }
 }
 

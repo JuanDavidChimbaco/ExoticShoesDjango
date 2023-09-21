@@ -75,13 +75,12 @@ async function agregarCat() {
     axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF;
     var formData = new FormData();
     if (cbCategoriaPadre.selectedIndex > 0) {
-        formData.append('nombre', txtNombre.value.trim());
-        formData.append('imagen', fileFoto.files[0]);
         formData.append('categoria_padre', cbCategoriaPadre.value);
     } else {
-        formData.append('nombre', txtNombre.value.trim());
-        formData.append('imagen', fileFoto.files[0]);
+        console.log('No selecciono Categoria Padre');
     }
+    formData.append('nombre', txtNombre.value.trim());
+    formData.append('imagen', fileFoto.files[0]);
     try {
         const response = await axios.post('/api/v1.0/categorias/', formData);
         Swal.fire({
@@ -95,46 +94,21 @@ async function agregarCat() {
         listarCat();
         limpiar();
     } catch (error) {
-        var errorMessages = [];
-        for (var key in error.response.data) {
-            if (error.response.data.hasOwnProperty(key)) {
-                var mensajes = error.response.data[key];
-                for (var i = 0; i < mensajes.length; i++) {
-                    errorMessages.push(mensajes[i]);
-                }
-            }
-        }
-        if (errorMessages.length > 0) {
-            var errorMessageList = '<ul class="list-group list-group-numbered">';
-            for (var j = 0; j < errorMessages.length; j++) {
-                errorMessageList += '<li class="list-group-item">' + errorMessages[j] + '</li>';
-            }
-            errorMessageList += '</ul>';
-            Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: 'Oops...',
-                html: errorMessageList, // Utilizamos "html" para insertar la lista como HTML
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                timer: 5000,
-            });
-        }
+        listaErrores(error);
     }
 }
 
 async function modificarCat() {
     axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
     axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF;
-    var errorMessages = [];
     var formData = new FormData();
-    if (!fileFoto.files.length) {
-        formData.append('nombre', txtNombre.value.trim());
-    } else {
-        let file = fileFoto.files[0];
-        formData.append('nombre', txtNombre.value.trim());
-        formData.append('imagen', file);
+    if (cbCategoriaPadre.selectedIndex > 0) {
+        formData.append('categoria_padre', cbCategoriaPadre.value);
+        if (fileFoto.files.length) {
+            formData.append('imagen', fileFoto.files[0]);
+        }
     }
+    formData.append('nombre', txtNombre.value.trim());
     if ((this.id == undefined && txtNombre.value == '' && !fileFoto.files.length) || this.id == '') {
         Swal.fire({
             position: 'center',
@@ -158,7 +132,7 @@ async function modificarCat() {
             listarCat();
             limpiar();
         } catch (error) {
-            listaErrores(error.response.data);
+            listaErrores(error);
         }
     }
 }
@@ -201,7 +175,8 @@ async function eliminarCat() {
 }
 
 function listaErrores(error) {
-    for (var key in error) {
+    var errorMessages = [];
+    for (var key in error.response.data) {
         if (error.response.data.hasOwnProperty(key)) {
             var mensajes = error.response.data[key];
             if (typeof mensajes === 'string') {
@@ -290,6 +265,7 @@ function limpiar() {
     this.id = '';
     txtNombre.value = '';
     fileFoto.value = '';
+    cbCategoriaPadre.value = 0;
     uploadedImage.style.display = 'none';
     var radioButtons = document.getElementsByName('checkOpcion');
     radioButtons.forEach(function (radioButton) {
