@@ -62,7 +62,7 @@ async function listarCat() {
                         </td>
                         <td>${categoriaPadre}</td>
                         <td class="align-middle">
-                            <input type="radio" name="checkOpcion" id="checkOpcion" onclick='load(${JSON.stringify(element)})' class="form-check-input">
+                            <input type="radio" name="checkOpcion"  onclick='load(${JSON.stringify(element)})' class="form-check-input">
                         </td>
                     </tr>`;
         });

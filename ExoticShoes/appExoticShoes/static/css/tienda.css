@@ -1,7 +1,13 @@
+.headercolor{
+    background-color: #ffdbd6;
+}
+
+
 nav {
      background-color: #333;
      color: #fff;
      padding: 10px;
+     background-color: #fcdbd5;
  }
 
  /* Estilo para el aside en el lado izquierdo */
@@ -19,14 +25,14 @@ nav {
      width: 100%;
      padding: 10px;
      height: 70vh;
-     background-color: rgb(239, 243, 243);
+     background-color: rgb(154, 255, 255);
  }
 
  /* Estilo para el footer */
- footer {
+ /* footer {
      clear: both;
      background-color: #333;
      color: #fff;
      padding: 10px;
      text-align: center;
- }
+ } */

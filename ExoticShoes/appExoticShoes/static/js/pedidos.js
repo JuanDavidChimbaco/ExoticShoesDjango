@@ -90,8 +90,8 @@ async function updateEstadoPedido(pedidoId, nuevoEstado) {
         });
         // Verificar si la solicitud se completó con éxito
         if (response.status === 200) {
-            // Actualizar la vista con el nuevo estado (si es necesario)
-            await listOrders();
+            // Actualizar la vista con el nuevo estado
+            location.reload();
         } else {
             console.error('No se pudo actualizar el estado del pedido.');
         }

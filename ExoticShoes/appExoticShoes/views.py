@@ -16,6 +16,7 @@ from django.core.mail import send_mail
 from django.db.models import Q, Max
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
+from django.http import JsonResponse
 
 # =============================== Otros ===============================
 import os
@@ -377,6 +378,12 @@ def loginCliente(request):
 def registroCliente(request):
     return render(request, "cliente/registro_cliente.html", {})
 
+
+def buscar_resultados(request):
+    consulta = request.GET.get("q","")
+    #realiza la busqueda en la base de datos o en el lugar de origen
+    resultados = ["Resultado 1", "Resultado 2","Resultado 3"] #ejemplo
+    return JsonResponse(resultados, safe=False)
 
 @client_required
 def inicioCliente(request):

@@ -2,13 +2,13 @@
 
 {% block contenido %}
 {% load static %}
-<script src="{% static '../static/js/categorias.js' %}"></script>
+<script src="{% static '/js/categorias.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/frm.css' %}">
 <div class="row">
   <h1 class="text-center"> Categorías </h1>
 </div>
 <hr>
-<div class="row d-grid justify-content-center justify-content-center">
+<div class="row d-grid justify-content-center">
   <form>
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
     <div class="row">
