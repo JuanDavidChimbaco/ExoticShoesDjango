@@ -30,16 +30,28 @@
      <section>
           {% include 'tienda/section1.html'%}
      </section>
-
      <main>
           <!-- Tu contenido principal va aquí -->
           {% include 'tienda/main.html' %}
-          <br>
-          <aside>
-               <!-- Tu contenido adicional va aquí -->
-
-          </aside>
      </main>
+     <main class="login">
+
+     </main>
+     <div class="row">
+          <div class="col-md-4">
+               <!-- Tu contenido adicional va aquí -->
+               {% include 'tienda/aside.html'%}
+          </div>
+          <div class="col-md-8">
+
+          </div>
+
+     </div>
+     <section>
+          <div class="row p-5">
+               {% include 'tienda/section2.html'%}
+          </div>
+     </section>
      <footer>
           <!-- Tu pie de página va aquí -->
           {% include 'tienda/footer.html' %}

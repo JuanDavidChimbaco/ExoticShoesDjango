@@ -191,9 +191,14 @@ class LoginClienteView(APIView):
         if serializer.is_valid():
             username = serializer.validated_data["username"]
             password = serializer.validated_data["password"]
+            rememberMe = request.data.get("rememberme")
             user = Usuario.objects.filter(username=username).first()
             if user and user.check_password(password):
                 login(request, user)
+                if rememberMe:
+                    request.session.set_expiry(2592000)  # 30 días en segundos
+                else:
+                    request.session.set_expiry(0)  # Duración predeterminada
                 token, created = Token.objects.get_or_create(user=user)
                 user_data = UsuariosSerializer(user).data
                 response = Response({"token": token.key,"message": "Inicio de sesión exitoso","user": user_data,},status=status.HTTP_200_OK,)
@@ -220,7 +225,8 @@ def custom_login(request):
             request.session.set_expiry(2592000)  # 30 días en segundos
         else:
             request.session.set_expiry(0)  # Duración predeterminada
-        return Response({"message": "Inicio de sesión exitoso"}, status=status.HTTP_200_OK)
+        user_serializer = UsuariosSerializer(user)
+        return Response({"message": "Inicio de sesión exitoso","user":user_serializer}, status=status.HTTP_200_OK)
 
 # ---[perfil api ]---
 class PerfilUsuarioAPIView(APIView):
@@ -291,7 +297,7 @@ class PasswordResetView(APIView):
 # ====================== Vistas del Administrador (Sin-logearse)======================
 
 def redirect_to_login(request):
-    return redirect("dashboard")
+    return redirect("inicio_tienda")
 
 
 def index(request):

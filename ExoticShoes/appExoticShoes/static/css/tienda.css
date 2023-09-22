@@ -28,14 +28,6 @@ nav {
      background-color: rgb(154, 255, 255);
  }
 
- /* Estilo para el footer */
- /* footer {
-     clear: both;
-     background-color: #333;
-     color: #fff;
-     padding: 10px;
-     text-align: center;
- } */
 
  .input-icono {
     background-image: url('../images/lupa.png');
@@ -90,4 +82,8 @@ nav {
     justify-content: center;
     text-decoration: none;
     color: #202020;
+  }
+
+  .login{
+    display: none;
   }

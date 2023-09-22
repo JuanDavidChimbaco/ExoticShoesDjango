@@ -126,10 +126,10 @@
           const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
           // Configura Axios para incluir el CSRF token en el encabezado
           axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
-          axios.post('/api/login/', formData)
+          axios.post('/api/v1.0/sesion_cliente/', formData)
             .then(response => {
               // Procesa la respuesta después del inicio de sesión exitoso
-              console.log(response.data);
+              console.log(response);
               Swal.fire({
                 position: 'center',
                 icon: 'success',
@@ -139,7 +139,10 @@
                 confirmButtonColor: '#17202A',
                 allowOutsideClick: false,
               }).then(() => {
-                window.location.href = "{% url 'dashboard' %}";
+                if (response.data.user.groups[0] === 2) {
+
+                }
+                //window.location.href = "{% url 'dashboard' %}";
               });
             })
             .catch(error => {
