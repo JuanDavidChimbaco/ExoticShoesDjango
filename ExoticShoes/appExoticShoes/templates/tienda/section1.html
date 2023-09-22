@@ -1,0 +1,25 @@
+<div class="mt-2" id="contenedorCategorias">
+     <!-- contenido categorias -->
+</div>
+
+<script>
+     async function get_categories() {
+          let data = '';
+          try {
+               const response = await axios.get('/api/v1.0/categorias2');
+               console.log(response.data);
+               response.data.forEach((category, index) => {
+                    data += `
+                         <a href="" class="categoriaitem">
+                              <img src="${category.imagen}" alt="categoria" class="rounded-circle border border-opacity-25 border-secondary" width="100" height="100">
+                              <p class="fw-bold">${category.nombre}</p>
+                         </a>
+                    `
+               })
+               contenedorCategorias.innerHTML = data;
+          } catch (error) {
+               console.error(error);
+          }
+     }
+     get_categories()
+</script>

@@ -76,6 +76,11 @@ class CategoriaViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyAdminGroup]
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer    
+
+class CategoriaViewSet2(viewsets.ModelViewSet):
+    permission_classes = [AllowOnlyGET]
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer    
     
     
 class ProductoViewSet(viewsets.ModelViewSet):
