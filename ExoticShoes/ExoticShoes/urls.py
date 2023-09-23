@@ -37,7 +37,6 @@ urlpatterns = [
     # Rutas para la vista del Administrador
     path("admin/", admin.site.urls),
     path("", views.redirect_to_login, name="redirect_to_login"),
-    path("inicio/", views.index, name="login"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("frmCategorias/", views.categorias, name="categorias"),
     path("frmProductos/", views.productos, name="productos"),

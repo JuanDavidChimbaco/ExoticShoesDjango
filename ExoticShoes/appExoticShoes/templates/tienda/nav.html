@@ -37,10 +37,22 @@
                               aria-expanded="false">
                               Hola, Inicia sesión
                          </a>
-                         <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="/inicio/">Iniciar sesión</a></li>
+                         <ul class="dropdown-menu" id="sinLoguear">
+                              <li><a class="dropdown-item" href="" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">Iniciar
+                                        sesión</a></li>
                               <li><a class="dropdown-item" href="#">Registrarse</a></li>
                               <li><a class="dropdown-item" href="#">Ver perfil</a></li>
+                         </ul>
+                    </li>
+                    <li class="nav-item dropdown" id="logueado">
+                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                              aria-expanded="false">
+                              Mi cuenta
+                         </a>
+                         <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="#">Ver perfil</a></li>
+                              <li><a class="dropdown-item" href="#">Cerrar Sesón</a></li>
                          </ul>
                     </li>
                </ul>
@@ -71,6 +83,18 @@
      </div>
      <div class="offcanvas-body">
           <p>Carrito Vacio.</p>
+     </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+     <div class="modal-dialog">
+          <div class="modal-content">
+               <div class="modal-body">
+                    {% include 'inicio.html' %}
+               </div>
+          </div>
      </div>
 </div>
 

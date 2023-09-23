@@ -300,10 +300,6 @@ def redirect_to_login(request):
     return redirect("inicio_tienda")
 
 
-def index(request):
-    return render(request, "inicio.html")
-
-
 # vista para validar correo y enviar el enlace de restablecimiento
 def restPasswordRequest(request):
     return render(request, "registration/restablecer_password.html")
@@ -372,7 +368,7 @@ def devoluciones(request):
 @admin_required
 def custom_logout(request):
     logout(request)
-    return redirect("login")
+    return redirect("inicio_tienda")
 
 
 # ============================================================================

@@ -1,0 +1,80 @@
+<div class="container">
+     <div class="row" id="contenedorPro">
+          <!-- productos -->
+     </div>
+     <div class="row justify-content-center text-center">
+          <div class="pagination">
+               <button class="btn btn-warning" id="prevBtn" onclick="previousPage()">Anterior</button>
+               <button class="btn btn-warning" id="nextBtn" onclick="nextPage()">Siguiente</button>
+          </div>
+     </div>
+</div>
+
+<script>
+     const contenedorPro = document.getElementById('contenedorPro');
+     const prevBtn = document.getElementById('prevBtn');
+     const nextBtn = document.getElementById('nextBtn');
+
+     let productos = []; // Aquí guarda tus productos
+     let currentPage = 1; // Página actual
+     const productsPerPage = 6; // Productos por página
+
+     async function getProducts(pageNumber) {
+          try {
+               const response = await axios.get(`/api/v1.0/productos2/?page=${pageNumber}`);
+               productos = response.data;
+               updateProductDisplay();
+          } catch (error) {
+               console.error(error);
+          }
+     }
+
+     function updateProductDisplay() {
+          const startIndex = (currentPage - 1) * productsPerPage;
+          const endIndex = startIndex + productsPerPage;
+
+          let data = '';
+          for (let i = startIndex; i < endIndex && i < productos.length; i++) {
+               const product = productos[i];
+               data += `
+                    <div class="col-md-4 mb-4">
+                         <div class="card producto-card" height="300">
+                              <img src="${product.imagen}" alt="producto" class="card-img-top" width="100" height="150">
+                              <div class="card-body">
+                                   <h5 class="card-title">${product.nombre}</h5>
+                                   <p class="card-text">${product.descripcion}</p>
+                                   <p class="card-text">Precio: $${product.precio}</p>
+                              </div>
+                              <div class="card-footer">
+                                   <button type="button" class="btn btn-primary">Comprar</button>
+                              </div>
+                         </div>
+                    </div>
+        `;
+          }
+
+          contenedorPro.innerHTML = data;
+
+          // Habilita o deshabilita los botones de navegación según la página actual
+          prevBtn.disabled = currentPage === 1;
+          nextBtn.disabled = endIndex >= productos.length;
+     }
+
+     function previousPage() {
+          if (currentPage > 1) {
+               currentPage--;
+               getProducts(currentPage);
+          }
+     }
+
+     function nextPage() {
+          const startIndex = currentPage * productsPerPage;
+          if (startIndex < productos.length) {
+               currentPage++;
+               getProducts(currentPage);
+          }
+     }
+
+     // Cargar los productos de la primera página al cargar la página
+     getProducts(currentPage);
+</script>

@@ -1,93 +1,54 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
 
-<head>
-  <link rel="icon" href="{% static 'images/Logo.png'%}" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- vue  -->
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="{% static 'js/tienda.js' %}"></script>
+<div class="container">
+  <div class="row contenido">
+    <div class="col">
 
-  <!-- axios -->
-  <script src="{% static 'js/axios.min.js' %}"></script>
+      <div id="app" class="d-flex justify-content-center">
 
-  <!-- Bootstrap 5.3 -->
-  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+        <div class="card shadow cardLogin">
 
-  <!-- Font Awesome -->
-  <script src="{% static 'js/kit.fontawesome.com.js' %}"></script>
-
-  <!-- SweetAlert -->
-  <script src="{% static 'js/sweetalert2@11.js' %}"></script>
-
-  <!-- archivos locales estaticos -->
-  <link rel="stylesheet" href="{% static 'css/login.css' %}" />
-  <title>Gestion Administrador</title>
-</head>
-
-<body>
-  <section id="content">
-    <div class="container mt-5">
-      <div class="row contenido">
-        <div class="col">
-
-          <div id="app" class="d-flex justify-content-center">
-
-            <div @click="toggleLogin">
-              <a class="card text-center text-decoration-none card-button" v-show="cardVisible">
-                <div class="card-body">
-                  <i class="fa-solid fa-user fa-bounce fa-2xl"></i>
-                  <h5 class="card-title mt-3 canter">Iniciar Sesión</h5>
-                </div>
-              </a>
-            </div>
-
-
-            <div class="card shadow cardLogin" v-show="loginVisible">
-
-              <div class="card-header bg-dark text-white">
-                <h4 class="text-center mt-2 canter"><i class="fa fa-solid fa-user fa-2xl"></i>&nbsp;Administrador</h4>
-              </div>
-
-              <div class="card-body">
-                <form id="login-form" method="POST" @submit.prevent="login">
-                  {% csrf_token %}
-
-                  <div class="form-floating">
-                    <input type="text" class="form-control" id="id_username" name="username" maxlength="150"
-                      placeholder="Usuario" required v-model="username" />
-                    <label for="id_username"><i class="fa-solid fa-user fa-beat-fade"></i> Usuario</label>
-                  </div>
-
-                  <div class="form-floating mt-3">
-                    <input type="password" class="form-control" id="id_password" name="password"
-                      placeholder="contraseña" required v-model="password" />
-                    </i><label for="id_password"><i class="fa-solid fa-key fa-beat-fade"></i> Contraseña</label>
-                  </div>
-                  <div class="form-check mt-3">
-                    <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me"
-                      v-model="rememberme">
-                    <label class="form-check-label" for="remember_me">Recuérdame</label>
-                  </div>
-                  <div class="form-floating col mt-3 text-center">
-                    <button type="submit" class="btn btn-dark btn-block canter2"><i class="fa fa-sign-in"
-                        aria-hidden="true"></i>
-                      &nbsp; Iniciar Sesión</button>
-                  </div>
-                </form>
-                <div class="row">
-                  <div class="col mt-3 text-center">
-                    <a href="{% url 'validarCorreo' %}" class="link-secondary"> Olvido su contraseña ? </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+          <div class="card-header bg-dark text-white">
+            <h4 class="text-center mt-2 canter"><i class="fa fa-solid fa-user fa-2xl"></i></h4>
           </div>
 
+          <div class="card-body">
+            <form>
+
+              <div class="form-floating">
+                <input type="text" class="form-control" id="id_username" name="username" maxlength="150"
+                  placeholder="Usuario" required />
+                <label for="id_username"><i class="fa-solid fa-user fa-beat-fade"></i> Usuario</label>
+              </div>
+
+              <div class="form-floating mt-3">
+                <input type="password" class="form-control" id="id_password" name="password" placeholder="contraseña"
+                  required />
+                </i><label for="id_password"><i class="fa-solid fa-key fa-beat-fade"></i> Contraseña</label>
+              </div>
+              <div class="form-check mt-3">
+                <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me">
+                <label class="form-check-label" for="remember_me">Recuérdame</label>
+              </div>
+              <div class="form-floating col mt-3 text-center">
+                </body> <button type="button" class="btn btn-dark btn-block canter2" onclick="login()">
+                  <i class="fa fa-sign-in"></i>
+                  &nbsp; Iniciar Sesión</button>
+                <button type="submit" class="btn btn-dark btn-block canter2" data-bs-dismiss="modal" aria-label="Close">
+                  <i class="fa-solid fa-ban"></i>
+                  &nbsp; Cancelar </button>
+              </div>
+            </form>
+            <div class="row">
+              <div class="col mt-3 text-center">
+                <a href="{% url 'validarCorreo' %}" class="link-secondary"> Olvido su contraseña ? </a>
+              </div>
+            </div>
+          </div>
         </div>
+
+
       </div>
 
       <div class="row footer">
@@ -95,99 +56,11 @@
           <small><a
               href="https://www.freepik.es/vector-gratis/fondo-monocromatico-blanco-estilo-papel_15518074.htm#query=fondo&position=1&from_view=keyword&track=sph"
               class="link-dark">Imagen
-              de pikisuperstar</a> en Freepik
+              de pikisuperstar</a><span class="text-black"> en Freepik </span>
           </small>
         </div>
       </div>
     </div>
-  </section>
-  <script>
-    new Vue({
-      el: '#app',
-      data: {
-        loginVisible: false,
-        cardVisible: true,
-        username: '',
-        password: '',
-        rememberme: false
-      },
-      methods: {
-        toggleLogin() {
-          this.loginVisible = !this.loginVisible;
-          this.cardVisible = !this.cardVisible;
-        },
-        login() {
-          const formData = {
-            username: this.username,
-            password: this.password,
-            rememberme: this.rememberme
-          };
-          // Obtén el valor del CSRF token del formulario
-          const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-          // Configura Axios para incluir el CSRF token en el encabezado
-          axios.defaults.headers.common['X-CSRFToken'] = csrfToken;
-          axios.post('/api/v1.0/sesion_cliente/', formData)
-            .then(response => {
-              // Procesa la respuesta después del inicio de sesión exitoso
-              console.log(response);
-              Swal.fire({
-                position: 'center',
-                icon: 'success',
-                iconColor: '#2ECC71',
-                title: '¡Genial! ' + response.data.message,
-                showConfirmButton: true,
-                confirmButtonColor: '#17202A',
-                allowOutsideClick: false,
-              }).then(() => {
-                if (response.data.user.groups[0] === 2) {
+  </div>
 
-                }
-                //window.location.href = "{% url 'dashboard' %}";
-              });
-            })
-            .catch(error => {
-              // Maneja errores de inicio de sesión
-              console.error(error.response.data);
-              Swal.fire({
-                position: 'center',
-                icon: 'error',
-                title: 'Oops... ' + error.response.data.message,
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                timer: 2000
-              }).then(() => {
-                this.username = ""
-                this.password = ""
-                this.rememberme = false
-              })
-            });
-        }
-      }
-    });
-  </script>
-
-  <style>
-    /* Estilos para el spinner */
-    .loader {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #3498db;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 2s linear infinite;
-      display: block;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
-</body>
-
-</html>
+</div>

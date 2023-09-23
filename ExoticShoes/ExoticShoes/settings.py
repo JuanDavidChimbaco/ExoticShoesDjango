@@ -207,7 +207,7 @@ if DEBUG:
 LOGOUT_REDIRECT_URL = '/'
 
 # ruta la cual sera redirigido cuando caduque la sesion
-LOGIN_URL = 'login'
+LOGIN_URL = 'inicio_tienda'
 
 
 # AUTH_USER_MODEL = 'appExoticShoes.Usuario'
