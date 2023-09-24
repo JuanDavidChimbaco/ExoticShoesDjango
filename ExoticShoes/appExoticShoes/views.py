@@ -55,51 +55,58 @@ from .decorators import admin_required, client_required
 
 # ==================================================================
 # ========================== Api ViewSet ==========================
-# ------------------------testeado---------------------
+
+# [[ Uso para Administrador ]]
 class UsuariosViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuariosSerializer
     
-
+    
+# [[ Uso para Cliente]] 
 class ProductoPagination(PageNumberPagination):
-    page_size = 10  # Número de productos por página
+    page_size = 6  # Número de productos por página
     page_size_query_param = 'page_size'
-    max_page_size = 50  # Límite máximo de productos por página
+    max_page_size = 10  # Límite máximo de productos por página
     
-    
+# [[ Uso para Cliente]] 
 class ProductoPaginationViewSet(viewsets.ModelViewSet):
+    permission_classes = [AllowOnlyGET]
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
     pagination_class = ProductoPagination  # Asigna la paginación personalizada 
     
+# [[ Uso para Administrador ]]
 class CategoriaViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyAdminGroup]
     queryset = Categoria.objects.all()
-    serializer_class = CategoriaSerializer    
-
+    serializer_class = CategoriaSerializer 
+    
+       
+# [[ Uso para Cliente ]]
 class CategoriaViewSet2(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyGET]
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer    
     
-    
+# [[ Uso para Administrador]]
 class ProductoViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyAdminGroup]
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
     
+# [[ Uso para Cliente ]]
 class ProductoViewSetCliente(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyGET]
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
     
-
+# [[ Uso para Administrador ]]
 class TallaViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyAdminGroup]
     queryset = Talla.objects.all()
     serializer_class = TallaSerializer
     
-    
+# [[ Uso para Cliente ]]
 class RegistroClienteViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = Usuario.objects.all()
@@ -118,21 +125,6 @@ class RegistroClienteViewSet(viewsets.ModelViewSet):
             user.groups.add(cliente_group)
             return Response( {"message": "Usuario registrado exitosamente"},status=status.HTTP_201_CREATED,)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ProductosFiltradosPorCategoriaViewSet(viewsets.ModelViewSet):
-    permission_classes = [AllowOnlyGET]
-    serializer_class = ProductoSerializer
-    def get_queryset(self):
-        queryset = Producto.objects.filter(estado=True)
-        # Obtener el parámetro de ID de categoría de la URL
-        categoria_id = self.request.query_params.get("categoria_id", None)
-        if categoria_id:
-            queryset = queryset.filter(categoria_id=categoria_id)
-        return queryset
-    def perform_destroy(self, instance):
-        instance.estado = False
-        instance.save()
 
 
 class PedidosViewSet(viewsets.ModelViewSet):
@@ -294,6 +286,27 @@ class PasswordResetView(APIView):
 
 
 # ====================================================================================
+# ====================== Generic Api ======================
+class ProductosFiltradosPorCategoriaViewSet(generics.ListAPIView):
+    permission_classes = [AllowOnlyGET]
+    serializer_class = ProductoSerializer
+
+    def get_queryset(self):
+        categoria_id = self.kwargs.get("categoria_id")
+        if categoria_id:
+            queryset = Producto.objects.filter(estado=True, categoria_id=categoria_id)
+        else:
+            queryset = Producto.objects.none()  # No hay categoría proporcionada, devolvemos una lista vacía
+        return queryset
+
+    def perform_destroy(self, instance):
+        instance.estado = False
+        instance.save()
+        
+        
+        
+        
+# ====================================================================================
 # ====================== Vistas del Administrador (Sin-logearse)======================
 
 def redirect_to_login(request):
@@ -381,10 +394,8 @@ def inicio_Tienda(request):
 def loginCliente(request):
     return render(request, "cliente/login_cliente.html", {})
 
-
 def registroCliente(request):
     return render(request, "cliente/registro_cliente.html", {})
-
 
 def buscar_resultados(request):
     consulta = request.GET.get("q","")
@@ -396,10 +407,13 @@ def buscar_resultados(request):
 def inicioCliente(request):
     return render(request, "cliente/inicio_cliente.html", {})
 
+@client_required
+def perfilCliente(request):
+    return render(request, "tienda/perfil.html", {})
 
 def cerrar_sesion(request):
     logout(request)
-    return redirect("login_cliente/")
+    return redirect("inicio_tienda")
 
 # ===[template para respuestas 404]===
 def custom_404(request,exception):

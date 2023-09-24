@@ -65,6 +65,7 @@ urlpatterns = [
     path("login_cliente/", views.loginCliente, name="login_cliente"),
     path("inicio_cliente/", views.inicioCliente, name="inicio_cliente"),
     path("custom_logout/", views.cerrar_sesion, name="custom_logout"),
+    path("perfil_cliente/", views.perfilCliente, name="perfil_cliente"),
     path("inicio_tienda/", views.inicio_Tienda, name="inicio_tienda"),
     
     # perfil de usuario(Admin)
@@ -73,6 +74,7 @@ urlpatterns = [
     
     # filtros 
     path('api/v1.0/pedidos/<int:pedido_id>/detalles/', views.DetallePedidoPorPedidoView.as_view(), name='detallepedido-por-pedido'),
+    path('productos/categoria/<int:categoria_id>/', views.ProductosFiltradosPorCategoriaViewSet.as_view(), name='productos-por-categoria')
 ]
 handler404 = 'appExoticShoes.views.custom_404'
 

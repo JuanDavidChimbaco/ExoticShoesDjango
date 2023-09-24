@@ -3,6 +3,30 @@ window.addEventListener('load', function () {
     loaderWrapper.style.display = 'none';
 });
 
+window.onscroll = function () {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        var scrollToTop = document.querySelector('.scroll-to-top');
+        if (scrollToTop) {
+            scrollToTop.style.display = 'block';
+        }
+    } else {
+        var scrollToTop = document.querySelector('.scroll-to-top');
+        if (scrollToTop) {
+            scrollToTop.style.display = 'none';
+        }
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function () {
+    var scrollToTop = document.querySelector('.scroll-to-top');
+    if (scrollToTop) {
+        scrollToTop.addEventListener('click', function () {
+            document.body.scrollTop = 0; // Para navegadores antiguos
+            document.documentElement.scrollTop = 0; // Para navegadores modernos
+        });
+    }
+});
+
 function search() {
     fetch()
         .then((response) => response.json())
@@ -33,6 +57,36 @@ function filtrarproducto(element) {
     return name.includes(buscar.toLowerCase());
 }
 
+async function get_categories() {
+    let data = '';
+    let data2 = '';
+    try {
+        const response = await axios.get('/api/v1.0/categorias2');
+        response.data.forEach((category) => {
+            data += `
+                   <a class="categoriaitem" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" onclick="ProductsByCategory(${category.id})">
+                        <img src="${category.imagen}" alt="categoria" class="rounded-circle border border-opacity-25 border-secondary" width="100" height="100">
+                        <p class="fw-bold">${category.nombre}</p>
+                   </a>
+              `;
+        });
+        contenedorCategorias.innerHTML = data;
+    } catch (error) {
+        console.error(error);
+    }
+    try {
+        const response = await axios.get('/api/v1.0/categorias2');
+        response.data.forEach((category) => {
+            data2 += `
+                    <li><a class="dropdown-item" href="#">${category.nombre}</a></li>
+              `;
+        });
+        listaCategorias.innerHTML = data2;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 function viewLogin() {
     let login = document.getElementById('login');
     login.style.display = block;
@@ -59,16 +113,12 @@ async function login() {
             allowOutsideClick: false,
         }).then(() => {
             if (response.data.user.groups[0] === 2) {
-                console.log('logueado como cliente');
                 var miModal = document.getElementById('exampleModal');
-                let logeado = document.getElementById('logueado');
-                let noLogeado = document.getElementById('sinLoguear');
                 this.username = '';
                 this.password = '';
                 this.rememberme = false;
                 $(miModal).modal('hide');
-                noLogeado.style.display = none;
-                logeado.style.display = block;
+                location.reload();
             }
             if (response.data.user.groups[0] === 1) {
                 window.location.href = '/dashboard/';
@@ -90,3 +140,31 @@ async function login() {
         });
     }
 }
+
+async function ProductsByCategory(idCategoria) {
+    let productByCategory = document.getElementById('productosPorCategoria');
+    let data = '';
+    try {
+        const response = await axios.get(`/productos/categoria/${idCategoria}/`);
+        console.log(response.data);
+        response.data.forEach((product) => {
+            data += `
+                <div class="card producto-card" height="300">
+                    <img src="${product.imagen}" alt="producto" class="card-img-top" width="100" height="150">
+                    <div class="card-body">
+                        <h5 class="card-title">${product.nombre}</h5>
+                        <p class="card-text">${product.descripcion}</p>
+                        <p class="card-text">Precio: $${product.precio}</p>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-primary">Comprar</button>
+                    </div>
+                </div>
+        `;
+        });
+        productByCategory.innerHTML = data;
+    } catch (error) {}
+}
+
+//cargar las categorias apenas cargue el DOOM
+get_categories();
