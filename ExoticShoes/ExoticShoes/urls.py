@@ -77,6 +77,5 @@ urlpatterns = [
     path('productos/categoria/<int:categoria_id>/', views.ProductosFiltradosPorCategoriaViewSet.as_view(), name='productos-por-categoria')
 ]
 handler404 = 'appExoticShoes.views.custom_404'
-
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

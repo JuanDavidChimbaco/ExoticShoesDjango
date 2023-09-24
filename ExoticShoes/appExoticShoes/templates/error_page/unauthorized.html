@@ -1,6 +1,6 @@
-{% extends 'error_page/base_page.html' %}
-
-{% block contenido %}
+{% extends 'error_page/base_page.html' %} {% block title %}
+<title>Error Page Unauthorized</title>
+{% endblock %} {% block contenido_error %}
 <p>{{ auth_messaje }}</p>
 <p>Ingresa con una cuenta de Administrador</p>
 <p>
@@ -10,14 +10,15 @@
     function logout() {
         axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
         axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
-        axios.post('/custom_logout/', null)
-            .then(res => {
+        axios
+            .post('/custom_logout/', null)
+            .then((res) => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
             })
-            .catch(err => {
+            .catch((err) => {
                 console.error('Error al cerrar sesión:', err);
-            })
+            });
     }
 </script>
 {% endblock %}

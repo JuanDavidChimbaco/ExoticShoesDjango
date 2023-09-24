@@ -1,0 +1,15 @@
+@font-face {
+     font-family: canter;
+     src: url('../fonts/canter/Canter Light.otf');
+     font-size: medium;
+ }
+ @font-face {
+     font-family: canter-bold;
+     src: url('../fonts/canter/Canter Bold.otf');
+     font-weight: 600;
+ }
+ @font-face {
+     font-family: coves;
+     src: url('../fonts/Coves Typeface/Coves Light.otf');
+     font-size: medium;
+ }

@@ -1,0 +1,196 @@
+@import url('fonts.css');
+
+.headercolor {
+    background-color: #ffdbd6;
+}
+body{
+  font-family: coves;
+}
+nav {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    background-color: #fcdbd5;
+}
+
+.link {
+    text-decoration: none;
+    transition: all 0.5s;
+}
+
+.link:hover {
+    background-color: #fcdbd5;
+    border-radius: 5px;
+    transition: all 0.5s;
+}
+
+#contenedorCategorias {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+#contenedorCategorias::-webkit-scrollbar {
+    display: none;
+}
+
+.categoriaitem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #202020;
+}
+
+.producto-card {
+    transition: box-shadow 0.3s;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    width: 200px; /* Ancho de la tarjeta de producto */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+
+.producto-card:hover {
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilo para la pantalla de carga */
+.loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Asegura que esté por encima de otros elementos */
+}
+
+.loader {
+    border: 4px solid rgba(171, 57, 57, 0.924);
+    border-radius: 50%;
+    border-top: 4px solid #1c1d1e;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+/* Animación de rotación */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007BFF; /* Color de fondo del botón */
+    color: #fff; /* Color del texto */
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: none;
+    transition: background-color 0.3s ease;
+}
+
+.scroll-to-top a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.scroll-to-top:hover {
+    background-color: #0056b3; /* Color de fondo del botón al pasar el cursor */
+}
+
+#productosPorCategoria{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espacio entre los productos */
+    justify-content: space-around; /* Alineación horizontal en el centro */
+    padding: 20px; /* Espacio interior */
+}
+
+/* Estilos para los productos */
+#resultsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espacio entre los productos */
+    justify-content: space-around; /* Alineación horizontal en el centro */
+    padding: 20px; /* Espacio interior */
+  }
+  
+  .product-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    width: 200px; /* Ancho de la tarjeta de producto */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease; /* Transición en la propiedad transform */
+  }
+  
+  .product-card:hover {
+    box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
+    transform: translateY(-10px);
+}
+
+  .product-card img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Estilos para la paginación */
+  #paginationContainer {
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    margin-top: 20px; /* Espacio superior */
+    padding: 10px;
+  }
+  
+  .pagination {
+    list-style: none;
+    display: flex;
+    gap: 5px; /* Espacio entre los botones de paginación */
+  }
+  
+  .page-item {
+    display: flex;
+    align-items: center;
+  }
+  
+  .page-link {
+    text-decoration: none;
+    color: #333;
+    background-color: #eee;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .page-link:hover {
+    background-color: #ddd;
+  }
+
+  .none{
+    display: none;
+  }

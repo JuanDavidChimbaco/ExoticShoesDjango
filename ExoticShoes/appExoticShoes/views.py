@@ -228,7 +228,6 @@ class PerfilUsuarioAPIView(APIView):
         usuario = Usuario.objects.get(pk=request.user.pk)
         serializer = UsuariosSerializer(usuario)
         return Response(serializer.data)
-
     def put(self, request):
         # Actualizar el perfil del usuario autenticado
         usuario = request.user
@@ -335,47 +334,47 @@ def restPassword(request):
 
 @admin_required
 def dashboard(request):
-    return render(request, "dashboard.html", {})
+    return render(request, "administrador/dashboard.html", {})
 
 
 @admin_required
 def perfil_usuario(request):
-    return render(request, "perfil.html", {})
+    return render(request, "administrador/perfil.html", {})
 
 
 @admin_required
 def categorias(request):
-    return render(request, "frmCategorias.html", {})
+    return render(request, "administrador/frmCategorias.html", {})
 
 
 @admin_required
 def productos(request):
-    return render(request, "frmProductos.html", {})
+    return render(request, "administrador/frmProductos.html", {})
 
 
 @admin_required
 def tallas(request):
-    return render(request, "frmTallas.html", {})
+    return render(request, "administrador/frmTallas.html", {})
 
 
 @admin_required
 def pedidos(request):
-    return render(request, "frmPedidos.html", {})
+    return render(request, "administrador/frmPedidos.html", {})
 
 
 @admin_required
 def pagos(request):
-    return render(request, "frmPagos.html", {})
+    return render(request, "administrador/frmPagos.html", {})
 
 
 @admin_required
 def envios(request):
-    return render(request, "frmEnvios.html", {})
+    return render(request, "administrador/frmEnvios.html", {})
 
 
 @admin_required
 def devoluciones(request):
-    return render(request, "frmDevoluciones.html", {})
+    return render(request, "administrador/frmDevoluciones.html", {})
 
 
 @admin_required
@@ -385,11 +384,9 @@ def custom_logout(request):
 
 
 # ============================================================================
-# ================================ Cliente Tienda ====================================
-
-
+# ================================ Cliente Tienda ============================
 def inicio_Tienda(request):
-    return render(request, "tienda/index.html",{})
+    return render(request, "index.html",{})
 
 def loginCliente(request):
     return render(request, "cliente/login_cliente.html", {})
@@ -419,6 +416,11 @@ def cerrar_sesion(request):
 def custom_404(request,exception):
     return render(request, "error_page/404.html", {}, status=404)
 
+
+def pagina_no_encontrada(request):
+    # Puedes personalizar el mensaje de error aquí
+    mensaje_error = "La página que estás buscando no existe."
+    return render(request, 'error.html', {'mensaje_error': mensaje_error})
 # ========================================================================
 # ================================ Carrito (Prueba) ================================
 

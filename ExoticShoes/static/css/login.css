@@ -1,0 +1,46 @@
+@import url('fonts.css'); 
+
+.canter{
+    font-family: canter !important;
+    font-size: 2rem;
+}
+.canter2{
+    font-family: canter !important;
+    font-size: 1.5rem;
+}
+
+.card-button{
+    box-shadow: 10px 10px 5px 1px rgba(0, 0, 0, 0.50);
+    height: 100px;
+    width: auto;
+    background-color: black;
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.contenido{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../images/background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: coves !important;
+}
+
+.footer{
+    min-height: 10vh;
+    display: flex;
+    align-items: end;
+    font-size: 10px;
+}
+
+.card-button:hover{
+    cursor: pointer;
+}
+
+.cardLogin{
+    background-color: rgba(255, 255, 255, 0.7);
+}

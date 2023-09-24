@@ -31,7 +31,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -156,8 +155,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = os.path.join(BASE_DIR,'/static/')
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
 
 #para guardar archivos de multimedia 
 
@@ -174,19 +174,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
-    # este es para consumir desde el vue.js en el puerto 8080
-    "http://localhost:8080",
-    # el de mi casa
-    "http://192.168.100.9:8080",
-    # "http://127.0.0.1:50963",
-    "http://localhost:3000",
-    # el del sena red 4 
-    "http://10.192.66.170",
-    # el del sena 
-    "http://192.168.56.1:8000",
-    "http://10.192.66.185"
+    "http://*",
+    "https://*",
 ]
-
 
 # Configuración para enviar correos utilizando SMTP (Simple Mail Transfer Protocol)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -208,6 +198,5 @@ LOGOUT_REDIRECT_URL = '/'
 
 # ruta la cual sera redirigido cuando caduque la sesion
 LOGIN_URL = 'inicio_tienda'
-
 
 # AUTH_USER_MODEL = 'appExoticShoes.Usuario'
