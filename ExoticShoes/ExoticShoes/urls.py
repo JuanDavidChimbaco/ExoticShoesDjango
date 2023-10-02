@@ -17,18 +17,19 @@ from appExoticShoes import views
 # router para las rutas de la Api
 router = DefaultRouter()
 router.register(r"usuarios", views.UsuariosViewSet, basename="usuarios")
-router.register(r"carrito", views.CartViewSet, basename="carrito")
+router.register(r"categorias", CategoriaViewSet)
+router.register(r"productos", ProductoViewSet)
+router.register(r"tallas", TallaViewSet)
 router.register(r"pedidos", views.PedidosViewSet, basename="pedidos")
 router.register(r"detallePedidos", views.PedidoDetailViewSet, basename="detallePedido")
-router.register(r"pago", views.PagoViewSet, basename="pago")
 router.register(r"envio", views.EnvioViewSet, basename="envio")
+router.register(r"pago", views.PagoViewSet, basename="pago")
 router.register(r"devoluciones", views.DevolucionesViewSet, basename="devoluciones")
-router.register(r"categorias", CategoriaViewSet)
-router.register(r"categorias2", views.CategoriaViewSet2)
-router.register(r"productos", ProductoViewSet)
-router.register(r"productos2", views.ProductoViewSetCliente)
+router.register(r"carrito", views.CartViewSet, basename="carrito")
+router.register(r"categoriaCliente", views.CategoriaViewSetCliente)
+router.register(r"productosCliente", views.ProductoViewSetCliente)
+router.register(r"productosPaginacion2", views.ProductoViewSetClientePagination)
 router.register(r"productosPagination", views.ProductoPaginationViewSet)
-router.register(r"tallas", TallaViewSet)
 
 # lista de productos para la vista del cliente
 registro_cliente_view = views.RegistroClienteViewSet.as_view({"post": "create"})
@@ -61,12 +62,12 @@ urlpatterns = [
     path("resetPassword/", PasswordResetView.as_view(), name="resetPassword"),
     
     # login de usuarios (Cliente)
-    path("registro_cliente/", views.registroCliente, name="registro_cliente"),
-    path("login_cliente/", views.loginCliente, name="login_cliente"),
-    path("inicio_cliente/", views.inicioCliente, name="inicio_cliente"),
-    path("custom_logout/", views.cerrar_sesion, name="custom_logout"),
-    path("perfil_cliente/", views.perfilCliente, name="perfil_cliente"),
     path("inicio_tienda/", views.inicio_Tienda, name="inicio_tienda"),
+    path("perfil_cliente/", views.perfilCliente, name="perfil_cliente"),
+    # path("registro_cliente/", views.registroCliente, name="registro_cliente"),
+    # path("login_cliente/", views.loginCliente, name="login_cliente"),
+    # path("inicio_cliente/", views.inicioCliente, name="inicio_cliente"),
+    path("custom_logout/", views.cerrar_sesion, name="custom_logout"),
     
     # perfil de usuario(Admin)
     path("perfil/", views.perfil_usuario, name="perfil"),
@@ -74,7 +75,7 @@ urlpatterns = [
     
     # filtros 
     path('api/v1.0/pedidos/<int:pedido_id>/detalles/', views.DetallePedidoPorPedidoView.as_view(), name='detallepedido-por-pedido'),
-    path('productos/categoria/<int:categoria_id>/', views.ProductosFiltradosPorCategoriaViewSet.as_view(), name='productos-por-categoria')
+    path('productos/categoria/<int:categoria_id>/', views.ProductosFiltradosPorCategoriaViewSet.as_view(), name='productos-por-categoria') # productos por categoria
 ]
 handler404 = 'appExoticShoes.views.custom_404'
 if settings.DEBUG:

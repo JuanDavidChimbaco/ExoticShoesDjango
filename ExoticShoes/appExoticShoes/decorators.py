@@ -10,7 +10,7 @@ def admin_required(view_func):
             else:
                 mensaje = "No tienes permisos para acceder a esta página."
                 return render(request,"error_page/unauthorized.html",{"auth_messaje": mensaje},status=status.HTTP_403_FORBIDDEN)
-        return redirect("login")
+        return redirect("inicio_tienda")
 
     return _wrapped_view
 

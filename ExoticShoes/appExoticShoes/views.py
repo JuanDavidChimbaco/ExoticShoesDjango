@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import PageNumberPagination, LimitOffsetPagination
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.authtoken.models import Token
 from rest_framework_jwt.settings import api_settings
@@ -54,7 +54,7 @@ from .decorators import admin_required, client_required
 
 
 # ==================================================================
-# ========================== Api ViewSet ==========================
+# ========================== Api ViewSet ===========================
 
 # [[ Uso para Administrador ]]
 class UsuariosViewSet(viewsets.ModelViewSet):
@@ -64,7 +64,7 @@ class UsuariosViewSet(viewsets.ModelViewSet):
     
 # [[ Uso para Cliente]] 
 class ProductoPagination(PageNumberPagination):
-    page_size = 6  # Número de productos por página
+    page_size = 4  # Número de productos por página
     page_size_query_param = 'page_size'
     max_page_size = 10  # Límite máximo de productos por página
     
@@ -75,6 +75,13 @@ class ProductoPaginationViewSet(viewsets.ModelViewSet):
     serializer_class = ProductoSerializer
     pagination_class = ProductoPagination  # Asigna la paginación personalizada 
     
+# [[ Uso para Cliente]] 
+class ProductoViewSetClientePagination(viewsets.ModelViewSet):
+    permission_classes = [AllowOnlyGET]
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+    pagination_class = LimitOffsetPagination
+
 # [[ Uso para Administrador ]]
 class CategoriaViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyAdminGroup]
@@ -83,7 +90,7 @@ class CategoriaViewSet(viewsets.ModelViewSet):
     
        
 # [[ Uso para Cliente ]]
-class CategoriaViewSet2(viewsets.ModelViewSet):
+class CategoriaViewSetCliente(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyGET]
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer    
@@ -421,9 +428,10 @@ def pagina_no_encontrada(request):
     # Puedes personalizar el mensaje de error aquí
     mensaje_error = "La página que estás buscando no existe."
     return render(request, 'error.html', {'mensaje_error': mensaje_error})
+
+
 # ========================================================================
 # ================================ Carrito (Prueba) ================================
-
 class CartViewSet(viewsets.ModelViewSet):
     queryset = Cart.objects.all()
     serializer_class = CartSerializer

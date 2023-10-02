@@ -24,6 +24,8 @@ nav {
     transition: all 0.5s;
 }
 
+/* ===============================================[Categorias]============================================================== */
+/* Diseño para el contenedor de las categorias */
 #contenedorCategorias {
     display: flex;
     gap: 10px;
@@ -37,7 +39,7 @@ nav {
 #contenedorCategorias::-webkit-scrollbar {
     display: none;
 }
-
+/* Diseño de de cada item de la categoria */
 .categoriaitem {
     display: flex;
     flex-direction: column;
@@ -46,7 +48,7 @@ nav {
     text-decoration: none;
     color: #202020;
 }
-
+/* Carta de los productos traidos por categoria */
 .producto-card {
     transition: box-shadow 0.3s;
     border: 1px solid #ddd;
@@ -57,11 +59,19 @@ nav {
     text-align: center;
 }
 
-
 .producto-card:hover {
     box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.5);
 }
 
+#productosPorCategoria{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Espacio entre los productos */
+  justify-content: space-around; /* Alineación horizontal en el centro */
+  padding: 20px; /* Espacio interior */
+}
+
+/* ======================================[Loader o pantalla de carga]============================================================ */
 /* Estilo para la pantalla de carga */
 .loader-wrapper {
     position: fixed;
@@ -93,7 +103,7 @@ nav {
     100% { transform: rotate(360deg); }
 }
 
-
+/* ==================================[Boton para volver a la parte superior]================================================ */
 .scroll-to-top {
     position: fixed;
     bottom: 20px;
@@ -120,32 +130,29 @@ nav {
     background-color: #0056b3; /* Color de fondo del botón al pasar el cursor */
 }
 
-#productosPorCategoria{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px; /* Espacio entre los productos */
-    justify-content: space-around; /* Alineación horizontal en el centro */
-    padding: 20px; /* Espacio interior */
-}
 
+/* ============================[Productos paginados]=============================================== */
 /* Estilos para los productos */
-#resultsContainer {
+#productosContainer {
     display: flex;
     flex-wrap: wrap;
     gap: 20px; /* Espacio entre los productos */
     justify-content: space-around; /* Alineación horizontal en el centro */
     padding: 20px; /* Espacio interior */
+    background-color: red;
   }
   
+
+  /* Card de los productos paginados */
   .product-card {
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 10px;
-    width: 200px; /* Ancho de la tarjeta de producto */
+    width: 200px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     text-align: center;
     cursor: pointer;
-    transition: transform 0.3s ease; /* Transición en la propiedad transform */
+    transition: transform 0.3s ease;
   }
   
   .product-card:hover {
@@ -164,6 +171,7 @@ nav {
     justify-content: center; /* Centrar horizontalmente */
     margin-top: 20px; /* Espacio superior */
     padding: 10px;
+    background-color: green;
   }
   
   .pagination {
@@ -194,3 +202,24 @@ nav {
   .none{
     display: none;
   }
+
+/* ============================[Busqueda de productos]=============================================== */
+
+element.style {
+  position: absolute;
+  top: 38px;
+  right: 210px;
+  width: 30%;
+  z-index: 2000;
+  height: 600px;
+  overflow: auto;
+}
+
+/* ============================[Foco del buscador]=============================================== */
+.form-control:focus {
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  border-color: #f27474;
+  outline: 0;
+  box-shadow: 0 0 0 1px #f27474;
+}

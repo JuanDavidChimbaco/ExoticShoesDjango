@@ -27,41 +27,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-function search() {
-    fetch()
-        .then((response) => response.json())
-        .then((data) => {
-            let buscar = document.getElementById('search').value;
-            if (buscar.length >= 2) {
-                document.getElementById('list-producto').classList.remove('hide');
-                let List = '<div class="List-group">';
-                const filtroproducto = data.results.filter(filtrarproducto);
-                filtroproducto.forEach((producto) => {
-                    iconoproducto(producto.url);
-                    list += `<a onlcick="detalleproducto(${'producto.url'})" href="/nav.html" class="list-group-item list-group-item-action"> <img id="icono${pokemon.name}"> ${
-                        producto.name
-                    }</a>`;
-                });
-                list += '</div>';
-                document.getElementById('List-product').innerHTML = list;
-            } else {
-                document.getElementById('list-producto').innerHTML = '';
-                document.getElementById('list-producto').classList.add('hide');
-            }
-        });
-}
-
-function filtrarproducto(element) {
-    let buscar = document.getElementById('search').value;
-    let name = element.name;
-    return name.includes(buscar.toLowerCase());
-}
-
 async function get_categories() {
     let data = '';
     let data2 = '';
     try {
-        const response = await axios.get('/api/v1.0/categorias2');
+        const response = await axios.get('/api/v1.0/categoriaCliente/');
         response.data.forEach((category) => {
             data += `
                    <a class="categoriaitem" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" onclick="ProductsByCategory(${category.id})">
@@ -69,19 +39,12 @@ async function get_categories() {
                         <p class="fw-bold">${category.nombre}</p>
                    </a>
               `;
-        });
-        contenedorCategorias.innerHTML = data;
-    } catch (error) {
-        console.error(error);
-    }
-    try {
-        const response = await axios.get('/api/v1.0/categorias2');
-        response.data.forEach((category) => {
             data2 += `
-                    <li><a class="dropdown-item" href="#">${category.nombre}</a></li>
-              `;
+              <li><a class="dropdown-item" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" onclick="ProductsByCategory(${category.id})"> ${category.nombre}</a></li>
+        `;
         });
         listaCategorias.innerHTML = data2;
+        contenedorCategorias.innerHTML = data;
     } catch (error) {
         console.error(error);
     }
@@ -146,13 +109,12 @@ async function ProductsByCategory(idCategoria) {
     let data = '';
     try {
         const response = await axios.get(`/productos/categoria/${idCategoria}/`);
-        console.log(response.data);
         response.data.forEach((product) => {
             data += `
                 <div class="card producto-card" height="300">
+                <h3>${product.nombre}</h3>
+                <div class="card-body">
                     <img src="${product.imagen}" alt="producto" class="card-img-top" width="100" height="150">
-                    <div class="card-body">
-                        <h5 class="card-title">${product.nombre}</h5>
                         <p class="card-text">${product.descripcion}</p>
                         <p class="card-text">Precio: $${product.precio}</p>
                     </div>
@@ -163,8 +125,64 @@ async function ProductsByCategory(idCategoria) {
         `;
         });
         productByCategory.innerHTML = data;
-    } catch (error) {}
+
+    } catch (error) { }
 }
+
+//-------------------Funcion de Autocompletado ------------------
+function autoCompletePokemon() {
+    fetch(`/api/v1.0/productosPaginacion2/?limit=100offset=0`)
+        .then(response => response.json())
+        .then(data => {
+            let textoBuscar = document.getElementById("txtBuscar").value
+            if (textoBuscar.length >= 2) {
+                let lista = `<div class='list-group'>`
+                let filtroPokemon = data.filter(filtrarPokemon)
+                filtroPokemon.forEach(element => {
+                    iconoProducto(element.id)
+                    lista += `<a class='list-group-item list-group-item-action'>${element.nombre} <img id="icono${element.imagen}" style="width:20%"></a>`
+                });
+                lista += `</div>`
+                document.getElementById("listaProductos").innerHTML = lista
+                document.getElementById("listaProductos").style = `position:absolute;top:38px;width:100%;z-index:2000; height:600px;overflow:auto;`
+            }
+            if (textoBuscar == 0) {
+                document.getElementById("listaProductos").innerHTML = ""
+            }
+        })
+
+}
+
+//-------------------Funcion Filtrar Pokemon------------------
+function filtrarPokemon(element) {
+    let textoBuscar = document.getElementById("txtBuscar").value
+    let nombre = element.nombre
+    return nombre.includes(textoBuscar.toLowerCase())
+}
+
+//------------------Funcion Icono Pokemon---------------------
+function iconoProducto(id) {
+    fetch('/api/v1.0/productosCliente/'+id)        
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById(`icono${data.imagen}`).src = data.imagen
+        })
+}
+
+//___________________Guardar en LocalStorage Detalle Pokemon---------------------------
+function detallePokemon(urlPokemon) {
+    localStorage.urlDetalle = urlPokemon
+}
+
+//-----------------Funcion Evento Boton del Input search---------------------------------------
+function searchPokemon() {
+    document.getElementById("txtBuscar").addEventListener("search", (_event) => {
+        document.getElementById("listaProductos").innerHTML = "";
+        document.getElementById("listaProductos").style = "overflow:hidden";
+        document.getElementById("txtBuscar").value = "";
+    })
+}
+
 
 //cargar las categorias apenas cargue el DOOM
 get_categories();
