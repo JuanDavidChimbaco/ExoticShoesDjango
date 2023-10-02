@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Productos</title>
+</head>
+<body>
+    <h1>Lista de Productos</h1>
+    
+    <ul>
+        {% for producto in productos %}
+            <li>
+                <strong>{{ producto.nombre }}</strong><br>
+                Precio: ${{ producto.precio }}<br>
+                Descripción: {{ producto.descripción }}<br>
+                <a href="{% url %}">Agregar al carrito</a>
+            </li>
+        {% empty %}
+            <li>No hay productos disponibles.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Carrito de Compras</h2>
+    <ul>
+        <!-- Mostrar los productos en el carrito de compras aquí -->
+    </ul>
+
+    <a href="#">Realizar Pedido</a> <!-- Enlace para realizar el pedido -->
+</body>
+</html>

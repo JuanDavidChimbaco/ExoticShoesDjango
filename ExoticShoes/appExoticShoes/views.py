@@ -17,6 +17,7 @@ from django.db.models import Q, Max
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, Group
 from django.http import JsonResponse
+from .models import Producto,Pedido
 
 # =============================== Otros ===============================
 import os
@@ -106,6 +107,12 @@ class ProductoViewSetCliente(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyGET]
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
+    
+# [[ Uso para Clientes ]]
+class TallaViewSetCliente(viewsets.ModelViewSet):
+    permission_classes = [AllowOnlyGET]
+    queryset = Talla.objects.all()
+    serializer_class = TallaSerializer
     
 # [[ Uso para Administrador ]]
 class TallaViewSet(viewsets.ModelViewSet):
@@ -395,33 +402,58 @@ def custom_logout(request):
 def inicio_Tienda(request):
     return render(request, "index.html",{})
 
-def loginCliente(request):
-    return render(request, "cliente/login_cliente.html", {})
+def detalleProduto(request):
+    return render(request, "tienda/detalle.html")
 
-def registroCliente(request):
-    return render(request, "cliente/registro_cliente.html", {})
+# def confirmar_pedido(request):
+#     #obtener productoos y tallas seleccionadas por el usuario desde la sesion/formulario
+#     productos_seleccionados = request.session.get('productos_seleccionados',[])
+    
+#     #crear una instancia
+#     Pedido = Pedido.objectscreate(total=0)
+    
+#     for producto_id, tallas_seleccionados in productos_seleccionados.items():
+    
+     
+# def listar_produto(request):
+#     productos = productos.objects.all()
+#     return render(request,'listar_productos.html',{'productos':productos})
 
-def buscar_resultados(request):
-    consulta = request.GET.get("q","")
-    #realiza la busqueda en la base de datos o en el lugar de origen
-    resultados = ["Resultado 1", "Resultado 2","Resultado 3"] #ejemplo
-    return JsonResponse(resultados, safe=False)
+# def agregar_carrito(request, producto_id):
+#     Producto = Producto.objects.get(id=producto_id)
+#     pedido = pedido.objects.create(total=0)
+#     pedido.productos.add(productos)
+#     pedido.save()
+#     return redirect('listar_prouctos')
 
-@client_required
-def inicioCliente(request):
-    return render(request, "cliente/inicio_cliente.html", {})
+# def realizar_pedido(request, pedido_id):
+#     pedido = pedido.objects.get(id=pedido_id)
+#     total = sum(producto.precio for producto in pedido.productos.all())
+#     pedido.total = total
+#     pedido.save()
+#     return redirect('listar_productos')
+# def loginCliente(request):
+#     return render(request, "cliente/login_cliente.html", {})
+
+# def registroCliente(request):
+#     return render(request, "cliente/registro_cliente.html", {})
+
+# @client_required
+# def inicioCliente(request):
+#     return render(request, "cliente/inicio_cliente.html", {})
 
 @client_required
 def perfilCliente(request):
     return render(request, "tienda/perfil.html", {})
 
+@client_required
 def cerrar_sesion(request):
     logout(request)
     return redirect("inicio_tienda")
 
 # ===[template para respuestas 404]===
 def custom_404(request,exception):
-    return render(request, "error_page/404.html", {}, status=404)
+    return render(request, "error_page/404.html", {}, status= 404)
 
 
 def pagina_no_encontrada(request):

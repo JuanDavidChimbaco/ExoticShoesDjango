@@ -61,6 +61,11 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+# Tiempo de sesión en segundos (30 minutos) por defecto
+SESSION_COOKIE_AGE = 8 * 60 * 60 # 8 horas
+
+# la sesion se cierra si se cierra el navegador (True, para activar): 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # Tiempo de vida del token de acceso (60 minutos por defecto)
@@ -83,11 +88,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'ExoticShoes.urls'
 
-# Tiempo de sesión en segundos (30 minutos) por defecto
-SESSION_COOKIE_AGE = 8 * 60 * 60 # 8 horas
-
-# la sesion se cierra si se cierra el navegador (True, para activar): 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 TEMPLATES = [
     {

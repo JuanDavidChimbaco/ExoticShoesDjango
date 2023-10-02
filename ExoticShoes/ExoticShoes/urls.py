@@ -30,6 +30,7 @@ router.register(r"categoriaCliente", views.CategoriaViewSetCliente)
 router.register(r"productosCliente", views.ProductoViewSetCliente)
 router.register(r"productosPaginacion2", views.ProductoViewSetClientePagination)
 router.register(r"productosPagination", views.ProductoPaginationViewSet)
+router.register(r"tallasCliente", views.TallaViewSetCliente)
 
 # lista de productos para la vista del cliente
 registro_cliente_view = views.RegistroClienteViewSet.as_view({"post": "create"})
@@ -48,6 +49,7 @@ urlpatterns = [
     path("frmDevoluciones/", views.devoluciones, name="devoluciones"),
     path("api/login/", views.custom_login, name="api-login"),
     path("logout/", views.custom_logout, name="logout"),
+    # path('pedidos/', include('pedidos.urls')),
     
     # rutas de la Api
     path("api/v1.0/", include(router.urls)),
@@ -64,6 +66,7 @@ urlpatterns = [
     # login de usuarios (Cliente)
     path("inicio_tienda/", views.inicio_Tienda, name="inicio_tienda"),
     path("perfil_cliente/", views.perfilCliente, name="perfil_cliente"),
+    path("detalle_producto/", views.detalleProduto, name="detalle_producto"),
     # path("registro_cliente/", views.registroCliente, name="registro_cliente"),
     # path("login_cliente/", views.loginCliente, name="login_cliente"),
     # path("inicio_cliente/", views.inicioCliente, name="inicio_cliente"),

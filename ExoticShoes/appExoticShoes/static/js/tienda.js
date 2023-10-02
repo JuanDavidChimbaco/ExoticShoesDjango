@@ -114,7 +114,7 @@ async function ProductsByCategory(idCategoria) {
                 <div class="card producto-card" height="300">
                 <h3>${product.nombre}</h3>
                 <div class="card-body">
-                    <img src="${product.imagen}" alt="producto" class="card-img-top" width="100" height="150">
+                    <img src="${product.imagen}" alt="producto" class="card-img-top " width="100" height="150">
                         <p class="card-text">${product.descripcion}</p>
                         <p class="card-text">Precio: $${product.precio}</p>
                     </div>
@@ -130,17 +130,17 @@ async function ProductsByCategory(idCategoria) {
 }
 
 //-------------------Funcion de Autocompletado ------------------
-function autoCompletePokemon() {
+function autoComplete() {
     fetch(`/api/v1.0/productosPaginacion2/?limit=100offset=0`)
         .then(response => response.json())
         .then(data => {
             let textoBuscar = document.getElementById("txtBuscar").value
             if (textoBuscar.length >= 2) {
                 let lista = `<div class='list-group'>`
-                let filtroPokemon = data.filter(filtrarPokemon)
-                filtroPokemon.forEach(element => {
+                let filtroProducto = data.filter(filtrarP)
+                filtroProducto.forEach(element => {
                     iconoProducto(element.id)
-                    lista += `<a class='list-group-item list-group-item-action'>${element.nombre} <img id="icono${element.imagen}" style="width:20%"></a>`
+                    lista += `<a class='list-group-item list-group-item-action' href="#" onclick="${detalleP(element.id)}">${element.nombre} <img id="icono${element.imagen}" style="width:20%"></a>`
                 });
                 lista += `</div>`
                 document.getElementById("listaProductos").innerHTML = lista
@@ -154,7 +154,7 @@ function autoCompletePokemon() {
 }
 
 //-------------------Funcion Filtrar Pokemon------------------
-function filtrarPokemon(element) {
+function filtrarP(element) {
     let textoBuscar = document.getElementById("txtBuscar").value
     let nombre = element.nombre
     return nombre.includes(textoBuscar.toLowerCase())
@@ -170,17 +170,8 @@ function iconoProducto(id) {
 }
 
 //___________________Guardar en LocalStorage Detalle Pokemon---------------------------
-function detallePokemon(urlPokemon) {
-    localStorage.urlDetalle = urlPokemon
-}
-
-//-----------------Funcion Evento Boton del Input search---------------------------------------
-function searchPokemon() {
-    document.getElementById("txtBuscar").addEventListener("search", (_event) => {
-        document.getElementById("listaProductos").innerHTML = "";
-        document.getElementById("listaProductos").style = "overflow:hidden";
-        document.getElementById("txtBuscar").value = "";
-    })
+function detalleP(id) {
+    localStorage.productoEncontrado = id
 }
 
 

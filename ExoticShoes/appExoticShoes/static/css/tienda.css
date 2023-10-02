@@ -10,7 +10,7 @@ nav {
     background-color: #333;
     color: #fff;
     padding: 10px;
-    background-color: #fcdbd5;
+    background-color: transparent;
 }
 
 .link {
@@ -139,7 +139,7 @@ nav {
     gap: 20px; /* Espacio entre los productos */
     justify-content: space-around; /* Alineación horizontal en el centro */
     padding: 20px; /* Espacio interior */
-    background-color: red;
+    background-color: transparent;
   }
   
 
@@ -153,6 +153,11 @@ nav {
     text-align: center;
     cursor: pointer;
     transition: transform 0.3s ease;
+  }
+
+  .linkCard{
+    text-decoration: none;
+    color: #202020;
   }
   
   .product-card:hover {
@@ -171,7 +176,7 @@ nav {
     justify-content: center; /* Centrar horizontalmente */
     margin-top: 20px; /* Espacio superior */
     padding: 10px;
-    background-color: green;
+    background-color: transparent   ;
   }
   
   .pagination {
@@ -222,4 +227,12 @@ element.style {
   border-color: #f27474;
   outline: 0;
   box-shadow: 0 0 0 1px #f27474;
+}
+
+.contenido{
+  background-image: url('../images/background.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  font-family: coves !important;
 }

@@ -14,7 +14,6 @@ function cargarPagina(page) {
     fetch(`http://127.0.0.1:8000/api/v1.0/productosPagination/?page=${page}`)
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
             mostrarResultadosEnHTML(data.results);
             currentPage = page; // Actualiza la página actual
             actualizarPaginacion(data.next, data.previous);
@@ -34,14 +33,22 @@ function mostrarResultadosEnHTML(resultados) {
         resultados.forEach((producto) => {
             // Crea elementos HTML para mostrar la información del producto
             const productoDiv = $('<div>').addClass('product-card'); // Agrega una clase
+            const productoJSON = JSON.stringify(producto); // Serializa el objeto a JSON
             productoDiv.html(`
+                <a class="linkCard" onclick="productoSeleccionado(${producto.id})">
                 <h3>${producto.nombre}</h3>
                 <p>Precio: $${parseFloat(producto.precio).toFixed(2)}</p>
-                <img src="${producto.imagen}" alt="${producto.nombre}" style="max-width: 100%; height: 250px;"/>
+                <img src="${producto.imagen}" alt="${producto.nombre}" style="max-width: 100%; height: 250px;" class="rounded" />
+                </a>
             `);
             productosContainer.append(productoDiv);
-        });
+        });  
     }
+}
+
+function productoSeleccionado(id) {
+    localStorage.setItem('productoSeleccionado', id);
+    window.location.href = `/detalle_producto?id=${id}`;
 }
 
 // Función para actualizar la paginación
