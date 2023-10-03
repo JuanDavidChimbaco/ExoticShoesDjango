@@ -111,8 +111,13 @@ class ProductoViewSetCliente(viewsets.ModelViewSet):
 # [[ Uso para Clientes ]]
 class TallaViewSetCliente(viewsets.ModelViewSet):
     permission_classes = [AllowOnlyGET]
-    queryset = Talla.objects.all()
     serializer_class = TallaSerializer
+    def get_queryset(self):
+        # Obtén el ID del producto de la URL (supongamos que la URL tiene un parámetro llamado 'producto_id')
+        producto_id = self.kwargs.get('producto_id')
+        # Filtra las tallas por el ID del producto
+        queryset = Talla.objects.filter(producto__id=producto_id)
+        return queryset
     
 # [[ Uso para Administrador ]]
 class TallaViewSet(viewsets.ModelViewSet):
@@ -457,7 +462,6 @@ def custom_404(request,exception):
 
 
 def pagina_no_encontrada(request):
-    # Puedes personalizar el mensaje de error aquí
     mensaje_error = "La página que estás buscando no existe."
     return render(request, 'error.html', {'mensaje_error': mensaje_error})
 

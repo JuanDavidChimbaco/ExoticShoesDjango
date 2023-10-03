@@ -19,13 +19,27 @@ if (idProducto) {
             console.log(producto)
             const detallesProductoElement = document.getElementById('detallesProducto');
             detallesProductoElement.innerHTML = `
-            <div class="card text-center">
-            <div class="card-body">
-                <h3 class="card-title">${producto.nombre}</h3>
-                <p class="card-text">Precio: $${parseFloat(producto.precio).toFixed(2)}</p>
-                <img src="${producto.imagen}" alt="${producto.nombre}" class="img-fluid rounded" style="max-width: 100%; height: 400px;" />
+            <div class="container">
+                <div class="row shadow">
+                    <div class="col-md-6">
+                        <img src="${producto.imagen}" alt="${producto.nombre}" class="img-fluid rounded" style="max-width: 100%; height: 400px;" />
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow" style="height: 400px;">
+                            <div class="card-body">
+                                <h3 class="card-title text-primary">${producto.nombre}</h3>
+                                <p class="card-text">
+                                    <strong>Precio:</strong> $${parseFloat(producto.precio).toFixed(2)}
+                                </p>
+                                <p class="card-text">
+                                    <strong>Descripción:</strong> ${producto.descripcion}
+                                </p>
+                                <button class="btn btn-warning">Comprar Ahora</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
             `;
         })
         .catch((error) => {

@@ -30,7 +30,7 @@ router.register(r"categoriaCliente", views.CategoriaViewSetCliente)
 router.register(r"productosCliente", views.ProductoViewSetCliente)
 router.register(r"productosPaginacion2", views.ProductoViewSetClientePagination)
 router.register(r"productosPagination", views.ProductoPaginationViewSet)
-router.register(r"tallasCliente", views.TallaViewSetCliente)
+router.register(r"tallasCliente", views.TallaViewSetCliente, basename="tallasClientes")
 
 # lista de productos para la vista del cliente
 registro_cliente_view = views.RegistroClienteViewSet.as_view({"post": "create"})
