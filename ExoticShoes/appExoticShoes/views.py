@@ -117,6 +117,7 @@ class TallaViewSetCliente(viewsets.ModelViewSet):
         producto_id = self.kwargs.get('producto_id')
         # Filtra las tallas por el ID del producto
         queryset = Talla.objects.filter(producto__id=producto_id)
+        pass
         return queryset
     
 # [[ Uso para Administrador ]]
@@ -411,13 +412,26 @@ def detalleProduto(request):
     return render(request, "tienda/detalle.html")
 
 # def confirmar_pedido(request):
-#     #obtener productoos y tallas seleccionadas por el usuario desde la sesion/formulario
+#      #obtener productoos y tallas seleccionadas por el usuario desde la sesion/formulario
 #     productos_seleccionados = request.session.get('productos_seleccionados',[])
     
-#     #crear una instancia
+# #     #crear una instancia
 #     Pedido = Pedido.objectscreate(total=0)
     
 #     for producto_id, tallas_seleccionados in productos_seleccionados.items():
+#         Producto = Producto.objects.get(id = Producto.id)
+        
+#         for talla_id, cantidad in tallas_seleccionados.items():
+#             talla = talla.objects.get(id=talla_id)
+            
+#             if talla.cantidad >= cantidad:
+#                 talla.cantidad -= cantidad
+#                 talla.save()
+#             else:
+                 # Manejar el caso en el que no haya suficiente cantidad disponible.
+
+            #Pedido.producto.add(producto)
+            
     
      
 # def listar_produto(request):
