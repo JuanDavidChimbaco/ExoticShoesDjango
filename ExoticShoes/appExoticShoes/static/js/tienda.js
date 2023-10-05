@@ -119,7 +119,7 @@ async function ProductsByCategory(idCategoria) {
                         <p class="card-text">Precio: $${product.precio}</p>
                     </div>
                     <div class="card-footer">
-                        <button type="button" class="btn btn-primary">Comprar</button>
+                        <button type="button" class="btn btn-primary" onclick="">Detalle</button>
                     </div>
                 </div>
         `;
@@ -128,6 +128,9 @@ async function ProductsByCategory(idCategoria) {
 
     } catch (error) { }
 }
+
+
+
 
 //-------------------Funcion de Autocompletado ------------------
 function autoComplete() {
