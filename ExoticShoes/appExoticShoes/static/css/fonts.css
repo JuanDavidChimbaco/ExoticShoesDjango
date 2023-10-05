@@ -13,3 +13,9 @@
      src: url('../fonts/Coves Typeface/Coves Light.otf');
      font-size: medium;
  }
+
+ @font-face {
+    font-family: lucida-handwriting-italic;
+    src: url('../fonts/Lucida Handwriting Italic/lucida handwriting italic.ttf');
+    font-size: medium;
+ }

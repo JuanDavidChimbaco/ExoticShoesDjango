@@ -40,9 +40,18 @@
 
     <header>
         <div class="container-fluid mb-2">
-            <div class="row rounded-bottom headercolor">
-                <div class="col text-center">
-                    <img src="{% static 'images/svg/image.svg' %}" alt="logo" width="200" class="p-2" />
+            <div class="row rounded-bottom headercolor bg-dark">
+                <div class="col d-flex align-items-center">
+                    <img src="{% static 'images/svg/logo2.svg' %}" alt="logo" width="70" class="w-100" />
+                </div>
+                <div class="col d-flex  align-items-center">
+                    <span class="text-white"><marquee behavior="" direction="left">Adrile Boutique</marquee></span> 
+                </div>
+                <div class="col d-flex align-items-center">
+                    <span class="text-white">Los Mejores Precios !!!</span>
+                </div>
+                <div class="col d-flex  align-items-center">
+                    <i class="fa fa-shoe-prints text-white fa-2x"></i>
                 </div>
             </div>
         </div>
@@ -120,6 +129,10 @@
     </header>
 
     <main>
+        {% block content_main %}
+        <div>
+            {% include 'tienda/section2.html'%}
+        </div>
         <div class="mt-2" id="contenedorCategorias">
             <!-- contenido categorias -->
         </div>
@@ -129,8 +142,6 @@
                 <!-- productos por categoria  -->
             </div>
         </div>
-        {% block content_main %}
-        
 
         <div id="productosContainer" class="contenido"></div>
         <div id="paginationContainer"></div>
