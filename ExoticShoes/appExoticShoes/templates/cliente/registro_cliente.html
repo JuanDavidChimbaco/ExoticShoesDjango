@@ -1,64 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <title>Document</title>
-</head>
-<body>
-    <div>
-        <form action="" id="registroForm" method="post" enctype="multipart/form-data">
-            <label for="">username:</label>
-            <input type="text" name="username" id="username">
-            <label for="">password</label>
-            <input type="text" name="password" id="password">
-            <label for="">nombre</label>
-            <input type="text" name="first_name" id="first_name">
-            <label for="">apellido</label>
-            <input type="text" name="last_name" id="last_name">
-            <label for="">correo</label>
-            <input type="email" name="email" id="email" >
-            <label for="">telefono</label>
-            <input type="text" name="telefono" id="telefono">
-            <label for="">fecha nacimineto</label>
-            <input type="date" name="fechaNacimiento" id="fechaNacimiento" >
-            <label for="">direccion</label>
-            <input type="text" name="direccion" id="direccion">
-            <input type="file" name="fotoPerfil" id="fotoPerfil" >
-            <input type="button" onclick="registro()" value="registrar">
-        </form>
+{% extends 'index.html '%}
+{% block content_main%}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-body">
+            <h5 class="card-title">Registro</h5>
+            <form action="" id="registroForm" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username:</label>
+                            <input type="text" class="form-control" name="username" id="username">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password:</label>
+                            <input type="password" class="form-control" name="password" id="password">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="first_name" class="form-label">Nombre:</label>
+                            <input type="text" class="form-control" name="first_name" id="first_name">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Apellido:</label>
+                            <input type="text" class="form-control" name="last_name" id="last_name">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo:</label>
+                            <input type="email" class="form-control" name="email" id="email">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="telefono" class="form-label">Teléfono:</label>
+                            <input type="tel" class="form-control" name="telefono" id="telefono">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento:</label>
+                            <input type="date" class="form-control" name="fechaNacimiento" id="fechaNacimiento">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="mb-3">
+                            <label for="direccion" class="form-label">Dirección:</label>
+                            <input type="text" class="form-control" name="direccion" id="direccion">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="fotoPerfil" class="form-label">Foto de Perfil:</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" name="fotoPerfil" id="fotoPerfil">
+                        <label class="input-group-text" for="btnCargarFoto" style="background-color: #f8f9fa;">
+                            <i class="bi bi-upload"></i> Cargar
+                        </label>
+                        <input type="file" class="form-control d-none" id="btnCargarFoto">
+                    </div>
+                    <small class="form-text text-muted">Selecciona una imagen para tu foto de perfil.</small>
+                </div>
+                
+                <input type="button" onclick="registro()" class="btn btn-outline-primary" value="registrar">
+            </form>
+        </div>
     </div>
-    
-    <script>
-        function registro(){
-            const fotoPerfil = document.getElementById('fotoPerfil').files[0];
-            const formData = new FormData();
-            formData.append('username', username.value);
-            formData.append('password', password.value);
-            formData.append('first_name', first_name.value);
-            formData.append('last_name', last_name.value);
-            formData.append('email', email.value);
-            formData.append('telefono', telefono.value);
-            formData.append('fechaNacimiento', fechaNacimiento.value);
-            formData.append('direccion', direccion.value);
-            formData.append('fotoPerfil', fotoPerfil, fotoPerfil.name);
-            axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
-            axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
-            axios.post('/api/v1.0/registro_cliente/', formData,{
-                headers: {
-                    'Content-Type': 'multipart/form-data', // Asegurarse de establecer el tipo de contenido adecuado
-                },
-            })
-            .then(res => {
-                console.log(res);
-                alert(res.status)
-                window.location.href = "/login_cliente/"
-            })
-            .catch(err => {
-                console.error(err);
-            })
+</div>
+
+<script>
+    function registro() {
+        const fotoPerfilInput = document.getElementById('fotoPerfil');
+        if (!fotoPerfilInput || !fotoPerfilInput.files[0]) {
+            // Mostrar un mensaje de error si no se selecciona un archivo
+            Swal.fire({
+                title: 'Error',
+                text: 'Selecciona una foto de perfil antes de continuar.',
+                icon: 'error',
+            });
+            return; // Salir de la función si no hay archivo seleccionado
         }
+    
+        const fotoPerfil = fotoPerfilInput.files[0];
+        const formData = new FormData();
+        formData.append('username', username.value);
+        formData.append('password', password.value);
+        formData.append('first_name', first_name.value);
+        formData.append('last_name', last_name.value);
+        formData.append('email', email.value);
+        formData.append('telefono', telefono.value);
+        formData.append('fechaNacimiento', fechaNacimiento.value);
+        formData.append('direccion', direccion.value);
+        formData.append('fotoPerfil', fotoPerfil, fotoPerfil.name);
+    
+        axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
+        axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
+        axios.post('/api/v1.0/registro_cliente/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data', // Asegurarse de establecer el tipo de contenido adecuado
+            },
+        })
+        .then(res => {
+            // Convertir la respuesta a JSON y mostrar mensaje de éxito con Swal
+            const responseJson = JSON.stringify(res.data);
+            Swal.fire({
+                title: 'Éxito',
+                text: responseJson,
+                icon: 'success',
+            }).then(() => {
+                window.location.href = "/inicio_tienda/";
+            });
+        })
+        .catch(err => {
+            // Convertir el error a JSON y mostrar mensaje de error con Swal
+            if (err.response && err.response.data) {
+                const errorJson = JSON.stringify(err.response.data);
+                Swal.fire({
+                    title: 'Error',
+                    text: errorJson,
+                    icon: 'error',
+                });
+            } else {
+                console.error(err);
+            }
+        });
+    }
+    
 </script>
-</body>
-</html>
+
+{% endblock %}

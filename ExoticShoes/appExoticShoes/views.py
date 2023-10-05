@@ -454,8 +454,8 @@ def detalleProduto(request):
 # def loginCliente(request):
 #     return render(request, "cliente/login_cliente.html", {})
 
-# def registroCliente(request):
-#     return render(request, "cliente/registro_cliente.html", {})
+def registroCliente(request):
+    return render(request, "cliente/registro_cliente.html", {})
 
 # @client_required
 # def inicioCliente(request):
