@@ -35,7 +35,7 @@ async function get_categories() {
         response.data.forEach((category) => {
             data += `
                    <a class="categoriaitem" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" onclick="ProductsByCategory(${category.id})">
-                        <img src="${category.imagen}" alt="categoria" class="rounded-circle border border-opacity-25 border-secondary" width="100" height="100">
+                        <img src="${category.imagen}" alt="categoria" class="rounded-circle border border-opacity-25 border-secondary imagenCategoria" width="100" height="100">
                         <p class="fw-bold">${category.nombre}</p>
                    </a>
               `;
@@ -119,7 +119,7 @@ async function ProductsByCategory(idCategoria) {
                         <p class="card-text">Precio: $${product.precio}</p>
                     </div>
                     <div class="card-footer">
-                        <button type="button" class="btn btn-primary" onclick="">Detalle</button>
+                        <button type="button" class="btn btn-primary" onclick="productoSeleccionado(${product.id})">Detalle</button>
                     </div>
                 </div>
         `;
@@ -128,9 +128,6 @@ async function ProductsByCategory(idCategoria) {
 
     } catch (error) { }
 }
-
-
-
 
 //-------------------Funcion de Autocompletado ------------------
 function autoComplete() {
@@ -143,7 +140,7 @@ function autoComplete() {
                 let filtroProducto = data.filter(filtrarP)
                 filtroProducto.forEach(element => {
                     iconoProducto(element.id)
-                    lista += `<a class='list-group-item list-group-item-action' href="#" onclick="${detalleP(element.id)}">${element.nombre} <img id="icono${element.imagen}" style="width:20%"></a>`
+                    lista += `<a class='list-group-item list-group-item-action' href="#" onclick="${productoSeleccionado(element.id)}">${element.nombre} <img id="icono${element.imagen}" style="width:20%"></a>`
                 });
                 lista += `</div>`
                 document.getElementById("listaProductos").innerHTML = lista
@@ -156,14 +153,14 @@ function autoComplete() {
 
 }
 
-//-------------------Funcion Filtrar Pokemon------------------
+//-------------------Funcion Filtrar producto------------------
 function filtrarP(element) {
     let textoBuscar = document.getElementById("txtBuscar").value
     let nombre = element.nombre
     return nombre.includes(textoBuscar.toLowerCase())
 }
 
-//------------------Funcion Icono Pokemon---------------------
+//------------------Funcion Icono producto---------------------
 function iconoProducto(id) {
     fetch('/api/v1.0/productosCliente/'+id)        
         .then(response => response.json())
@@ -171,12 +168,6 @@ function iconoProducto(id) {
             document.getElementById(`icono${data.imagen}`).src = data.imagen
         })
 }
-
-//___________________Guardar en LocalStorage Detalle Pokemon---------------------------
-function detalleP(id) {
-    localStorage.productoEncontrado = id
-}
-
 
 //cargar las categorias apenas cargue el DOOM
 get_categories();

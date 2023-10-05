@@ -2,9 +2,8 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/frm.css' %}">
 <div id="app">
-    <div class="row rounded p-3 d-flex justify-content-center">
+    <div class="row rounded p-3 d-flex justify-content-center align-items-center">
         <div class="col">
-
         </div>
     </div>
     <div v-if="!editing" class="bg-white rounded p-2">
@@ -22,12 +21,12 @@
                         <p>Correo Electrónico: [[ userProfile.email ]]</p>
                     </div>
                     <div class="col">
-                        <p>Nombre: [[ userProfile.first_name ]]</p>
+                        <p>Nombres: [[ userProfile.first_name ]]</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p>Apellido: [[ userProfile.last_name ]]</p>
+                        <p>Apellidos: [[ userProfile.last_name ]]</p>
                     </div>
                     <div class="col">
                         <p> Fecha Naciemiento: [[ userProfile.fechaNacimiento ]]</p>
@@ -44,7 +43,7 @@
             </div>
         </div>
         <div class="row d-flex justify-content-center">
-            <button @click="editProfile" class="btn links">Editar</button>
+            <button @click="editProfile" class="btn links btn-outline-secondary">Editar</button>
         </div>
     </div>
     <div v-else>
@@ -76,14 +75,14 @@
                     <div class="form-floating mb-3">
                         <input type="text" id="name" v-model="editedProfile.first_name" placeholder="nombre"
                             class="form-control">
-                        <label for="name" class="form-label">Nombre:</label>
+                        <label for="name" class="form-label">Nombres:</label>
                     </div>
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
                         <input type="text" id="last" v-model="editedProfile.last_name" placeholder="apellido"
                             class="form-control">
-                        <label for="last" class="form-label">Apellido:</label>
+                        <label for="last" class="form-label">Apellidos:</label>
                     </div>
                 </div>
             </div>
@@ -110,7 +109,7 @@
                     <div class="form-floating mb-3">
                         <input type="text" id="address" v-model="editedProfile.direccion" placeholder="direccion"
                             class="form-control">
-                        <label for="address" class="form-label">Direccion: </label>
+                        <label for="address" class="form-label">Dirección: </label>
                     </div>
                 </div>
                 <div class="col">
@@ -139,8 +138,8 @@
 
             <div class="row">
                 <div class="col text-center">
-                    <button type="submit" class="btn links">Guardar</button>&nbsp;
-                    <button @click="cancelEdit" class="btn links">Cancelar</button>
+                    <button type="submit" class="btn links btn-outline-secondary">Guardar</button>&nbsp;
+                    <button @click="cancelEdit" class="btn links btn-outline-secondary">Cancelar</button>
                 </div>
             </div>
         </form>
