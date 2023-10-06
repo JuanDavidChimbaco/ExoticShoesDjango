@@ -115,29 +115,50 @@
             },
         })
         .then(res => {
-            // Convertir la respuesta a JSON y mostrar mensaje de éxito con Swal
-            const responseJson = JSON.stringify(res.data);
+            // Convertir la respuesta a un objeto JavaScript
+            const responseData = res.data;
+        
+            // Crear un mensaje de éxito
+            const successMessage = 'La operación se realizó con éxito.';
+        
+            // Mostrar un mensaje de éxito con SweetAlert
             Swal.fire({
                 title: 'Éxito',
-                text: responseJson,
+                text: successMessage,
                 icon: 'success',
             }).then(() => {
                 window.location.href = "/inicio_tienda/";
             });
         })
         .catch(err => {
-            // Convertir el error a JSON y mostrar mensaje de error con Swal
+            // Crear un mensaje de error personalizado
+            let errorMessage = 'Detalles:';
+        
+            // Verificar si hay datos en la respuesta de error
             if (err.response && err.response.data) {
-                const errorJson = JSON.stringify(err.response.data);
-                Swal.fire({
-                    title: 'Error',
-                    text: errorJson,
-                    icon: 'error',
-                });
+                const errorData = err.response.data;
+        
+                // Recorrer las propiedades del objeto de error y agregar los mensajes de error
+                for (const key in errorData) {
+                    if (errorData.hasOwnProperty(key)) {
+                        const errorMessages = errorData[key];
+                        errorMessage += `\n${key}: ${errorMessages.join(', ')}`;
+                    }
+                }
             } else {
-                console.error(err);
+                errorMessage = 'No se pudo realizar la operación debido a un error desconocido.';
             }
+        
+            // Mostrar un mensaje de error con SweetAlert
+            Swal.fire({
+                title: 'Error',
+                text: errorMessage,
+                icon: 'error',
+            });
         });
+        
+        
+        
     }
     
 </script>

@@ -24,188 +24,196 @@
     <script src="{% static 'js/sweetalert2@11.js' %}"></script>
     <!-- scripts -->
     <script src="{% static 'js/tienda.js' %}"></script>
-    
+
     <!-- estilos  -->
     <link rel="stylesheet" href="{% static 'css/tienda.css' %}" />
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
-   
+
 
     <title>Tienda</title>
 </head>
 
-<body style="overflow-x: hidden">
-    <div class="loader-wrapper">
-        <div class="loader"></div>
+<body>
+    <div class="d-flex flex-column justify-content-between min-vh-100">
+
+
+        <div class="loader-wrapper">
+            <div class="loader"></div>
+        </div>
+
+        <header>
+            <div class="container-fluid mb-2">
+                <div class="row rounded-bottom headercolor bg-dark">
+                    <div class="col d-flex align-items-center">
+                        <img src="{% static 'images/svg/logo2.svg' %}" alt="logo" width="50" class="" />
+                    </div>
+                    <div class="col d-flex  align-items-center">
+                        <span class="text-white">
+                            <marquee behavior="" direction="left">Adrile Boutique</marquee>
+                        </span>
+                    </div>
+                    <div class="col d-flex align-items-center">
+                        <span class="text-white">Los Mejores Precios !!!</span>
+                    </div>
+                    <div class="col d-flex  align-items-center">
+                        <i class="fa fa-shoe-prints text-white fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="navbar navbar-expand-lg rounded">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/inicio_tienda/">
+                        <img src="{% static 'images/logo.png' %}" alt="" width="150" />
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <form class="d-flex w-100" role="search">
+                            <div class="input-group w-75">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="search" class="form-control rounded-end" name="txtBuscar" id="txtBuscar"
+                                    placeholder="Buscar" onkeyup="autoComplete()">
+                                <div id="listaProductos"></div>
+                            </div>
+                        </form>
+
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            {% block navbar_content %}
+                            <li class="nav-item linxD">
+                                <a class="nav-link active" aria-current="page" href="/inicio_tienda/"> Productos </a>
+                            </li>
+                            <li class="nav-item dropdown linxD">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false"> Categoría </a>
+                                <ul class="dropdown-menu" id="listaCategorias">
+                                    <!-- contenido categorias -->
+                                </ul>
+                            </li>
+                            {% if user.is_authenticated %}
+                            <li class="nav-item dropdown linxD" id="logueado">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false"> Mi cuenta </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/perfil_cliente/">Ver perfil</a></li>
+                                    <li><a class="dropdown-item" href="/custom_logout/">Cerrar Sesión</a></li>
+                                </ul>
+                            </li>
+                            {% else %}
+                            <li class="nav-item dropdown linxD">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">Iniciar sesión</a>
+                                <ul class="dropdown-menu" id="sinLoguear">
+                                    <li><a class="dropdown-item" href="" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModal">Iniciar sesión</a></li>
+                                    <li><a class="dropdown-item" href="/registro_cliente">Registrarse</a></li>
+                                </ul>
+                            </li>
+                            {% endif %} {% endblock %}
+                        </ul>
+
+                        <ul class="navbar-nav mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <button type="button" class="btn btn-primary position-relative"
+                                    data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop"
+                                    aria-controls="staticBackdrop">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                    <span
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        0
+                                        <span class="visually-hidden">unread messages</span>
+                                    </span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            {% block content_main %}
+            <div>
+                {% include 'tienda/section2.html'%}
+            </div>
+            <div class="mt-2" id="contenedorCategorias">
+                <!-- contenido categorias -->
+            </div>
+
+            <div class="collapse bg-secondary rounded" id="collapseExample">
+                <div id="productosPorCategoria">
+                    <!-- productos por categoria  -->
+                </div>
+            </div>
+
+            <div id="productosContainer" class="contenido"></div>
+            <div id="paginationContainer"></div>
+            {% endblock %}
+        </main>
+
+        <footer class="bg-dark text-white p-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h4>Enlaces</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="/inicio_tienda/" class="linkFooter">Inicio</a></li>
+                            <li><a href="#productosContainer" class="linkFooter">Productos</a></li>
+                            <li><a href="#" class="linkFooter">Contacto</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Contacto</h4>
+                        <address>
+                            <strong>Adrile Boutique</strong><br />
+                            Carrera 9a # 4-17<br />
+                            Palermo, Huila, Colombia<br />
+                            Teléfono: (+57) 316 759 96 27<br />
+                            Email: info@adrileboutique.com
+                        </address>
+                    </div>
+                    <div class="col-md-4">
+                        <h4>Síguenos</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="https://web.facebook.com/shoesadrian/" target="_blank" class="linkFooter"><i class="fab fa-facebook"></i> Facebook</a></li>
+                            <li><a href="https://wa.me/+573167599628?text=Hola,%20Me%20interesa%20un%20producto" target="_blank" class="linkFooter"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
+                            <li><a href="https://www.instagram.com/adrile.boutique" target="_blank" class="linkFooter"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <div class="scroll-to-top">
+            <a href="#top"><i class="fas fa-arrow-up"></i></a>
+        </div>
+
+        <!-- componentes ocultos  -->
+        <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="static" tabindex="-1"
+            id="staticBackdrop" aria-labelledby="staticBackdropLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Carito</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <p>Carrito Vacio.</p>
+            </div>
+        </div>
+
+        <!-- Modal login -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body"> {% include 'tienda/login.html' %} </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="{% static 'js/tienda_productos.js' %}"></script>
     </div>
-
-    <header>
-        <div class="container-fluid mb-2">
-            <div class="row rounded-bottom headercolor bg-dark">
-                <div class="col d-flex align-items-center">
-                    <img src="{% static 'images/svg/logo2.svg' %}" alt="logo" width="50" class="" />
-                </div>
-                <div class="col d-flex  align-items-center">
-                    <span class="text-white"><marquee behavior="" direction="left">Adrile Boutique</marquee></span> 
-                </div>
-                <div class="col d-flex align-items-center">
-                    <span class="text-white">Los Mejores Precios !!!</span>
-                </div>
-                <div class="col d-flex  align-items-center">
-                    <i class="fa fa-shoe-prints text-white fa-2x"></i>
-                </div>
-            </div>
-        </div>
-
-        <nav class="navbar navbar-expand-lg rounded">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="/inicio_tienda/">
-                    <img src="{% static 'images/logo.png' %}" alt="" width="150" />
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <form class="d-flex w-100" role="search">
-                        <div class="input-group w-75">
-                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="search" class="form-control rounded-end" name="txtBuscar" id="txtBuscar"
-                                placeholder="Buscar" onkeyup="autoComplete()">
-                            <div id="listaProductos"></div>
-                        </div>
-                    </form>
-
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        {% block navbar_content %}
-                        <li class="nav-item linxD">
-                            <a class="nav-link active" aria-current="page" href="/inicio_tienda/"> Productos </a>
-                        </li>
-                        <li class="nav-item dropdown linxD">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false"> Categoría </a>
-                            <ul class="dropdown-menu" id="listaCategorias">
-                                <!-- contenido categorias -->
-                            </ul>
-                        </li>
-                        {% if user.is_authenticated %}
-                        <li class="nav-item dropdown linxD" id="logueado">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false"> Mi cuenta </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/perfil_cliente/">Ver perfil</a></li>
-                                <li><a class="dropdown-item" href="/custom_logout/">Cerrar Sesión</a></li>
-                            </ul>
-                        </li>
-                        {% else %}
-                        <li class="nav-item dropdown linxD">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">Iniciar sesión</a>
-                            <ul class="dropdown-menu" id="sinLoguear">
-                                <li><a class="dropdown-item" href="" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">Iniciar sesión</a></li>
-                                <li><a class="dropdown-item" href="/registro_cliente">Registrarse</a></li>
-                            </ul>
-                        </li>
-                        {% endif %} {% endblock %}
-                    </ul>
-
-                    <ul class="navbar-nav mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <button type="button" class="btn btn-primary position-relative" data-bs-toggle="offcanvas"
-                                data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                                <span
-                                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    0
-                                    <span class="visually-hidden">unread messages</span>
-                                </span>
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <main>
-        {% block content_main %}
-        <div>
-            {% include 'tienda/section2.html'%}
-        </div>
-        <div class="mt-2" id="contenedorCategorias">
-            <!-- contenido categorias -->
-        </div>
-
-        <div class="collapse bg-secondary rounded" id="collapseExample">
-            <div id="productosPorCategoria">
-                <!-- productos por categoria  -->
-            </div>
-        </div>
-
-        <div id="productosContainer" class="contenido"></div>
-        <div id="paginationContainer"></div>
-        {% endblock %}
-    </main>
-
-    <footer class="bg-dark text-white p-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h4>Enlaces</h4>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Inicio</a></li>
-                        <li><a href="#">Productos</a></li>
-                        <li><a href="#">Contacto</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h4>Contacto</h4>
-                    <address>
-                        <strong>Adrile Boutique</strong><br />
-                        Dirección<br />
-                        Ciudad, País<br />
-                        Teléfono: (123) 456-7890<br />
-                        Email: info@adrileboutique.com
-                    </address>
-                </div>
-                <div class="col-md-4">
-                    <h4>Síguenos</h4>
-                    <ul class="list-unstyled">
-                        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
-                        <li><a href="#"><i class="fab fa-whatsapp"></i> WhatsApp</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <div class="scroll-to-top">
-        <a href="#top"><i class="fas fa-arrow-up"></i></a>
-    </div>
-
-    <!-- componentes ocultos  -->
-    <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="static" tabindex="-1"
-        id="staticBackdrop" aria-labelledby="staticBackdropLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Carito</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <p>Carrito Vacio.</p>
-        </div>
-    </div>
-
-    <!-- Modal login -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body"> {% include 'tienda/login.html' %} </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="{% static 'js/tienda_productos.js' %}"></script>
 </body>
 
 </html>

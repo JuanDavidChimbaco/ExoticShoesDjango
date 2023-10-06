@@ -35,7 +35,7 @@ function mostrarResultadosEnHTML(resultados) {
             const productoDiv = $('<div>').addClass('product-card'); // Agrega una clase
             const productoJSON = JSON.stringify(producto); // Serializa el objeto a JSON
             productoDiv.html(`
-                <a class="linkCard" onclick="productoSeleccionado(${producto.id})">
+                <a class="linkCard" href="/detalle_producto?id=${producto.id}" onclick="productoSeleccionado(${producto.id})">
                 <h3>${producto.nombre}</h3>
                 <p>Precio: $${parseFloat(producto.precio).toFixed(2)}</p>
                 <img src="${producto.imagen}" alt="${producto.nombre}" style="max-width: 100%; height: 250px;" class="rounded" />
@@ -46,11 +46,6 @@ function mostrarResultadosEnHTML(resultados) {
     }
 }
 
-function productoSeleccionado(id) {
-    localStorage.setItem('productoSeleccionado', id);
-    window.location.href = `/detalle_producto?id=${id}`;
-}
-
 // Función para actualizar la paginación
 function actualizarPaginacion(nextPageUrl, prevPageUrl) {
     paginationContainer.empty(); // Limpia la paginación existente
@@ -59,11 +54,11 @@ function actualizarPaginacion(nextPageUrl, prevPageUrl) {
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             <li class="page-item ${prevPageUrl ? '' : 'disabled'}">
-                <a class="page-link" href="#productosContainer" onclick="cargarPagina(${currentPage - 1})">Previous</a>
+                <a class="page-link" href="#productosContainer" onclick="cargarPagina(${currentPage - 1})">Anterior</a>
             </li>
             ${generarEnlacesPagina(currentPage, totalPages)}
             <li class="page-item ${nextPageUrl ? '' : 'disabled'}">
-                <a class="page-link" href="#productosContainer" onclick="cargarPagina(${currentPage + 1})">Next</a>
+                <a class="page-link" href="#productosContainer" onclick="cargarPagina(${currentPage + 1})">Siguien</a>
             </li>
         </ul>
     </nav>

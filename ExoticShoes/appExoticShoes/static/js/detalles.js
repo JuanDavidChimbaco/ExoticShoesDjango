@@ -19,11 +19,12 @@ if (idProducto) {
             console.log(producto)
             const detallesProductoElement = document.getElementById('detallesProducto');
             detallesProductoElement.innerHTML = `
+            <h3 class="text-center" style="margin: 50px;">Detalles De ${producto.nombre}</h3>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <img src="${producto.imagen}" alt="${producto.nombre}" class="img-fluid rounded" style="max-width: 100%; height: 400px;" />
                     </div>
-                    <div class="col-md-6 card shadow" style="height: 400px;">
+                    <div class="col-md-4 card shadow" style="height: 400px;">
                             <div class="card-body">
                                 <h3 class="card-title text-primary">${producto.nombre}</h3>
                                 <p class="card-text">

@@ -5,6 +5,7 @@
 }
 body{
   font-family: roboto-light;
+  overflow-x: hidden;
 }
 nav {
     background-color: #333;
@@ -19,7 +20,7 @@ nav {
 }
 
 .link:hover {
-    background-color: #fcdbd5;
+    background-color: #ffcce0;
     border-radius: 5px;
     transition: all 0.5s;
 }
@@ -54,9 +55,9 @@ nav {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: #ff0000;
+  color: #ffcce0;
   animation: spin 1s linear forwards;
-  -webkit-animation: spin 1s linear forwards;
+  -webkit-animation: spin 1s cubic-bezier(0.78, -0.42, 0, 1.21) forwards;
 }
 
 
@@ -102,7 +103,7 @@ nav {
 }
 
 .loader {
-    border: 4px solid rgba(171, 57, 57, 0.924);
+    border: 4px solid #ffcce0;
     border-radius: 50%;
     border-top: 4px solid #1c1d1e;
     width: 50px;
@@ -121,7 +122,7 @@ nav {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #007BFF; /* Color de fondo del botón */
+    background-color: #0d6efd; /* Color de fondo del botón */
     color: #fff; /* Color del texto */
     width: 40px;
     height: 40px;
@@ -140,7 +141,7 @@ nav {
 }
 
 .scroll-to-top:hover {
-    background-color: #0056b3; /* Color de fondo del botón al pasar el cursor */
+    background-color: #0a53be; /* Color de fondo del botón al pasar el cursor */
 }
 
 
@@ -212,9 +213,12 @@ nav {
     border-radius: 5px;
     cursor: pointer;
   }
+
   
   .page-link:hover {
-    background-color: #ddd;
+    background-color: #f3afca;
+    border: 1px solid #f3afca;
+    color: #FFF;
   }
 
   .none{
@@ -237,9 +241,9 @@ element.style {
 .form-control:focus {
   color: var(--bs-body-color);
   background-color: var(--bs-body-bg);
-  border-color: #f27474;
+  border-color: #ffcce0;
   outline: 0;
-  box-shadow: 0 0 0 1px #f27474;
+  box-shadow: 0 0 0 1px #ffcce0;
 }
 
 .contenido{
@@ -259,7 +263,21 @@ element.style {
 }
 
 .linxD:hover{
-  background-color: #FFCCE0;
+  background-color: #ffcce0;
   border-radius: 5px;
   letter-spacing: 2px;
+}
+
+/* =================[links-footers]================================ */
+.linkFooter{
+  text-decoration: none;
+}
+
+.linkFooter:hover{
+  color: #ffcce0;
+  transition: all 1s;
+  -webkit-transition: all 1s;
+  -moz-transition: all 1s;
+  -ms-transition: all 1s;
+  -o-transition: all 1s;
 }
