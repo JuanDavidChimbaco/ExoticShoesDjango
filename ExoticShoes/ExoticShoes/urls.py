@@ -30,7 +30,7 @@ router.register(r"categoriaCliente", views.CategoriaViewSetCliente)
 router.register(r"productosCliente", views.ProductoViewSetCliente)
 router.register(r"productosPaginacion2", views.ProductoViewSetClientePagination)
 router.register(r"productosPagination", views.ProductoPaginationViewSet)
-router.register(r"tallasCliente", views.TallaViewSetCliente, basename="tallasClientes")
+router.register(r"tallasCliente", views.TallaViewSetCliente, basename="tallasClientes") #inutil (por el momento)
 
 # lista de productos para la vista del cliente
 registro_cliente_view = views.RegistroClienteViewSet.as_view({"post": "create"})
@@ -78,7 +78,11 @@ urlpatterns = [
     
     # filtros 
     path('api/v1.0/pedidos/<int:pedido_id>/detalles/', views.DetallePedidoPorPedidoView.as_view(), name='detallepedido-por-pedido'),
-    path('productos/categoria/<int:categoria_id>/', views.ProductosFiltradosPorCategoriaViewSet.as_view(), name='productos-por-categoria') # productos por categoria
+    path('productos/categoria/<int:categoria_id>/', views.ProductosFiltradosPorCategoriaViewSet.as_view(), name='productos-por-categoria'), # productos por categoria
+    path('api/tallas_por_producto/<int:producto_id>/', views.tallas_por_producto, name='tallas_por_producto'),
+    
+    # pedido
+    path('api/crear_pedido/', views.crear_pedido, name='crear_pedido')
 ]
 handler404 = 'appExoticShoes.views.custom_404'
 if settings.DEBUG:

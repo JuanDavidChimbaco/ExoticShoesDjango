@@ -110,15 +110,28 @@ class ProductoViewSetCliente(viewsets.ModelViewSet):
     
 # [[ Uso para Clientes ]]
 class TallaViewSetCliente(viewsets.ModelViewSet):
-    permission_classes = [AllowOnlyGET]
+    # permission_classes = [AllowOnlyGET]
     serializer_class = TallaSerializer
     def get_queryset(self):
         # Obtén el ID del producto de la URL (supongamos que la URL tiene un parámetro llamado 'producto_id')
-        producto_id = self.kwargs.get('producto_id')
+        producto_id = self.kwargs.get('id')
         # Filtra las tallas por el ID del producto
-        queryset = Talla.objects.filter(producto__id=producto_id)
-        pass
+        queryset = Talla.objects.filter(producto_id=producto_id)
         return queryset
+    
+def tallas_por_producto(request, producto_id):
+    try:
+        # Busca el producto por su ID
+        producto = Producto.objects.get(id=producto_id)
+        # Obtén las tallas relacionadas con el producto
+        tallas = Talla.objects.filter(producto=producto)
+        # Serializa las tallas en formato JSON (puedes utilizar Django REST framework serializers)
+        tallas_serializadas = [{'id': talla.id, 'talla': talla.talla, 'producto':talla.producto.nombre, 'cantidad':talla.cantidad } for talla in tallas]
+        # Retorna la respuesta JSON con las tallas
+        return JsonResponse({'tallas': tallas_serializadas})
+    except Producto.DoesNotExist:
+        # Si el producto no se encuentra, retorna una respuesta de error
+        return JsonResponse({'error': 'Producto no encontrado'}, status=404)
     
 # [[ Uso para Administrador ]]
 class TallaViewSet(viewsets.ModelViewSet):
@@ -161,6 +174,25 @@ class PedidosViewSet(viewsets.ModelViewSet):
             nuevo_codigo = "COD001"
         request.data["codigoPedido"] = nuevo_codigo  # Agregar el código al request data
         return super().create(request, *args, **kwargs)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def crear_pedido(request):
+    if request.method == 'POST':
+        # Obtener el último código de pedido
+        last_codigo = Pedido.objects.aggregate(Max("codigoPedido"))["codigoPedido__max"]
+        if last_codigo:
+            codigo_numero = int(last_codigo[3:]) + 1
+            nuevo_codigo = f"COD{codigo_numero:03d}"
+        else:
+            nuevo_codigo = "COD001"
+        request.data["codigoPedido"] = nuevo_codigo  # Agregar el código al request data
+        serializer = PedidoSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PedidoDetailViewSet(viewsets.ModelViewSet):
