@@ -25,6 +25,12 @@ nav {
     transition: all 0.5s;
 }
 
+/* ====================[Tienda banner]=========================== */
+span marquee{
+  font-family: lucida-handwriting-italic;
+  font-size: xx-large;
+}
+
 /* ===============================================[Categorias]============================================================== */
 /* Diseño para el contenedor de las categorias */
 #contenedorCategorias {
