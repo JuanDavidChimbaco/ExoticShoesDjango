@@ -34,17 +34,22 @@ function mostrarResultadosEnHTML(resultados) {
             // Crea elementos HTML para mostrar la información del producto
             const productoDiv = $('<div>').addClass('product-card'); // Agrega una clase
             const productoJSON = JSON.stringify(producto); // Serializa el objeto a JSON
+
+            // Formatear el precio con puntos de mil
+            const precioConPuntosDeMil = parseFloat(producto.precio).toLocaleString('es-ES', { style: 'currency', currency: 'COP' });
+
             productoDiv.html(`
                 <a class="linkCard" href="/detalle_producto?id=${producto.id}" onclick="productoSeleccionado(${producto.id})">
                 <h3>${producto.nombre}</h3>
-                <p>Precio: $${parseFloat(producto.precio).toFixed(2)}</p>
+                <p>Precio: ${precioConPuntosDeMil}</p>
                 <img src="${producto.imagen}" alt="${producto.nombre}" style="max-width: 100%; height: 250px;" class="rounded" />
                 </a>
             `);
             productosContainer.append(productoDiv);
-        });  
+        });
     }
 }
+
 
 // Función para actualizar la paginación
 function actualizarPaginacion(nextPageUrl, prevPageUrl) {

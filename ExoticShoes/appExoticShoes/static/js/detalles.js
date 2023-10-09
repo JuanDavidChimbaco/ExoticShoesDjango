@@ -16,10 +16,13 @@ if (idProducto) {
             }
         })
         .then((producto) => {
-            console.log(producto)
             const detallesProductoElement = document.getElementById('detallesProducto');
+
+            // Formatear el precio con puntos de mil
+            const precioConPuntosDeMil = parseFloat(producto.precio).toLocaleString('es-ES', { style: 'currency', currency: 'COP' });
+
             detallesProductoElement.innerHTML = `
-            <h3 class="text-center" style="margin: 50px;">Detalles De ${producto.nombre}</h3>
+            <h3 class="text-center border border-warning" style="margin: 50px;">Detalles De ${producto.nombre}</h3>
                 <div class="row">
                     <div class="col-md-8">
                         <img src="${producto.imagen}" alt="${producto.nombre}" class="img-fluid rounded" style="max-width: 100%; height: 400px;" />
@@ -28,7 +31,7 @@ if (idProducto) {
                             <div class="card-body">
                                 <h3 class="card-title text-primary">${producto.nombre}</h3>
                                 <p class="card-text">
-                                    <strong>Precio:</strong> $${parseFloat(producto.precio).toFixed(2)}
+                                    <strong>Precio:</strong> ${precioConPuntosDeMil}
                                 </p>
                                 <p class="card-text">
                                     <strong>Descripción:</strong> ${producto.descripcion}
@@ -45,4 +48,3 @@ if (idProducto) {
 } else {
     console.error('No se encontró el ID del producto en la URL');
 }
-

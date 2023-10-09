@@ -110,6 +110,9 @@ async function ProductsByCategory(idCategoria) {
     try {
         const response = await axios.get(`/productos/categoria/${idCategoria}/`);
         response.data.forEach((product) => {
+            // Formatear el precio con puntos de mil
+            const precioConPuntosDeMil = parseFloat(product.precio).toLocaleString('es-ES', { style: 'currency', currency: 'COP' });
+
             data += `
             <a class="linkCard" href="/detalle_producto?id=${product.id}" onclick="productoSeleccionado(${product.id})">
                 <div class="card producto-card" height="300">
@@ -117,7 +120,7 @@ async function ProductsByCategory(idCategoria) {
                 <div class="card-body">
                     <img src="${product.imagen}" alt="producto" class="card-img-top " width="100" height="150">
                         <p class="card-text">${product.descripcion}</p>
-                        <p class="card-text">Precio: $${product.precio}</p>
+                        <p class="card-text">Precio: ${precioConPuntosDeMil}</p>
                     </div>
                 </div>
             </a>
@@ -127,6 +130,7 @@ async function ProductsByCategory(idCategoria) {
 
     } catch (error) { }
 }
+
 
 //-------------------Funcion de Autocompletado ------------------
 function autoComplete() {
