@@ -40,7 +40,7 @@ function mostrarResultadosEnHTML(resultados) {
 
             productoDiv.html(`
                 <a class="linkCard" href="/detalle_producto?id=${producto.id}" onclick="productoSeleccionado(${producto.id})">
-                <h3>${producto.nombre}</h3>
+                <h3 class="product-name">${producto.nombre}</h3>
                 <p>Precio: ${precioConPuntosDeMil}</p>
                 <img src="${producto.imagen}" alt="${producto.nombre}" style="max-width: 100%; height: 250px;" class="rounded" />
                 </a>
