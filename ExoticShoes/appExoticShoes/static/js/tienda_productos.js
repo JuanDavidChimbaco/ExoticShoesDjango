@@ -10,23 +10,8 @@ function cargarPagina(page) {
         return; // Evita cargar páginas fuera del rango válido
     }
 
-    let apiUrl = 'http://127.0.0.1:8000/api/v1.0/productosPagination/';
-
-    // Comprobar si ha pasado más de 24 horas desde la última carga aleatoria
-    const lastRandomLoadTime = localStorage.getItem('lastRandomLoadTime');
-    if (!lastRandomLoadTime || Date.now() - Number(lastRandomLoadTime) > 24 * 60 * 60 * 1000) {
-        // Si han pasado más de 24 horas, genera un número aleatorio para ordenar los productos
-        const randomSeed = Math.floor(Math.random() * 1000000);
-        apiUrl += `?page=${page}&seed=${randomSeed}`;
-
-        // Almacenar la hora actual como la última carga aleatoria
-        localStorage.setItem('lastRandomLoadTime', Date.now());
-    } else {
-        apiUrl += `?page=${page}`;
-    }
-
     // Realiza la petición fetch con el número de página
-    fetch(apiUrl)
+    fetch(`http://127.0.0.1:8000/api/v1.0/productosPagination/?page=${page}`)
         .then((response) => response.json())
         .then((data) => {
             mostrarResultadosEnHTML(data.results);
@@ -65,6 +50,7 @@ function mostrarResultadosEnHTML(resultados) {
     }
 }
 
+
 // Función para actualizar la paginación
 function actualizarPaginacion(nextPageUrl, prevPageUrl) {
     paginationContainer.empty(); // Limpia la paginación existente
@@ -77,7 +63,7 @@ function actualizarPaginacion(nextPageUrl, prevPageUrl) {
             </li>
             ${generarEnlacesPagina(currentPage, totalPages)}
             <li class="page-item ${nextPageUrl ? '' : 'disabled'}">
-                <a class="page-link" href="#productosContainer" onclick="cargarPagina(${currentPage + 1})">Siguiente</a>
+                <a class="page-link" href="#productosContainer" onclick="cargarPagina(${currentPage + 1})">Siguien</a>
             </li>
         </ul>
     </nav>
@@ -107,7 +93,7 @@ $(document).ready(() => {
     fetch('http://127.0.0.1:8000/api/v1.0/productosPagination/')
         .then((response) => response.json())
         .then((data) => {
-            totalPages = Math.ceil(data.count / 4); // Supongo que estás mostrando 8 productos por página
+            totalPages = Math.ceil(data.count / 4); // Supongo que estás mostrando 4 productos por página
             cargarPagina(currentPage);
         })
         .catch((error) => {
