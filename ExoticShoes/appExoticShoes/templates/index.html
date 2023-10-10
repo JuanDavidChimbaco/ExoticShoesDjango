@@ -81,10 +81,10 @@
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-                        <form role="search">
+                        <form role="search" onsubmit="noSubmit(event)">
                             <div class="input-group w-100">
                                 <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                <input type="search" class="form-control rounded-end" name="txtBuscar" id="txtBuscar"
+                                <input type="search" class="form-control rounded-end buscar" name="txtBuscar" id="txtBuscar"
                                     placeholder="Buscar" onkeyup="autoComplete()" >
                                 <div id="listaProductos"></div>
                             </div>

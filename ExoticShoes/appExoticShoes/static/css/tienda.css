@@ -273,6 +273,10 @@ element.style {
   overflow: auto;
 }
 
+.buscar{
+  caret-color: #0d6efd;
+}
+
 /* ============================[Foco del buscador]=============================================== */
 .form-control:focus {
   color: var(--bs-body-color);
@@ -317,3 +321,5 @@ element.style {
   -ms-transition: all 1s;
   -o-transition: all 1s;
 }
+
+

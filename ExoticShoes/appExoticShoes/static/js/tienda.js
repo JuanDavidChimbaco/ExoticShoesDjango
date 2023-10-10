@@ -163,7 +163,7 @@ function filtrarP(element) {
 
 //------------------Funcion Icono producto---------------------
 function iconoProducto(id) {
-    fetch('/api/v1.0/productosCliente/'+id)        
+    fetch('/api/v1.0/productosCliente/' + id)
         .then(response => response.json())
         .then(data => {
             document.getElementById(`icono${data.imagen}`).src = data.imagen
@@ -172,6 +172,11 @@ function iconoProducto(id) {
 
 //cargar las categorias apenas cargue el DOOM
 get_categories();
+
+
+function noSubmit(event) {
+    event.preventDefault()
+}
 
 function productoSeleccionado(id) {
     localStorage.setItem('productoSeleccionado', id);

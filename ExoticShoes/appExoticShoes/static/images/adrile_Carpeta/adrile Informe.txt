@@ -1,0 +1,49 @@
+Informe del paquete
+
+-----------------------------------------------------------------------------
+Documento:
+Nombre: adrile.ai
+Modo de color: Color CMYK
+Perfil de color: Coated FOGRA39 (ISO 12647-2:2004)
+Unidades de regla: centímetros
+Dimensiones de la mesa de trabajo: 100 cm x 140 cm
+Mostrar imágenes en modo contorno: Desactivado
+Resaltar fuentes sustituidas: Desactivado
+Resaltar glifos sustituidos: Desactivado
+Conservar capacidad de edición de texto
+Simular papel de color: Desactivado
+
+-----------------------------------------------------------------------------
+Objetos de tintas planas:
+
+-----------------------------------------------------------------------------
+Fuentes no disponibles:Ninguno
+
+-----------------------------------------------------------------------------
+Fuentes protegidas no empaquetadas:
+Myriad Pro Bold (Adobe Fonts)
+
+-----------------------------------------------------------------------------
+Fuentes:
+Calibri (OTF)
+Work Sans Bold (TrueType)
+Myriad Pro (OTF)
+
+-----------------------------------------------------------------------------
+Fuentes incrustadas:
+Ninguno
+
+-----------------------------------------------------------------------------
+Enlaces no disponibles:
+Ninguno
+
+-----------------------------------------------------------------------------
+Imágenes enlazadas:
+
+C:\Users\Dev\Desktop\Inicio.png
+Tipo: RGB transparente
+Bits por píxel: 32
+Canales: 4
+Tamaño: 6997K, 1920 por 933 píxeles
+Dimensiones: 821,573 por 485,68 puntos 
+Resolución: 168,263 por 138,313 píxeles por pulgada
