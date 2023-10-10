@@ -14,7 +14,7 @@ const dataTableOptions = {
             extend: 'print',
             exportOptions: {
                 stripHtml: false,
-                columns: [0, 1, 2, 3, 4],
+                columns: [0, 1, 2, 3, 4, 5],
             },
         },
     ],
@@ -74,6 +74,7 @@ async function getProducts() {
                     <td>${element.descripcion}</td>
                     <td>${precioFormateado}</td>
                     <td>${categoryName}</td>
+                    <td><img src="${element.imagen}" alt="${element.nombre}"></td>
                     <td class="align-middle text-center">
                         <div>
                             <input type="radio" name="checkOpcion" onclick='getProductById(${JSON.stringify(element)})' class="form-check-input" title="Seleccionar">

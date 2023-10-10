@@ -84,7 +84,6 @@ async function getSizes() {
 }
 
 async function addSizes() {
-    var errorMessages = [];
     axios.defaults.xsrfCookieName = 'csrftoken';
     axios.defaults.xsrfHeaderName = 'X-CSRFToken';
     var formData = new FormData();
@@ -121,7 +120,6 @@ async function addSizes() {
 }
 
 async function editSizes() {
-    var errorMessages = [];
     axios.defaults.xsrfCookieName = 'csrftoken';
     axios.defaults.xsrfHeaderName = 'X-CSRFToken';
     var formularioData = new FormData();
@@ -157,7 +155,6 @@ async function editSizes() {
 }
 
 async function deleteSizes() {
-    var errorMessages = [];
     axios.defaults.xsrfCookieName = 'csrftoken'; // Nombre de la cookie CSRF
     axios.defaults.xsrfHeaderName = 'X-CSRFToken'; // Nombre del encabezado CSRF
     const res = await Swal.fire({
@@ -193,6 +190,7 @@ async function deleteSizes() {
 }
 
 function showError(error) {
+    var errorMessages = [];
     console.log(error);
     for (var key in error.response.data) {
         if (error.response.data.hasOwnProperty(key)) {
@@ -215,7 +213,7 @@ function showError(error) {
         Swal.fire({
             position: 'center',
             icon: 'error',
-            title: 'Oops...',
+            title: 'Tallas',
             html: errorMessageList,
             showConfirmButton: true,
             allowOutsideClick: false,
@@ -253,6 +251,6 @@ function clean() {
 }
 
 window.addEventListener('load', async () => {
-    await initDataTable();
     await getProducts();
+    await initDataTable();
 });

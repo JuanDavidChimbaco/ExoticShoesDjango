@@ -1,0 +1,7 @@
+#=======[clientes]=========
+client2 = 1234
+client3 = 1234
+
+#=======[Admins]==========
+dajun2 = Super321
+admin = 1234 (is_staff) 

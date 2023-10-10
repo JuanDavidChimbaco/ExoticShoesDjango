@@ -131,9 +131,11 @@ async function ProductsByCategory(idCategoria) {
     } catch (error) { }
 }
 
-
 //-------------------Funcion de Autocompletado ------------------
 function autoComplete() {
+    if(e.keyCode == 13) {
+        e.preventDefault();
+      }
     fetch(`/api/v1.0/productosPaginacion2/?limit=100offset=0`)
         .then(response => response.json())
         .then(data => {
